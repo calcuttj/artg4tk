@@ -1,0 +1,12 @@
+<!--  -->
+<!--  $Id: classes_def.xml,v 1.16 2012/11/01 23:38:25 gandr Exp $     -->
+<!--  -->
+
+<lcgdict>
+ <class name="artg4tk::PDGCode"/>
+ <class name="artg4tk::GenParticle" />
+ <class name="artg4tk::GenParticleCollection"/>
+ <class name="art::Ptr<artg4tk::GenParticle>"/>
+ <class name="art::PtrVector<artg4tk::GenParticle>"/>
+ <class name="art::Wrapper<artg4tk::GenParticleCollection>"/>
+</lcgdict>

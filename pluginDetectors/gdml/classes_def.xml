@@ -1,0 +1,24 @@
+<!--  art::Wrapper lines need only top level data product objects  -->
+
+<lcgdict>
+    <!-- For DRCaloArtHit -->
+    <class name="artg4tk::myDRCaloArtHitData"/>
+    <class name="std::vector< artg4tk::myDRCaloArtHitData >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::myDRCaloArtHitData> >"/>
+    <!-- For CaloArtHit -->
+    <class name="artg4tk::myCaloArtHitData"/>
+    <class name="std::vector< artg4tk::myCaloArtHitData >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::myCaloArtHitData> >"/>
+    <!-- For PhotonArtHit -->
+    <class name="artg4tk::myPhotonArtHitData"/>
+    <class name="std::vector< artg4tk::myPhotonArtHitData >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::myPhotonArtHitData> >"/>
+    <!-- For TrackerArtHit -->
+    <class name="artg4tk::myTrackerArtHitData"/>
+    <class name="std::vector< artg4tk::myTrackerArtHitData >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::myTrackerArtHitData> >"/>
+    <!-- For InteractionArtHit -->
+    <class name="artg4tk::myInteractionArtHitData"/>
+    <class name="std::vector< artg4tk::myInteractionArtHitData >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::myInteractionArtHitData> >"/>
+</lcgdict>

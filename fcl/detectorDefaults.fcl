@@ -1,0 +1,60 @@
+BEGIN_PROLOG
+
+// This file provides default parameters for the detectors in artg4example.
+
+// Defaults for world
+ExampleWorldDetectorDefaults: {
+  name: "tashaWorld"
+  category: "world"
+  mother_category: ""
+  expHall_x: 600
+  expHall_y: 600
+  expHall_z: 600
+}
+
+// Defaults for trackers
+ExampleTrackerDetectorDefaults: {
+  name: "exampleTracker"
+  category: "exampleTracker"
+  mother_category: "world"
+  rmin: 20
+  rmax: 50
+  dz: 100
+  sphi: 0
+  dphi: 360
+  n_track_layers: 5
+  layer_radii: [25, 30, 35, 40, 45]
+  layer_lengths: [25, 30, 35, 40, 45]
+  layer_thickness: 0.5
+}
+
+
+// Defaults for calorimeter
+ExampleCalorimeterDetectorDefaults: {
+  name: "exampleCalo"
+  category: "exampleCalo"
+  mother_category: "world"
+  rmin: 50
+  rmax: 300
+  dz: 200
+  sphi: 0
+  dphi: 360
+  absorber_thickness: 3
+  scintillator_thickness: 2
+  segments_in_phi: 48
+  segments_in_z: 20
+}
+
+// Defaults for muon counters
+ExampleMuonDetectorDefaults: {
+  name: "exampleMuon"
+  category: "exampleMuon"
+  mother_category: "world"
+  box_radius: 350
+  width: 345
+  thick: 1
+  length: 590
+  n_muon_counters: 4
+}
+
+END_PROLOG

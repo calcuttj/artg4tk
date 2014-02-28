@@ -1,0 +1,8 @@
+<!--  art::Wrapper lines need only top level data product objects  -->
+
+<lcgdict>
+    <class name="artg4tk::PhysicalVolumeStoreData"/>
+    <class name="art::Wrapper<artg4tk::PhysicalVolumeStoreData>"/>
+    <class name="artg4tk::StringIDs"/>
+    <class name="art::Wrapper<artg4tk::StringIDs>"/>
+</lcgdict>

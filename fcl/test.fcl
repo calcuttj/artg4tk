@@ -1,0 +1,70 @@
+// #include "minimalMessageService.fcl"
+// services.message: @local::default_message
+
+process_name: processB
+
+
+source: {
+  module_type: EmptyEvent
+  maxEvents: 3
+}
+
+services: {
+
+  message : {
+     debugModules : ["*"]
+     suppressInfo : []
+     
+     destinations : {
+       LogToConsole : {
+         type : "cout"
+         threshold : "DEBUG"
+         
+         categories : {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+  
+  user: {
+    DetectorHolder: {}
+    ActionHolder: {}
+  }
+}
+
+outputs: {
+  out1: {
+    module_type: RootOutput
+    fileName: "testing.root"
+  }
+}
+
+physics: {
+  producers: {
+     artg4tkmain: {
+      module_type: artg4tkMain
+      enableVisualization: true
+      macroPath: ".:/gm2/app/users/tasha/g-2/artG4/srcs/artg4tk"
+      visMacro: "vis.mac"
+      pauseAfterEvent: true
+    }
+
+    clock: {
+      module_type: clockAction
+      name: "myClock"
+    }
+    
+    track: {
+      module_type: trackAction
+      name: "myTrack"
+    }
+  }
+
+  path1: [ artg4tkmain, clock, track ]
+  stream1:  [ out1 ]
+
+  trigger_paths: [ path1 ]
+  end_paths: [ stream1 ]
+
+}

@@ -1,0 +1,15 @@
+BEGIN_PROLOG
+
+// This file provides default parameters for the actions in artg4tk.
+
+// Defaults for clock action service
+ClockDefaults: {
+  name: "clock"
+}
+
+// Defaults for particle gun action service
+ParticleGunActionDefaults: {
+  
+}
+
+END_PROLOG
