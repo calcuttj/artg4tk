@@ -43,7 +43,7 @@ services: {
     GDMLDetector : 
     {
     category: "world"
-    gdmlFileName_ : "ta_target.gdml"
+    gdmlFileName_ : "./gdml/ta_target.gdml"
     }   
 
 

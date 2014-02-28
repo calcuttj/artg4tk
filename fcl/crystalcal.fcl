@@ -43,7 +43,7 @@ services: {
     GDMLDetector : 
     {
     category: "world"
-    gdmlFileName_ : "crystalcal_pbwo.gdml"
+    gdmlFileName_ : "./gdml/crystalcal_pbwo.gdml"
     }   
 
 
