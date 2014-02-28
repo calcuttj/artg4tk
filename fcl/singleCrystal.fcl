@@ -43,7 +43,7 @@ services: {
     GDMLDetector : 
     {
     category: "world"
-    gdmlFileName_ : "singlecrystal_color__PbF2.gdml"
+    gdmlFileName_ : "./gdml/singlecrystal_color__PbF2.gdml"
     }   
 
 
