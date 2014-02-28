@@ -79,8 +79,8 @@ out1: {
 
 physics: {
   producers: {
-    artg4Main: {
-      module_type: artg4Main
+    artg4tkMain: {
+      module_type: artg4tkMain
       enableVisualization: false
       macroPath: ".:./macros"
       visMacro: "vis.mac"
@@ -94,7 +94,7 @@ physics: {
 
 }
 
-  path1: [ artg4Main ]
+  path1: [ artg4tkMain ]
   stream1:  [ out1, CheckPhotonHits ]
 
   trigger_paths: [ path1 ]
