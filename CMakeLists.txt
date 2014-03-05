@@ -1,4 +1,4 @@
-#  This file is the main CMakeLists.txt file for the @artg4@ package. It is used by the g-2 build system.
+#  This file is the main CMakeLists.txt file for the @artg4tk@ package. It is used by the g-2 build system.
 # h2. Introduction 
 
 # h2. Main code
@@ -10,7 +10,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
 # --> Define the name of this project (replace @gm2artexamples@ with your 
 # project name - use all lowercase)
-PROJECT (artg4)
+PROJECT (artg4tk)
 
 # h3. Load build system modules
 # cetbuildtools contains our cmake modules
