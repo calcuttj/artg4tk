@@ -33,6 +33,6 @@ only_for_build  cetbuildtools v3_07_08
 #e4:opt           e4:opt     e4:opt        
 #e4:prof          e4:prof    e4:prof       
 qualifier        artg4              notes
-e4:debug         -nq-                   
-e4:opt           -nq-                   
-e4:prof          -nq-         
+e4:debug         e4:debug                   
+e4:opt           e4:opt                  
+e4:prof          e4:prof      
