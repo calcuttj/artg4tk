@@ -14,11 +14,15 @@ PROJECT (artg4tk)
 
 # h3. Load build system modules
 # cetbuildtools contains our cmake modules
-#set( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )
-#if( NOT CETBUILDTOOLS_VERSION )
-#  message( FATAL_ERROR "ERROR: setup cetbuildtools to get the cmake modules" )
-#endif()
+set( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )
+if( NOT CETBUILDTOOLS_VERSION )
+  message( FATAL_ERROR "ERROR: setup cetbuildtools to get the cmake modules" )
+endif()
 #set( CMAKE_MODULE_PATH $ENV{CETBUILDTOOLS_DIR}/Modules ${CMAKE_MODULE_PATH} )
+set(CMAKE_MODULE_PATH $ENV{ART_DIR}/Modules
+		      $ENV{CETBUILDTOOLS_DIR}/Modules
+		      ${CMAKE_MODULE_PATH})
+
 # Add any modules from this source necessary for building
 #set(CMAKE_MODULE_PATH $ENV{GM2SOFTWARETOOLS_DIR}/Modules ${CMAKE_MODULE_PATH} )
 
@@ -79,7 +83,7 @@ find_library( XERCESCLIB  NAMES xerces-c PATHS $ENV{XERCESCROOT}/lib NO_DEFAULT_
 # Macros for art_make and simple plugins
 
 include(ArtDictionary)
-
+include(ArtMake)
 
 #message(STATUS "-----> All Geant4 is ${G4_LIB_LIST}")
 
