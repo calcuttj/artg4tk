@@ -19,20 +19,20 @@ defaultqual e4
 
 product          version
 #geant4           v4_9_6_p02
-artg4            v0_0_1
+artg4            v1_00_00
 #art              v1_08_10
 
-only_for_build  cetbuildtools v3_07_03
+only_for_build  cetbuildtools v3_07_08
 
 
 # We now define allowed qualifiers and the corresponding qualifiers for the depdencies.
 # Make a table by adding columns before "notes". 
 #
-#qualifier        art        geant4        notes
-#e4:debug         e4:debug   e4:debug      
+#qualifier        art                notes
+#e4:debug         e4:debug         
 #e4:opt           e4:opt     e4:opt        
 #e4:prof          e4:prof    e4:prof       
-qualifier        artg4        g4emlow        notes
-e4:debug         -nq-         -nq-           
-e4:opt           -nq-         -nq-           
-e4:prof          -nq-         -nq-
+qualifier        artg4              notes
+e4:debug         -nq-                   
+e4:opt           -nq-                   
+e4:prof          -nq-         
