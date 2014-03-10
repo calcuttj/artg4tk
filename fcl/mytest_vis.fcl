@@ -66,8 +66,8 @@ services: {
     ExampleGeneralAction: {
       name: "exampleGeneral"
     }
-    ExampleParticleGunAction: {
-      name: "exampleParticleGun"
+    ExamplemyParticleGunAction: {
+      name: "examplemyParticleGun"
       use_HEP_event: true
     }
   }
@@ -82,8 +82,8 @@ out1: {
 
 physics: {
   producers: {
-    artg4tkMain: {
-      module_type: artg4tkMain
+    artg4Main: {
+      module_type: artg4Main
       enableVisualization: true
       macroPath: ".:./macros"
       visMacro: "vis.mac"
@@ -96,7 +96,7 @@ physics: {
 		  hist_dir: "HistoDir"}	
 }
 
-  path1: [ artg4tkMain ]
+  path1: [ artg4Main ]
   stream1:  [ out1, CheckHits ]
 
   trigger_paths: [ path1 ]

@@ -53,8 +53,8 @@ services: {
     ExampleGeneralAction: {
       name: "exampleGeneral"
     }
-    SimpleParticleGunAction: {
-      name: "SimpleParticleGun"
+    SimplemyParticleGunAction: {
+      name: "SimplemyParticleGun"
       NumberOfParticlesToBeGenerated: 1
       particleName:  "mu+"
       particle_momentum_direction: [0., 0., 1.]
@@ -76,8 +76,8 @@ out1: {
 
 physics: {
   producers: {
-    artg4tkMain: {
-      module_type: artg4tkMain
+    artg4Main: {
+      module_type: artg4Main
       enableVisualization: false
       macroPath: ".:./macros"
       visMacro: "vis.mac"
@@ -90,7 +90,7 @@ physics: {
 		  hist_dir: "HistoDir"}	
 }
 
-  path1: [ artg4tkMain ]
+  path1: [ artg4Main ]
   stream1:  [ out1, CheckHits ]
 
   trigger_paths: [ path1 ]

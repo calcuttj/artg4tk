@@ -57,8 +57,8 @@ services: {
 PrimaryEventAction: {
 //     name: "PrimaryGeneratorActionService"
 }
-//    SimpleParticleGunAction: {
-//      name: "SimpleParticleGun"
+//    SimplemyParticleGunAction: {
+//      name: "SimplemyParticleGun"
 //      NumberOfParticlesToBeGenerated: 1
 //      particleName:  "mu+"
 //      particle_momentum_direction: [0., 0., 1.]
@@ -84,9 +84,9 @@ evtgen   : {
   module_type : EventGenerator
 nparticles : 1	
 }
-    artg4tkMain: {
+    artg4Main: {
 
-      module_type: artg4tkMain
+      module_type: artg4Main
       enableVisualization: true
       macroPath: ".:./macros"
       visMacro: "vis.mac"
@@ -101,7 +101,7 @@ nparticles : 1
                          hist_dir: "HistoDir"}
 }
 
-  path1: [evtgen, artg4tkMain ]
+  path1: [evtgen, artg4Main ]
   stream1:  [ out1, CheckHits, CheckGenParticle ]
 
   trigger_paths: [ path1 ]

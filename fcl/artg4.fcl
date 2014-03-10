@@ -2,7 +2,7 @@
 
 BEGIN_PROLOG
 standardArtG4Producer : {
-     module_type: artg4tkMain
+     module_type: artg4Main
      enableVisualization: true
      macroPath: ".:./macros:../macros:../../macros"
      visMacro: "vis.mac"
