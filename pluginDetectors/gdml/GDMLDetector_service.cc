@@ -45,7 +45,7 @@
 #include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/InteractionSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myInteractionArtHitData.hh"
-#include "artg4tk/services/DetectorHolder_service.hh"
+#include "artg4/services/DetectorHolder_service.hh"
 // Geant 4 includes:
 #include "Geant4/G4SDManager.hh"
 #include "Geant4/G4VUserDetectorConstruction.hh"
@@ -75,7 +75,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p, art::ActivityRegistry &)
-: artg4tk::DetectorBase(p,
+: artg4::DetectorBase(p,
 p.get<string>("name", "GDMLDetectorService"),
 p.get<string>("category", "World"),
 p.get<string>("mother_category", "")),
@@ -247,7 +247,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myArtHits->push_back(myhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
             //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
@@ -272,7 +272,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myDRArtHits->push_back(myDRhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
             //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
@@ -295,7 +295,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myPhotonHits->push_back(myPhotonhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
             //            std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
@@ -316,7 +316,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myTrackerHits->push_back(myTrackerhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
             //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
@@ -336,7 +336,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myInteractionHits->push_back(myInteractionhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
             //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;

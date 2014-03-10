@@ -41,7 +41,7 @@
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 #include "art/Framework/Core/EDProducer.h"
 // Get the artg4tk includes:
-#include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
+#include "artg4/actionBase/PrimaryGeneratorActionBase.hh"
 // Geant 4 includes:
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4ParticleGun.hh"
@@ -52,7 +52,7 @@
 namespace artg4tk {
 
     class ParticleGunActionService
-    : public artg4tk::PrimaryGeneratorActionBase {
+    : public artg4::PrimaryGeneratorActionBase {
     public:
         ParticleGunActionService(fhicl::ParameterSet const&,
                 art::ActivityRegistry&);

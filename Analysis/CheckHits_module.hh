@@ -27,7 +27,7 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "art/Framework/Principal/Provenance.h"
 // artg4tk includes:
-#include "artg4tk/services/DetectorHolder_service.hh"
+#include "artg4/services/DetectorHolder_service.hh"
 #include "artg4tk/pluginDetectors/gdml/myCaloArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myDRCaloArtHitData.hh"
 // Root includes.

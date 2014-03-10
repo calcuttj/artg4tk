@@ -1,6 +1,6 @@
 #include "artg4tk/pluginActions/PrimaryEvent/PrimaryEventAction_service.hh"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
+#include "artg4/services/ActionHolder_service.hh"
 #include "artg4tk/DataProducts/GenParticle.hh"
 #include "artg4tk/DataProducts/GenParticleCollection.hh"
 // Geant4  includes
@@ -32,7 +32,7 @@ artg4tk::PrimaryEventActionService::~PrimaryEventActionService() {
 // (Standard Art G4 simulation)
 
 void artg4tk::PrimaryEventActionService::generatePrimaries(G4Event * anEvent) {
-    art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
+    art::ServiceHandle<artg4::ActionHolderService> actionHolder;
     art::Event & e = actionHolder -> getCurrArtEvent();
     typedef std::vector< art::Handle<GenParticleCollection> > HandleVector;
     HandleVector allGens;

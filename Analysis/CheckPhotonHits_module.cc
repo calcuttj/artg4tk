@@ -15,10 +15,10 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #include "artg4tk/Analysis/CheckPhotonHits_module.hh"
-#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
+#include "artg4/pluginActions/writeGdml/gdmlText.hh"
 
 artg4tk::CheckPhotonHits::CheckPhotonHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),
@@ -32,11 +32,11 @@ _hxydet1(0) {
 void artg4tk::CheckPhotonHits::beginRun(const art::Run& thisRun) {
     if (_DumpGDML) {
         std::cout << "******************************Run: " << thisRun.id() << ": looking at Run Header" << std::endl;
-        art::Handle<artg4tk::GdmlText> gdmlTextHandle;
+        art::Handle<artg4::GdmlText> gdmlTextHandle;
         thisRun.getByLabel("artg4tkMain", "writeGdml", gdmlTextHandle);
         std::cout << "gdmlTextHandle:  " << gdmlTextHandle.isValid() << std::endl;
         if (gdmlTextHandle.isValid()) {
-            artg4tk::GdmlText txt = *gdmlTextHandle;
+            artg4::GdmlText txt = *gdmlTextHandle;
             const std::string& stringy = txt.getData();
             art::Provenance const& prov = *gdmlTextHandle.provenance();
             cout << "\nProvenance information for product name: " << prov.branchName() << endl;

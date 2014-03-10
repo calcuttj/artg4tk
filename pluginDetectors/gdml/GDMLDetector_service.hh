@@ -51,12 +51,12 @@
 #include "Geant4/G4VPhysicalVolume.hh"
 
 // Get the base class
-#include "artg4tk/Core/DetectorBase.hh"
+#include "artg4/Core/DetectorBase.hh"
 
 
 namespace artg4tk {
 
-    class GDMLDetectorService : public artg4tk::DetectorBase {
+    class GDMLDetectorService : public artg4::DetectorBase {
     private:
         std::vector<std::pair<std::string,std::string> > DetectorList;
     public:

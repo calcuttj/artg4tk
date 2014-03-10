@@ -8,9 +8,9 @@
 
 #include "artg4tk/pluginActions/general/ExampleGeneralAction_service.hh"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
+#include "artg4/services/ActionHolder_service.hh"
 
-#include "artg4tk/geantInit/ArtG4RunManager.hh"
+#include "artg4/geantInit/ArtG4RunManager.hh"
 
 // G4 includes
 #include "Geant4/globals.hh"
@@ -26,9 +26,9 @@ using std::string;
 artg4tk::ExampleGeneralActionService::
 ExampleGeneralActionService(fhicl::ParameterSet const & p, 
 			       art::ActivityRegistry &)
-  : artg4tk::TrackingActionBase(p.get<string>("name","exampleGeneral")),
-    artg4tk::RunActionBase(p.get<string>("name","exampleGeneral")),
-    artg4tk::SteppingActionBase(p.get<string>("name","exampleGeneral"))
+  : artg4::TrackingActionBase(p.get<string>("name","exampleGeneral")),
+    artg4::RunActionBase(p.get<string>("name","exampleGeneral")),
+    artg4::SteppingActionBase(p.get<string>("name","exampleGeneral"))
 {}
 
 // Destructor
@@ -63,7 +63,7 @@ beginOfRunAction(const G4Run * currRun)
 {
   G4cout << "### Run " << currRun->GetRunID() << " start." << G4endl;
   
-  artg4tk::ArtG4RunManager::GetRunManager()->SetRandomNumberStore(true);
+  artg4::ArtG4RunManager::GetRunManager()->SetRandomNumberStore(true);
 }
 
 // Use UserSteppingAction (called for each step) to suspend any tracks that

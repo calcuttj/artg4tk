@@ -40,12 +40,12 @@
 #include "Geant4/G4VPrimaryGenerator.hh"
 
 // Get the base class
-#include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
+#include "artg4/actionBase/PrimaryGeneratorActionBase.hh"
 
 namespace artg4tk {
 
   class PrimaryEventActionService 
-    : public artg4tk::PrimaryGeneratorActionBase {
+    : public artg4::PrimaryGeneratorActionBase {
   public: 
     PrimaryEventActionService(fhicl::ParameterSet const&, 
 				    art::ActivityRegistry&);
