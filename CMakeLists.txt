@@ -58,6 +58,7 @@ cet_report_compiler_flags()
 
 find_ups_product(cetbuildtools v3_06_02)
 find_ups_product(xerces_c v3_1_1)
+find_ups_product(artg4 v1_00_00)
 find_ups_geant4( v4_9_6_p02 )
 find_ups_product(cpp0x v1_03_23)
 find_ups_product(cppunit v1_12_1)
