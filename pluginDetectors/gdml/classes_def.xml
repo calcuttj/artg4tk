@@ -21,4 +21,9 @@
     <class name="artg4tk::myInteractionArtHitData"/>
     <class name="std::vector< artg4tk::myInteractionArtHitData >"/>
     <class name="art::Wrapper< std::vector< artg4tk::myInteractionArtHitData> >"/>
+    <!-- For Energy contribution by particle -->
+    <class name="std::pair< std::string,double >"/> 
+    <class name="std::map<  std::string,double >"/> 
+    <class name="art::Wrapper< std::map< std::string,double> >"/> 
+    <class name="art::Wrapper< artg4tk::myParticleEContribArtData >"/> 
 </lcgdict>
