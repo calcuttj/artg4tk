@@ -24,13 +24,13 @@
 #include "Geant4/G4Material.hh" 
 #include "Geant4/G4MaterialPropertyVector.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
-
+#include "artg4tk/pluginDetectors/gdml/Cerenkov.hh"
 class G4Step;
 class G4HCofThisEvent;
 //class Cerenkov;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
-    class Cerenkov {
+/*    class Cerenkov {
     public:
         Cerenkov();
         ~Cerenkov();
@@ -41,7 +41,7 @@ namespace artg4tk {
         std::vector<G4PhysicsOrderedFreeVector*> CerenkovAngleIntegrals;
         std::vector<G4MaterialPropertyVector*> RefractionIndeces;
     };
-
+*/
     class DRCalorimeterSD : public G4VSensitiveDetector {
     public:
         DRCalorimeterSD(G4String);

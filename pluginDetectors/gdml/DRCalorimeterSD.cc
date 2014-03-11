@@ -190,7 +190,7 @@ namespace artg4tk {
         calorimeterCollection->insert(newHit);
         return true;
     }
-
+/*
     Cerenkov::Cerenkov() {
         Initialize();
     }
@@ -324,6 +324,7 @@ namespace artg4tk {
                 (dp - ge * BetaInverse * BetaInverse);
         return NumPhotons;
     }
+    */
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
