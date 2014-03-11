@@ -91,7 +91,6 @@ include(ArtMake)
 # Build these directories
 add_subdirectory( pluginActions )
 add_subdirectory( pluginDetectors )
-add_subdirectory( util )
 add_subdirectory( fcl )
 add_subdirectory( ups )
 add_subdirectory( Analysis )
