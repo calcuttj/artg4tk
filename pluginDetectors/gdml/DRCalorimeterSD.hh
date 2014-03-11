@@ -30,18 +30,7 @@ class G4HCofThisEvent;
 //class Cerenkov;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
-/*    class Cerenkov {
-    public:
-        Cerenkov();
-        ~Cerenkov();
-        void Initialize();
-        G4double GetAverageNumberOfPhotons(const G4double, const G4double, const G4String) const;
-    private:
-        std::vector<G4String> CAI;
-        std::vector<G4PhysicsOrderedFreeVector*> CerenkovAngleIntegrals;
-        std::vector<G4MaterialPropertyVector*> RefractionIndeces;
-    };
-*/
+
     class DRCalorimeterSD : public G4VSensitiveDetector {
     public:
         DRCalorimeterSD(G4String);
