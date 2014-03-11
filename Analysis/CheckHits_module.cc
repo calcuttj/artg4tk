@@ -73,7 +73,7 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
             const myCaloArtHitData& hit = *j;
             sumE = sumE + hit.Edep;
         }
-        _hEdep->Fill(sumE/GeV);
+        _hEdep->Fill(sumE / GeV);
     }
     typedef std::vector< art::Handle<myDRCaloArtHitDataCollection> > DRHandleVector;
     DRHandleVector allDRSims;
@@ -90,13 +90,25 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
             sumDRE = sumDRE + hit.Edep;
             sumNCeren = sumNCeren + hit.Nceren;
         }
-        _hDREdep->Fill(sumDRE/GeV);
+        _hDREdep->Fill(sumDRE / GeV);
         _hNCeren->Fill(sumNCeren);
     }
+    typedef std::vector< art::Handle<myParticleEContribArtData> > EdepHandleVector;
+    EdepHandleVector allEdeps;
+    event.getManyByType(allEdeps);
+
+    for (EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
+        const myParticleEContribArtData & Edeps(**i);
+        cout << "Edep collection size:  " << Edeps.size() << endl;
+        for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
+            std::cout << "Particle: " << it->first << "   " << it->second << " % " << std::endl;
+        }
+    }
+
 } // end analyze
 
 void artg4tk::CheckHits::endJob() {
-    cout << " ********************************CheckHits: I am done " << endl;
+
 }// end endJob
 
 using artg4tk::CheckHits;
