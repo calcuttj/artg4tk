@@ -24,13 +24,14 @@
 #include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myInteractionArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myParticleEContribArtData.hh"
+#include "artg4tk/pluginDetectors/gdml/myParticleNCerenContribArtData.hh"
 // Template the wrapper for the vector (typedef okay)
 template class art::Wrapper< artg4tk::myCaloArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myDRCaloArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myPhotonArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myTrackerArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myInteractionArtHitDataCollection >;
-// template class std::pair< const std::string,double >; 
 template class std::pair<  std::string,double >; 
 template class std::map<  std::string,double >;
 template class art::Wrapper< artg4tk::myParticleEContribArtData >;
+//template class art::Wrapper< artg4tk::myParticleNCerenContribArtData >;
