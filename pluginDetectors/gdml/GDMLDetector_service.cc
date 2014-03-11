@@ -39,13 +39,14 @@
 #include "artg4tk/pluginDetectors/gdml/myCaloArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myDRCaloArtHitData.hh"
+#include "artg4tk/pluginDetectors/gdml/myParticleEContribArtData.hh"
 #include "artg4tk/pluginDetectors/gdml/PhotonSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myPhotonArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/InteractionSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myInteractionArtHitData.hh"
-#include "artg4/services/DetectorHolder_service.hh"
+#include "artg4tk/services/DetectorHolder_service.hh"
 // Geant 4 includes:
 #include "Geant4/G4SDManager.hh"
 #include "Geant4/G4VUserDetectorConstruction.hh"
@@ -57,6 +58,7 @@
 #include "Geant4/G4PhysicalVolumeStore.hh"
 // C++ includes
 #include <vector>
+#include <map>
 
 using std::string;
 
@@ -75,7 +77,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p, art::ActivityRegistry &)
-: artg4::DetectorBase(p,
+: artg4tk::DetectorBase(p,
 p.get<string>("name", "GDMLDetectorService"),
 p.get<string>("category", "World"),
 p.get<string>("mother_category", "")),
@@ -92,7 +94,6 @@ artg4tk::GDMLDetectorService::~GDMLDetectorService() {
 std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
     ColorReader* fReader = new ColorReader;
     G4GDMLParser *parser = new G4GDMLParser(fReader);
-    //G4GDMLParser parser;
     parser->Read(gdmlFileName_);
     G4VPhysicalVolume *World = parser->GetWorldVolume();
     std::cout << World->GetTranslation() << std::endl << std::endl;
@@ -196,6 +197,7 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer)
         if ((*cii).second == "DRCalorimeter") {
             std::string identifier = myName() +(*cii).first;
             producer -> produces<myDRCaloArtHitDataCollection>(identifier);
+            producer -> produces<myParticleEContribArtData>(identifier);
         } else if ((*cii).second == "Calorimeter") {
             std::string identifier = myName() +(*cii).first;
             producer -> produces<myCaloArtHitDataCollection>(identifier);
@@ -218,22 +220,19 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
     std::unique_ptr<myPhotonArtHitDataCollection> myPhotonHits(new myPhotonArtHitDataCollection);
     std::unique_ptr<myTrackerArtHitDataCollection> myTrackerHits(new myTrackerArtHitDataCollection);
     std::unique_ptr<myInteractionArtHitDataCollection> myInteractionHits(new myInteractionArtHitDataCollection);
-    // Find the collection ID for the hits
-    G4SDManager* fSDM = G4SDManager::GetSDMpointer();
-    fSDM->ListTree();
+    std::unique_ptr<myParticleEContribArtData> myEdepCon(new myParticleEContribArtData);
     for (int i = 0; i < myHC->GetNumberOfCollections(); i++) {
         G4VHitsCollection* hc = myHC->GetHC(i);
         G4String hcname = hc->GetName();
         std::vector<std::string> y = split(hcname, '_');
         std::string Classname = y[1];
         std::string Volume = y[0];
-        std::cout << "Classname:  " << Classname << std::endl;
+        std::string SDName = y[0]+"_"+y[1];
         if (Classname == "Calorimeter") {
             G4int NbHits = hc->GetSize();
             for (G4int ii = 0; ii < NbHits; ii++) {
                 G4VHit* hit = hc->GetHit(ii);
                 CalorimeterHit* Hit = dynamic_cast<CalorimeterHit*> (hit);
-                //Hit->Print();
                 G4ThreeVector Position = Hit->GetPos();
                 myCaloArtHitData myhit = myCaloArtHitData(
                         Hit->GetEdep(),
@@ -247,17 +246,16 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myArtHits->push_back(myhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
-            //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
             e.put(std::move(myArtHits), dataname);
         } else if (Classname == "DRCalorimeter") {
             G4int NbHits = hc->GetSize();
+            std::cout << "Number of Hits: " << NbHits << std::endl;
             for (G4int ii = 0; ii < NbHits; ii++) {
                 G4VHit* hit = hc->GetHit(ii);
                 DRCalorimeterHit* Hit = dynamic_cast<DRCalorimeterHit*> (hit);
-                //Hit->Print();
                 G4ThreeVector Position = Hit->GetPos();
                 myDRCaloArtHitData myDRhit = myDRCaloArtHitData(
                         Hit->GetEdep(),
@@ -272,17 +270,26 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myDRArtHits->push_back(myDRhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
-            //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
             e.put(std::move(myDRArtHits), dataname);
+            G4SDManager* fSDM = G4SDManager::GetSDMpointer();
+            DRCalorimeterSD* junk = dynamic_cast<DRCalorimeterSD*> (fSDM->FindSensitiveDetector(SDName));
+            std::map<std::string, double> EbyParticle = junk->GetEbyParticle();
+            double TotalE = junk->GetTotalE();
+            myEdepCon -> insert(std::make_pair("ETot", TotalE));
+            for (std::map<std::string, double>::iterator it = EbyParticle.begin(); it != EbyParticle.end(); ++it) {
+                std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalE << " % " << std::endl;
+                myEdepCon -> insert(std::make_pair(it->first, 100.0 * it->second / TotalE));
+            }
+            std::cout << myEdepCon->size() << std::endl;
+            e.put(std::move(myEdepCon), dataname);
         } else if (Classname == "PhotonDetector") {
             G4int NbHits = hc->GetSize();
             for (G4int ii = 0; ii < NbHits; ii++) {
                 G4VHit* hit = hc->GetHit(ii);
                 PhotonHit* Hit = dynamic_cast<PhotonHit*> (hit);
-                //Hit->Print();
                 G4ThreeVector Position = Hit->GetPos();
                 myPhotonArtHitData myPhotonhit = myPhotonArtHitData(
                         Hit->GetProcessID(),
@@ -295,9 +302,8 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myPhotonHits->push_back(myPhotonhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
-            //            std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
             e.put(std::move(myPhotonHits), dataname);
         } else if (Classname == "Tracker") {
@@ -305,7 +311,6 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
             for (G4int ii = 0; ii < NbHits; ii++) {
                 G4VHit* hit = hc->GetHit(ii);
                 TrackerHit* Hit = dynamic_cast<TrackerHit*> (hit);
-                //Hit->Print();
                 G4ThreeVector Position = Hit->GetPos();
                 myTrackerArtHitData myTrackerhit = myTrackerArtHitData(
                         Hit->GetEdep(),
@@ -316,9 +321,8 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myTrackerHits->push_back(myTrackerhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
-            //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
             e.put(std::move(myTrackerHits), dataname);
         } else if (Classname == "Interaction") {
@@ -336,9 +340,8 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myInteractionHits->push_back(myInteractionhit);
             }
             // Now that we have our collection of artized hits, add them to the event
-            art::ServiceHandle<artg4::DetectorHolderService> detectorHolder;
+            art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
-            //std::string dataname = myName() + "-" + Volume + "-" + Classname;
             std::string dataname = myName() + Volume;
             e.put(std::move(myInteractionHits), dataname);
         } else {
