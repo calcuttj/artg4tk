@@ -24,7 +24,7 @@
 #include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myInteractionArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myParticleEContribArtData.hh"
-#include "artg4tk/pluginDetectors/gdml/myParticleNCerenContribArtData.hh"
+//#include "artg4tk/pluginDetectors/gdml/myParticleNCerenContribArtData.hh"
 // Template the wrapper for the vector (typedef okay)
 template class art::Wrapper< artg4tk::myCaloArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myDRCaloArtHitDataCollection >;
