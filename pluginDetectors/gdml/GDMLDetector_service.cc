@@ -40,6 +40,7 @@
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myDRCaloArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myParticleEContribArtData.hh"
+//#include "artg4tk/pluginDetectors/gdml/myParticleNCerenContribArtData.hh"
 #include "artg4tk/pluginDetectors/gdml/PhotonSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myPhotonArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerSD.hh"
@@ -197,7 +198,10 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer)
         if ((*cii).second == "DRCalorimeter") {
             std::string identifier = myName() +(*cii).first;
             producer -> produces<myDRCaloArtHitDataCollection>(identifier);
-            producer -> produces<myParticleEContribArtData>(identifier);
+            std::string EdepID = identifier + "Edep";
+            producer -> produces<myParticleEContribArtData>(EdepID);
+            std::string NCerenID = identifier + "NCeren";
+            producer -> produces<myParticleEContribArtData>(NCerenID);
         } else if ((*cii).second == "Calorimeter") {
             std::string identifier = myName() +(*cii).first;
             producer -> produces<myCaloArtHitDataCollection>(identifier);
@@ -221,13 +225,14 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
     std::unique_ptr<myTrackerArtHitDataCollection> myTrackerHits(new myTrackerArtHitDataCollection);
     std::unique_ptr<myInteractionArtHitDataCollection> myInteractionHits(new myInteractionArtHitDataCollection);
     std::unique_ptr<myParticleEContribArtData> myEdepCon(new myParticleEContribArtData);
+    std::unique_ptr<myParticleEContribArtData> myNCerenCon(new myParticleEContribArtData);
     for (int i = 0; i < myHC->GetNumberOfCollections(); i++) {
         G4VHitsCollection* hc = myHC->GetHC(i);
         G4String hcname = hc->GetName();
         std::vector<std::string> y = split(hcname, '_');
         std::string Classname = y[1];
         std::string Volume = y[0];
-        std::string SDName = y[0]+"_"+y[1];
+        std::string SDName = y[0] + "_" + y[1];
         if (Classname == "Calorimeter") {
             G4int NbHits = hc->GetSize();
             for (G4int ii = 0; ii < NbHits; ii++) {
@@ -284,7 +289,20 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myEdepCon -> insert(std::make_pair(it->first, 100.0 * it->second / TotalE));
             }
             std::cout << myEdepCon->size() << std::endl;
+            dataname = myName() + Volume + "Edep";
             e.put(std::move(myEdepCon), dataname);
+            std::cout << "000000000000000000000000000000000000000000000000000000000000000000000" << std::endl;
+            std::map<std::string, double> NCerenbyParticle = junk->GetNCerenbyParticle();
+            double TotalNCeren = junk->GetTotalNCeren();
+            std::cout << TotalNCeren << std::endl;
+            myNCerenCon-> insert(std::make_pair("NCerenTot", TotalNCeren));
+            for (std::map<std::string, double>::iterator it = NCerenbyParticle.begin(); it != NCerenbyParticle.end(); ++it) {
+                std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalNCeren << " % " << std::endl;
+                myNCerenCon -> insert(std::make_pair(it->first, 100.0 * it->second / TotalNCeren));
+            }
+            std::cout << myNCerenCon->size() << std::endl;
+            dataname = myName() + Volume + "NCeren";
+            e.put(std::move(myNCerenCon), dataname);
         } else if (Classname == "PhotonDetector") {
             G4int NbHits = hc->GetSize();
             for (G4int ii = 0; ii < NbHits; ii++) {
