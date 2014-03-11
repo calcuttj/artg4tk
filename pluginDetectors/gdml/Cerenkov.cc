@@ -9,7 +9,8 @@
 // artg4tk: art based Geant 4 Toolkit
 // 
 //=============================================================================
-// Cerenkov.hh: 
+// Cerenkov.cc: 
+// Class to calculate the number of produced Cerenkov photons.
 // Author: Hans Wenzel (Fermilab)
 // Created on March 11, 2014, 2:35 PM
 //=============================================================================
