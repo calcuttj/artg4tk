@@ -38,11 +38,15 @@ DRCalorimeterSD::DRCalorimeterSD(G4String name)
 DRCalorimeterSD::~DRCalorimeterSD() {
 
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void DRCalorimeterSD::EndOfEvent(G4HCofThisEvent* ) {
+        //for (std::map<std::string,double>::iterator it=EbyParticle.begin(); it!=EbyParticle.end(); ++it) {
+        //    std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalE << " % " << std::endl;
+        //}
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void DRCalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
-
     calorimeterCollection = new DRCalorimeterHitsCollection(SensitiveDetectorName, collectionName[0]);
     if (HCID < 0) {
         G4cout << "artg4tk::DRCalorimeterSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
@@ -50,6 +54,45 @@ void DRCalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
 
     }
     HCE->AddHitsCollection(HCID, calorimeterCollection);
+// 
+    TotalE=0.0;
+    EbyParticle["Fragment"] = 0.0;
+    EbyParticle["He3"] = 0.0;
+    EbyParticle["alpha"] = 0.0;
+    EbyParticle["deuteron"] = 0.0;
+    EbyParticle["triton"] = 0.0;
+    EbyParticle["proton"] = 0.0;
+ //   EbyParticle["p_ev"] = 0.0;
+ //   EbyParticle["p_sp"] = 0.0;
+ //   EbyParticle["p_he"] = 0.0;
+    EbyParticle["neutron"] = 0.0;
+    EbyParticle["e+"] = 0.0;
+    EbyParticle["e-"] = 0.0;
+    EbyParticle["pi+"] = 0.0;
+    EbyParticle["pi-"] = 0.0;
+    EbyParticle["gamma"] = 0.0;
+    EbyParticle["mu+"] = 0.0;
+    EbyParticle["mu-"] = 0.0;
+    EbyParticle["sigma+"] = 0.0;
+    EbyParticle["sigma-"] = 0.0;
+    EbyParticle["kaon+"] = 0.0;
+    EbyParticle["kaon-"] = 0.0;
+    EbyParticle["kaon0L"] = 0.0;
+    EbyParticle["kaon0S"] = 0.0;
+    EbyParticle["lambda"] = 0.0;
+    EbyParticle["xi-"] = 0.0;
+    EbyParticle["anti_neutron"] = 0.0;
+    EbyParticle["anti_sigma-"] = 0.0;
+    EbyParticle["anti_proton"] = 0.0;
+    EbyParticle["anti_xi-"] = 0.0;
+    EbyParticle["anti_omega-"] = 0.0;
+    EbyParticle["anti_sigma+"] = 0.0;
+    EbyParticle["anti_lambda"] = 0.0;
+    EbyParticle["anti_xi0"] = 0.0;
+    EbyParticle["other"] = 0.0; // Just in case 
+    
+    
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -57,6 +100,7 @@ void DRCalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
 G4bool DRCalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     G4double edep = aStep->GetTotalEnergyDeposit() / MeV;
     if (edep == 0.) return false;
+    TotalE=TotalE+edep;
     const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / ns;
     const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
     G4String thematerial = touch->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
@@ -65,7 +109,15 @@ G4bool DRCalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     G4Track* theTrack = aStep->GetTrack();
     const G4double charge = theTrack->GetDefinition()->GetPDGCharge();
     G4String particleType = theTrack->GetDefinition()->GetParticleName();
-
+    G4String fragment = "Fragment";
+    if (theTrack->GetParticleDefinition()->GetParticleType() == "nucleus" && theTrack->GetParticleDefinition()->GetParticleSubType() == "generic") {
+        particleType = fragment;
+    }
+    if (EbyParticle.find(particleType) == EbyParticle.end()) {
+        EbyParticle["other"] = EbyParticle["other"] + edep;
+    } else {
+        EbyParticle[particleType] = EbyParticle[particleType] + edep;
+    }
     G4StepPoint* pPreStepPoint = aStep->GetPreStepPoint();
     G4StepPoint* pPostStepPoint = aStep->GetPostStepPoint();
     G4double beta = 0.5 * (pPreStepPoint ->GetBeta() + pPostStepPoint->GetBeta());
