@@ -17,6 +17,7 @@
 #ifndef DRCalorimeterSD_h
 #define DRCalorimeterSD_h 1
 #include <vector>
+#include <map>
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "Geant4/G4PhysicsOrderedFreeVector.hh"
 #include "Geant4/G4Material.hh" 
@@ -46,12 +47,22 @@ namespace artg4tk {
         ~DRCalorimeterSD();
 
         void Initialize(G4HCofThisEvent*);
+        void EndOfEvent(G4HCofThisEvent*);
         G4bool ProcessHits(G4Step*, G4TouchableHistory*);
 
     private:
         DRCalorimeterHitsCollection* calorimeterCollection;
+         	
+
+
+        std::map<std::string,double> EbyParticle; // Energy deposited by particle type
+        double TotalE;
         G4int HCID;
         Cerenkov* CerenGenerator;
+        
+    public:
+        std::map<std::string,double> GetEbyParticle(){return EbyParticle;};
+        double GetTotalE(){return TotalE;}
     };
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
