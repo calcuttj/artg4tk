@@ -1,19 +1,19 @@
-/* ------------------------------------------------------------------------
-            |\___/|       
-            )     (    
-           =\     /=
-             )===(
-            /     \         CaTS: Calorimeter and Tracker Simulation
-            |     |         Author: Hans Wenzel (Fermilab)
-           /       \
-           \       /
-            \__  _/
-              ( (
-               ) )
-              (_(
--------------------------------------------------------------------------*/
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+//
+//               __        __ __  __  __  
+//   ____ ______/ /_____ _/ // / / /_/ /__
+//  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
+// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
+// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
+//               /____/                  
+//
+// artg4tk: art based Geant 4 Toolkit
+// 
+//=============================================================================
+// PhotonHit.hh: Class representing a optical photon hit
+// to be used by Geant4. For every photon hitting the PhotonSD sensitive detector 
+// position, time and energy is recorded 
+// Author: Hans Wenzel (Fermilab)
+//=============================================================================
 #ifndef PhotonHit_h
 #define PhotonHit_h 1
 
