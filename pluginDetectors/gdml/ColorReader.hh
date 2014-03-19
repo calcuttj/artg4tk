@@ -1,8 +1,17 @@
 //
-// class ColorReader
+//               __        __ __  __  __  
+//   ____ ______/ /_____ _/ // / / /_/ /__
+//  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
+// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
+// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
+//               /____/                  
 //
-// Custom reader for handling "color" tags extensions in GDML.
-// -------------------------------------------------------------------------
+// artg4tk: art based Geant 4 Toolkit
+// 
+//=============================================================================
+// ColorReader.cc Custom reader for handling "color" tags extensions in GDML.
+// Author: Hans Wenzel (Fermilab)
+//=============================================================================
 
 #ifndef ColorReader_H
 #define ColorReader_H 1

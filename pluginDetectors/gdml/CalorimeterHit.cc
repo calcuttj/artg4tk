@@ -1,18 +1,18 @@
-/* ------------------------------------------------------------------------
-            |\___/|       
-            )     (    
-           =\     /=
-             )===(
-            /     \         CaTS: Calorimeter and Tracker Simulation
-            |     |         Author: Hans Wenzel (Fermilab)
-           /       \
-           \       /
-            \__  _/
-              ( (
-               ) )
-              (_(
--------------------------------------------------------------------------*/
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//
+//               __        __ __  __  __  
+//   ____ ______/ /_____ _/ // / / /_/ /__
+//  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
+// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
+// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
+//               /____/                  
+//
+// artg4tk: art based Geant 4 Toolkit
+// 
+//=============================================================================
+// CalorimeterHit.cc: Class representing a simple CalorimeterHit to be used 
+// by Geant4
+// Author: Hans Wenzel (Fermilab)
+//=============================================================================
 #include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
 #include "Geant4/G4ios.hh"
 #include "Geant4/G4UnitsTable.hh"

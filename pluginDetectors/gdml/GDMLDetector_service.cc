@@ -285,22 +285,20 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
             double TotalE = junk->GetTotalE();
             myEdepCon -> insert(std::make_pair("ETot", TotalE));
             for (std::map<std::string, double>::iterator it = EbyParticle.begin(); it != EbyParticle.end(); ++it) {
-                std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalE << " % " << std::endl;
+//                std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalE << " % " << std::endl;
                 myEdepCon -> insert(std::make_pair(it->first, 100.0 * it->second / TotalE));
             }
-            std::cout << myEdepCon->size() << std::endl;
             dataname = myName() + Volume + "Edep";
             e.put(std::move(myEdepCon), dataname);
-            std::cout << "000000000000000000000000000000000000000000000000000000000000000000000" << std::endl;
             std::map<std::string, double> NCerenbyParticle = junk->GetNCerenbyParticle();
             double TotalNCeren = junk->GetTotalNCeren();
-            std::cout << TotalNCeren << std::endl;
+ //           std::cout << TotalNCeren << std::endl;
             myNCerenCon-> insert(std::make_pair("NCerenTot", TotalNCeren));
             for (std::map<std::string, double>::iterator it = NCerenbyParticle.begin(); it != NCerenbyParticle.end(); ++it) {
-                std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalNCeren << " % " << std::endl;
+                //std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalNCeren << " % " << std::endl;
                 myNCerenCon -> insert(std::make_pair(it->first, 100.0 * it->second / TotalNCeren));
             }
-            std::cout << myNCerenCon->size() << std::endl;
+//           std::cout << myNCerenCon->size() << std::endl;
             dataname = myName() + Volume + "NCeren";
             e.put(std::move(myNCerenCon), dataname);
         } else if (Classname == "PhotonDetector") {

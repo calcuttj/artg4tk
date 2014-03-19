@@ -40,15 +40,13 @@
 #include "messagefacility/MessageLogger/MessageLogger.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 #include "art/Framework/Core/EDProducer.h"
-// Get the artg4tk includes:
+// artg4 includes:
 #include "artg4/actionBase/PrimaryGeneratorActionBase.hh"
 // Geant 4 includes:
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4ParticleGun.hh"
 
 
-//#include <vector>
-//#include <string>
 namespace artg4tk {
 
     class myParticleGunActionService
