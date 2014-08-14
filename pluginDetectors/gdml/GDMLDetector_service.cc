@@ -351,6 +351,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
                 myInteractionArtHitData myInteractionhit = myInteractionArtHitData(
                         Hit->GetPname(),
                         Hit->GetPmom(),
+                        Hit->GetEkin(),
                         Hit->GetTheta()
                         );
                 myInteractionHits->push_back(myInteractionhit);
