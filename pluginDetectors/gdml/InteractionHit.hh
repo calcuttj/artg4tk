@@ -27,12 +27,13 @@ namespace artg4tk {
     private:
         G4String pname; // name of secondary particle
         G4double pmom; // momentum of secondary particle
+        G4double Ekin; // kinetic energy of secondary particle
         G4double theta; // theta of secondary particle  
 
     public:
 
         InteractionHit();
-        InteractionHit(G4String n, G4double m, G4double t);
+        InteractionHit(G4String n, G4double m, G4double e,G4double t);
         ~InteractionHit();
         InteractionHit(const InteractionHit&);
         const InteractionHit& operator=(const InteractionHit&);
@@ -51,6 +52,10 @@ namespace artg4tk {
             pmom = de;
         };
 
+        void SetEkin(G4double de) {
+            Ekin = de;
+        };
+
         void SetTheta(G4double de) {
             theta = de;
         };
@@ -61,6 +66,10 @@ namespace artg4tk {
 
         G4double GetPmom() {
             return pmom;
+        };
+
+        G4double GetEkin() {
+            return Ekin;
         };
 
         G4double GetTheta() {

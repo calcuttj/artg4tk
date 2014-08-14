@@ -26,6 +26,7 @@ namespace artg4tk {
     public: // change later
         std::string pname; // name of secondary particle
         double pmom; // momentum of secondary particle
+        double Ekin; // kinetic Energy of secondary particle
         double theta; // theta of secondary particle  
 
         // Default constructor
@@ -37,9 +38,10 @@ namespace artg4tk {
         // Hide the following from Root
 #ifndef __GCCXML__
 
-        myInteractionArtHitData(std::string pn, double pm, double th):
+        myInteractionArtHitData(std::string pn, double pm, double ek, double th) :
         pname(pn),
         pmom(pm),
+        Ekin(ek),
         theta(th) {
         }
 
@@ -49,6 +51,10 @@ namespace artg4tk {
 
         double GetPmom() {
             return pmom;
+        };
+
+        double GetEkin() {
+            return Ekin;
         };
 
         double GetTheta() {

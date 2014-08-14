@@ -29,10 +29,11 @@ artg4tk::InteractionHit::InteractionHit() {
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-artg4tk::InteractionHit::InteractionHit(G4String pn, G4double p, G4double t) {
+artg4tk::InteractionHit::InteractionHit(G4String pn, G4double p, G4double e,G4double t) {
     pname = pn; // name of secondary particle
-    pmom = p; // momentum of secondary particle
-    theta = t; // theta of secondary particle 
+    pmom = p;   // momentum of secondary particle
+    Ekin = e;   // kinetic energy of secondary particle
+    theta = t;  // theta of secondary particle 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -46,6 +47,7 @@ artg4tk::InteractionHit::InteractionHit(const InteractionHit& right)
 
     pname = right.pname;
     pmom = right.pmom;
+    Ekin = right.Ekin;
     theta = right.theta;
 }
 
@@ -54,6 +56,7 @@ artg4tk::InteractionHit::InteractionHit(const InteractionHit& right)
 const artg4tk::InteractionHit& artg4tk::InteractionHit::operator=(const artg4tk::InteractionHit& right) {
     pname = right.pname;
     pmom = right.pmom;
+    Ekin = right.Ekin;
     theta = right.theta;
     return *this;
 }
@@ -70,6 +73,7 @@ void artg4tk::InteractionHit::Print() {
 
     G4cout << "Particle name : " << pname
             << "  momentum [GeV]: " << pmom
+            << "kinetic Energy [GeV]"<<Ekin
             << "  theta: " << theta
             << G4endl;
 
