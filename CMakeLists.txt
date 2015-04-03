@@ -78,8 +78,7 @@ add_subdirectory( services )
 add_subdirectory( material )
 add_subdirectory( pluginActions )
 add_subdirectory( util )
-add_subdirectory( fcl )
-add_subdirectory( ups )
+
 
 
 
