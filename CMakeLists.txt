@@ -1,5 +1,5 @@
 # ======================================================================
-#  artg4 main build file
+#  artg4tk main build file
 #
 #  . mrb slp   # Run if you have local products to set up
 #  . mrb s     # Needed to set up local development products
