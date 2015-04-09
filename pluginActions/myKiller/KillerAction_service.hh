@@ -41,12 +41,12 @@
 
 // Get the base class
 
-#include "artg4/actionBase/StackingActionBase.hh"
+#include "artg4tk/actionBase/StackingActionBase.hh"
 
 namespace artg4tk {
 
     class KillerActionService
-    : public artg4::StackingActionBase {
+    : public artg4tk::StackingActionBase {
     public:
         KillerActionService(fhicl::ParameterSet const&,
                 art::ActivityRegistry&);
