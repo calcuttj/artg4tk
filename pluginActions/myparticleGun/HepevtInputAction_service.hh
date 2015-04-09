@@ -39,7 +39,7 @@
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 #include "art/Framework/Core/EDProducer.h"
 // Get the artg4tk base class
-#include "artg4/actionBase/PrimaryGeneratorActionBase.hh"
+#include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
 // Geant 4 includes:
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4VPrimaryGenerator.hh"
