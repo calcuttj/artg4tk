@@ -51,7 +51,7 @@
 #include "Geant4/G4VPhysicalVolume.hh"
 
 // Get the base class
-#include "artg4/Core/DetectorBase.hh"
+#include "artg4tk/Core/DetectorBase.hh"
 
 
 namespace artg4tk {
