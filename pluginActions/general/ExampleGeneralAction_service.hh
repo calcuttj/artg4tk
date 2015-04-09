@@ -32,9 +32,9 @@
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 
 // Get the base class
-#include "artg4/actionBase/TrackingActionBase.hh"
-#include "artg4/actionBase/RunActionBase.hh"
-#include "artg4/actionBase/SteppingActionBase.hh"
+#include "artg4tk/actionBase/TrackingActionBase.hh"
+#include "artg4tk/actionBase/RunActionBase.hh"
+#include "artg4tk/actionBase/SteppingActionBase.hh"
 
 // Other includes
 #include "Geant4/G4Event.hh"
@@ -44,9 +44,9 @@
 namespace artg4tk {
 
   class ExampleGeneralActionService 
-    : public artg4::TrackingActionBase,
-      public artg4::RunActionBase,
-      public artg4::SteppingActionBase
+    : public artg4tk::TrackingActionBase,
+      public artg4tk::RunActionBase,
+      public artg4tk::SteppingActionBase
   {
   public: 
     ExampleGeneralActionService(fhicl::ParameterSet const&, 
