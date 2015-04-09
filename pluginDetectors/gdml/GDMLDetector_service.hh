@@ -56,7 +56,7 @@
 
 namespace artg4tk {
 
-    class GDMLDetectorService : public artg4::DetectorBase {
+    class GDMLDetectorService : public artg4tk::DetectorBase {
     private:
         std::vector<std::pair<std::string,std::string> > DetectorList;
     public:
