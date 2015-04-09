@@ -32,7 +32,7 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 // artg4tk includes:
 #include "artg4tk/pluginActions/myparticleGun/HepevtInputAction_service.hh"
-#include "artg4/services/ActionHolder_service.hh"
+#include "artg4tk/services/ActionHolder_service.hh"
 // Geant 4  includes:
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4GeneralParticleSource.hh"
