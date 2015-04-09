@@ -30,7 +30,7 @@
 
 #include "artg4tk/pluginActions/myKiller/KillerAction_service.hh"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4/services/ActionHolder_service.hh"
+#include "artg4tk/services/ActionHolder_service.hh"
 
 // G4 includes
 #include "Geant4/globals.hh"
