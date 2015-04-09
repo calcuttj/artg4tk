@@ -33,7 +33,7 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "art/Framework/Principal/Provenance.h"
 // artg4tk includes:
-#include "artg4/services/DetectorHolder_service.hh"
+#include "artg4tk/services/DetectorHolder_service.hh"
 #include "artg4tk/DataProducts/GenParticle.hh"
 #include "artg4tk/DataProducts/GenParticleCollection.hh"
 // Root includes.

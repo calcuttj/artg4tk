@@ -18,7 +18,7 @@
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
-#include "artg4/pluginActions/writeGdml/gdmlText.hh"
+#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
 
 artg4tk::CheckPhotonHits::CheckPhotonHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),
