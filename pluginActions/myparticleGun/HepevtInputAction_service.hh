@@ -47,7 +47,7 @@
 namespace artg4tk {
 
     class HepevtInputActionService
-    : public artg4::PrimaryGeneratorActionBase {
+    : public artg4tk::PrimaryGeneratorActionBase {
     public:
         HepevtInputActionService(fhicl::ParameterSet const&,
                 art::ActivityRegistry&);
