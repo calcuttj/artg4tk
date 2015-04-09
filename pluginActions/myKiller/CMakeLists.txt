@@ -5,8 +5,8 @@ art_make(SERVICE_LIBRARIES
   "${XERCESCLIB}"
    ${ART_PERSISTENCY_CLHEPDICTIONARIES_DICT}
    ${MF_MESSAGELOGGER}
-  "artg4_services_ActionHolder_service"
-  "artg4_actionBase"
+  "artg4tk_services_ActionHolder_service"
+  "artg4tk_actionBase"
   "art_Utilities"
   "${G4_LIB_LIST}"
  )
