@@ -6,7 +6,7 @@
 #include "fhiclcpp/ParameterSet.h"
 #include "art/Framework/Services/Registry/ActivityRegistry.h"
 
-#include "artg4/services/PhysicsListServiceBase.hh"
+#include "artg4tk/services/PhysicsListServiceBase.hh"
 
 class G4VUserPhysicsList;
 
@@ -14,7 +14,7 @@ namespace artg4tk {
   
   //  class N02PhysicsList;
 
-  class PhysicsListService : public artg4::PhysicsListServiceBase {
+  class PhysicsListService : public artg4tk::PhysicsListServiceBase {
     
   public:
     PhysicsListService(fhicl::ParameterSet const &, art::ActivityRegistry &);
