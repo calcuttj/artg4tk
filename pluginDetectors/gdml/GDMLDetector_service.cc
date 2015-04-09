@@ -47,7 +47,7 @@
 #include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/InteractionSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myInteractionArtHitData.hh"
-//#include "artg4/services/DetectorHolder_service.hh"
+//#include "artg4tk/services/DetectorHolder_service.hh"
 // Geant 4 includes:
 #include "Geant4/G4SDManager.hh"
 #include "Geant4/G4VUserDetectorConstruction.hh"
