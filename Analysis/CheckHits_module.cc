@@ -16,7 +16,7 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #include "artg4tk/Analysis/CheckHits_module.hh"
-#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
+//#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
@@ -32,7 +32,8 @@ _hNCeren(0) {
 }
 
 void artg4tk::CheckHits::beginRun(const art::Run& thisRun) {
-    if (_DumpGDML) {
+  /* 
+   if (_DumpGDML) {
         std::cout << "******************************Run: " << thisRun.id() << ": looking at Run Header" << std::endl;
         art::Handle<artg4::GdmlText> gdmlTextHandle;
         thisRun.getByLabel("artg4tkMain", "writeGdml", gdmlTextHandle);
@@ -46,6 +47,7 @@ void artg4tk::CheckHits::beginRun(const art::Run& thisRun) {
             std::cout << stringy << std::endl;
         }
     }
+*/
 }
 
 void artg4tk::CheckHits::beginJob() {

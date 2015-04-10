@@ -47,8 +47,6 @@ services: {
     }   
 
 
-    // Action(s) for the simulation
-    ClockAction: {}
 
 //    writeGdml: {
 //      name: "writeGdml"

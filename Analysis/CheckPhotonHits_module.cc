@@ -18,7 +18,7 @@
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
-#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
+//#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
 
 artg4tk::CheckPhotonHits::CheckPhotonHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),
@@ -30,6 +30,7 @@ _hxydet1(0) {
 }
 
 void artg4tk::CheckPhotonHits::beginRun(const art::Run& thisRun) {
+  /*
     if (_DumpGDML) {
         std::cout << "******************************Run: " << thisRun.id() << ": looking at Run Header" << std::endl;
         art::Handle<artg4::GdmlText> gdmlTextHandle;
@@ -44,6 +45,7 @@ void artg4tk::CheckPhotonHits::beginRun(const art::Run& thisRun) {
             std::cout << stringy << std::endl;
         }
     }
+  */
 }
 
 void artg4tk::CheckPhotonHits::beginJob() {
