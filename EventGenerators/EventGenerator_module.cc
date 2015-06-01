@@ -17,6 +17,8 @@
 #include <cmath>
 #include <memory>
 
+#include <vector>
+
 namespace artg4tk {
 
   class EventGenerator : public art::EDProducer {
@@ -32,6 +34,10 @@ namespace artg4tk {
     //    // Particle data table.
     //PDT const& _pdt;
     int _nparticles;
+    int               fPDG;
+    double            fMass;
+    CLHEP::Hep3Vector fMomentum;
+    CLHEP::Hep3Vector fVertex;
 
     // Particle masses.
     //    double _mpi;
@@ -44,7 +50,10 @@ namespace artg4tk {
 }
 
 artg4tk::EventGenerator::EventGenerator( fhicl::ParameterSet const& pset ):
-  _nparticles(pset.get<int>("nparticles",1))
+  _nparticles(pset.get<int>("nparticles",1)),
+  fPDG(pset.get<int>("pdgcode",2212)),
+  fMass(pset.get<double>("mass",0.938272)), // mass in GeV !!!
+  fVertex(CLHEP::Hep3Vector(0.,0.,0.))
 
 /*
   _pdt(( art::ServiceHandle<Conditions>()->pdt())),
@@ -60,7 +69,14 @@ artg4tk::EventGenerator::EventGenerator( fhicl::ParameterSet const& pset ):
   _unitSphere( _engine)
 */
 {
+  
+  std::vector<double> mom = pset.get<std::vector<double> >("momentum");
+  fMomentum.setX( mom[0] ); //*GeV;
+  fMomentum.setY( mom[1] ); //*GeV;
+  fMomentum.setZ( mom[2] ); //*GeV;
+  
   produces<GenParticleCollection>();
+
 }
 
 void artg4tk::EventGenerator::produce( art::Event& event ){
@@ -73,14 +89,19 @@ void artg4tk::EventGenerator::produce( art::Event& event ){
   art::ProductID gensID(getProductID<GenParticleCollection>(event));
 
   // All particles will be produced at the origin.
-  static CLHEP::Hep3Vector origin(0.,0.,0);
-  CLHEP::Hep3Vector mom(0.,0.,10000.);
-  CLHEP::HepLorentzVector lmom( mom, 1400.14);
+//  static CLHEP::Hep3Vector origin(0.,0.,0);
+//  CLHEP::Hep3Vector mom(0.,0.,10000.);
+//  CLHEP::HepLorentzVector lmom( mom, 1400.14);
 
-
+  if ( fPDG == PDGCode::invalid ) return;
 
   // Put the phi into the output collection; it is a primary particle that has no parent.
-  gens->push_back ( GenParticle(  PDGCode::proton, art::Ptr<GenParticle>(), origin, lmom, GenParticle::alive));
+  // gens->push_back ( GenParticle(  PDGCode::proton, art::Ptr<GenParticle>(), origin, lmom, GenParticle::alive));
+  
+  double e = std::sqrt( fMomentum.mag2() + fMass*fMass ); 
+  CLHEP::HepLorentzVector mom4( fMomentum, e ); 
+  PDGCode::type code = static_cast<PDGCode::type>(fPDG);
+  gens->push_back ( GenParticle(  code, art::Ptr<GenParticle>(), fVertex, mom4, GenParticle::alive) );
 
   // Put the output collection into the event.
   event.put(std::move(gens));

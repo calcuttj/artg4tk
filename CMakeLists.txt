@@ -53,7 +53,7 @@ cet_report_compiler_flags()
 # These are needed for Art stuff
 
 find_ups_product(cetbuildtools v4_03_02)
-find_ups_geant4( v4_9_6_p03 )
+find_ups_geant4( v4_9_6 )
 find_ups_product(xerces_c v3_1_1)
 find_ups_product(art v1_12_02)
 find_ups_product(fhiclcpp v3_01_02)
@@ -81,6 +81,10 @@ add_subdirectory( DataProducts )
 add_subdirectory( EventGenerators )
 add_subdirectory( Analysis )
 add_subdirectory( util )
+#
+# UNcomment to activate G4 model param study tools
+#
+# ---> add_subdirectory( G4PhysModelParamStudy )
 
 
 
