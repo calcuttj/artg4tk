@@ -52,12 +52,12 @@ cet_report_compiler_flags()
 # Locate some UPS areas (the versions are just minimum required) and setup include paths
 # These are needed for Art stuff
 
-find_ups_product(cetbuildtools v4_03_02)
-find_ups_geant4( v4_9_6 )
-find_ups_product(xerces_c v3_1_1)
-find_ups_product(art v1_12_02)
-find_ups_product(fhiclcpp v3_01_02)
-find_ups_product(messagefacility v1_11_15)
+find_ups_product(cetbuildtools v4__12_05)
+find_ups_geant4(v4_10_1_p02)
+find_ups_product(xerces_c v3_1_1c)
+find_ups_product(art v1_15_01)
+find_ups_product(fhiclcpp v3_06_01)
+find_ups_product(messagefacility v1_14_07)
 
 # Enable visualization using OpenGL in x windows
 add_definitions(-DG4_STORE_TRAJECTORY -DG4VERBOSE -DG4UI_USE -DG4VIS_USE -DG4UI_USE_TCSH -DG4INTY_USE_XT -DG4VIS_USE_OPENGLX -DG4VIS_USE_OPENGL)
