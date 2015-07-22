@@ -102,8 +102,8 @@ G4bool artg4tk::InteractionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
         for (G4int i = 0; i < NSec; i++) {
             sec = fFirstInter->GetSecondary(i)->GetDynamicParticle();
             const G4String& pname = sec->GetDefinition()->GetParticleName();
-            G4double pmom = (sec->GetTotalMomentum()) / MeV;
-            G4double Ekin = (sec->GetKineticEnergy()) / MeV;
+            G4double pmom = (sec->GetTotalMomentum()) / CLHEP::MeV;
+            G4double Ekin = (sec->GetKineticEnergy()) / CLHEP::MeV;
             G4double theta = (sec->GetMomentum()).theta();
             InteractionHit* newHit = new InteractionHit(pname, pmom, Ekin, theta);
             interactionCollection->insert(newHit);
