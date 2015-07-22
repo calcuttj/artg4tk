@@ -122,10 +122,10 @@ namespace artg4tk {
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
     G4bool DRCalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
-        G4double edep = aStep->GetTotalEnergyDeposit() / MeV;
+      G4double edep = aStep->GetTotalEnergyDeposit() / CLHEP::MeV;
         if (edep == 0.) return false;
         TotalE = TotalE + edep;
-        const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / ns;
+        const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / CLHEP::ns;
         const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
         G4String thematerial = touch->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
         //const G4ThreeVector cellpos = touch->GetTranslation();
