@@ -53,9 +53,9 @@ void artg4tk::CalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
-    G4double edep = aStep->GetTotalEnergyDeposit() / MeV;
+    G4double edep = aStep->GetTotalEnergyDeposit() / CLHEP::MeV;
     if (edep == 0.) return false;
-    const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / ns;
+    const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / CLHEP::ns;
     const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
     const G4ThreeVector cellpos = touch->GetTranslation();
     G4Track* theTrack = aStep->GetTrack();
