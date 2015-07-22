@@ -34,7 +34,7 @@
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 // artg4tk includes: 
 #include "artg4tk/pluginDetectors/gdml/GDMLDetector_service.hh"
-#include "artg4tk/pluginDetectors/gdml/ColorReader.hh"
+//#include "artg4tk/pluginDetectors/gdml/ColorReader.hh"
 #include "artg4tk/pluginDetectors/gdml/CalorimeterSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myCaloArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterSD.hh"
