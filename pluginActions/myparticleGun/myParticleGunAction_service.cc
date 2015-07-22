@@ -76,10 +76,10 @@ void artg4tk::myParticleGunActionService::initialize() {
     fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ParticleMomentumDirection_[0],
             ParticleMomentumDirection_[1],
             ParticleMomentumDirection_[2]));
-    fParticleGun->SetParticleEnergy(ParticleEnergy_ * GeV);
-    fParticleGun->SetParticlePosition(G4ThreeVector(ParticlePosition_[0] * cm,
-            ParticlePosition_[1] * cm,
-            ParticlePosition_[2] * cm));
+    fParticleGun->SetParticleEnergy(ParticleEnergy_ * CLHEP::GeV);
+    fParticleGun->SetParticlePosition(G4ThreeVector(ParticlePosition_[0] * CLHEP::cm,
+            ParticlePosition_[1] * CLHEP::cm,
+            ParticlePosition_[2] * CLHEP::cm));
     particleGun_ = fParticleGun;
 }
 
