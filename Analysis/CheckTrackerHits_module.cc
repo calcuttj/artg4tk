@@ -62,7 +62,7 @@ void artg4tk::CheckTrackerHits::analyze(const art::Event& event) {
 	    _hzEdep ->Fill(0.1*hit.zpos+300.,hit.Edep);
             sumE = sumE + hit.Edep;
         }
-        _hEdep->Fill(sumE / GeV);
+        _hEdep->Fill(sumE / CLHEP::GeV);
     }
 
 

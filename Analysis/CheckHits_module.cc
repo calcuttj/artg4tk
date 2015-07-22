@@ -75,7 +75,7 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
             const myCaloArtHitData& hit = *j;
             sumE = sumE + hit.Edep;
         }
-        _hEdep->Fill(sumE / GeV);
+        _hEdep->Fill(sumE / CLHEP::GeV);
     }
     typedef std::vector< art::Handle<myDRCaloArtHitDataCollection> > DRHandleVector;
     DRHandleVector allDRSims;
@@ -92,7 +92,7 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
             sumDRE = sumDRE + hit.Edep;
             sumNCeren = sumNCeren + hit.Nceren;
         }
-        _hDREdep->Fill(sumDRE / GeV);
+        _hDREdep->Fill(sumDRE / CLHEP::GeV);
         _hNCeren->Fill(sumNCeren);
     }
     typedef std::vector< art::Handle<myParticleEContribArtData> > EdepHandleVector;

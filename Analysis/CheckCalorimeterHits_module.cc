@@ -82,7 +82,7 @@ void artg4tk::CheckCalorimeterHits::analyze(const art::Event& event) {
 			  hit.zpos,
 			  hit.time);
         }
-        _hEdep->Fill(sumE / GeV);
+        _hEdep->Fill(sumE / CLHEP::GeV);
     }
 } // end analyze
 

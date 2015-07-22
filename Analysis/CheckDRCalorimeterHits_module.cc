@@ -61,7 +61,7 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
             sumDRE = sumDRE + hit.Edep;
             sumNCeren = sumNCeren + hit.Nceren;
         }
-        _hDREdep->Fill(sumDRE / GeV);
+        _hDREdep->Fill(sumDRE / CLHEP::GeV);
         _hNCeren->Fill(sumNCeren);
     }
     typedef std::vector< art::Handle<myParticleEContribArtData> > EdepHandleVector;
