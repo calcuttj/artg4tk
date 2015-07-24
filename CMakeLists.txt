@@ -86,6 +86,15 @@ add_subdirectory( util )
 #
 # ---> add_subdirectory( G4PhysModelParamStudy )
 
+# ups - table and config files
+
+add_subdirectory(ups)
+
+
+# packaging utility
+
+include(UseCPack)
+
 
 
 
