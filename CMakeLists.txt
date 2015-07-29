@@ -82,7 +82,7 @@ add_subdirectory( EventGenerators )
 add_subdirectory( Analysis )
 add_subdirectory( util )
 add_subdirectory( fcl )
-add_subdirectory( ups )
+#add_subdirectory( ups )
 
 #
 # UNcomment to activate G4 model param study tools
