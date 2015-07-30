@@ -26,7 +26,7 @@ defaultqual e7
 incdir	product_dir	include
 libdir	fq_dir		lib
 bindir	fq_dir		bin
-flcdir  product_dir     fcl
+fcldir  product_dir     fcl
 
 # With "product  version" table below, we now define depdendencies
 # Add the dependent product and version
