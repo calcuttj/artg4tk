@@ -2,11 +2,11 @@
 #  artg4tk main build file
 #
 #  . mrb slp   # Run if you have local products to set up
-#  . mrb s     # Needed to set up local development products
+#  . mrbsetenv     # Needed to set up local development products
 #  mrb b       # Build
 #  mrb t       # Test (if applicable)
 #  mrb i       # Install to local products
-#  gm2 -c <fhicl_file>  # Run!
+#  art -c <fhicl_file>  # Run!
 #
 # ======================================================================
 
@@ -30,7 +30,7 @@ cet_cmake_env()
 
 set_install_root()
 
-# g-2 wants the product name in the library name
+# artg4tk wants the product name in the library name
 set (ART_MAKE_PREPEND_PRODUCT_NAME TRUE)
 
 if ( ${APPLE} )
@@ -82,6 +82,7 @@ add_subdirectory( EventGenerators )
 add_subdirectory( Analysis )
 add_subdirectory( util )
 add_subdirectory( fcl )
+add_subdirectory( gdml )
 #add_subdirectory( ups )
 
 #
