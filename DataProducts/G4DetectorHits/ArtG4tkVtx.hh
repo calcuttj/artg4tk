@@ -5,7 +5,7 @@
 //#include "CLHEP/Vector/LorentzVector.h"
 // #include "CLHEP/Vector/ThreeVector.h"
 
-#include "artg4tk/G4PhysModelParamStudy/DataProd/ArtG4tkParticle.hh"
+#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkParticle.hh"
 
 #include "art/Persistency/Common/Ptr.h"
 #include "art/Persistency/Common/PtrVector.h"

@@ -28,8 +28,8 @@
 #include "Geant4/G4RunManager.hh"
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ModelParamStudyStepping.hh"
 
-#include "artg4tk/DataProducts/GenParticle.hh"
-#include "artg4tk/DataProducts/GenParticleCollection.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
 namespace artg4tk {
 
@@ -195,11 +195,11 @@ void artg4tk::G4ToyAnalyzer::analyze( const art::Event& e )
       // G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( i->position()*mm, 0. ); // 4th arg is time(ns)
       //
       CLHEP::Hep3Vector pos(0.,0.,-1300.); // in mm !!!
-      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( pos*mm, 0. ); // 4th arg is time(ns)
+      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( pos*CLHEP::mm, 0. ); // 4th arg is time(ns)
       const CLHEP::HepLorentzVector& mom = i->momentum();
       G4PrimaryParticle* g4prim = new G4PrimaryParticle( g4pd, 
-                                                         mom.x()*GeV, mom.y()*GeV, mom.z()*GeV, 
-							 mom.e()*GeV );        
+                                                         mom.x()*CLHEP::GeV, mom.y()*CLHEP::GeV, mom.z()*CLHEP::GeV, 
+							 mom.e()*CLHEP::GeV );        
       g4vtx->SetPrimary(g4prim);
       g4evt->AddPrimaryVertex(g4vtx);
    }

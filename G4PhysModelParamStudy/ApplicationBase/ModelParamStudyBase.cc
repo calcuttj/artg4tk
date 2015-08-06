@@ -19,8 +19,8 @@
 #include "artg4tk/G4PhysModelParamStudy/G4Services/G4ModelParamStudy_service.hh"
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ModelParamStudyStepping.hh"
 
-#include "artg4tk/DataProducts/GenParticle.hh"
-#include "artg4tk/DataProducts/GenParticleCollection.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
 artg4tk::ModelParamStudyBase::ModelParamStudyBase( const fhicl::ParameterSet& p )
   : art::EDAnalyzer(p)
@@ -125,11 +125,11 @@ void artg4tk::ModelParamStudyBase::analyze( const art::Event& e )
       // This needs to be configurable !!!
       //
       CLHEP::Hep3Vector pos(0.,0.,-1300.); // in mm !!!
-      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( pos*mm, 0. ); // 4th arg is time(ns)
+      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( pos*CLHEP::mm, 0. ); // 4th arg is time(ns)
       const CLHEP::HepLorentzVector& mom = i->momentum();
       G4PrimaryParticle* g4prim = new G4PrimaryParticle( g4pd, 
-                                                         mom.x()*GeV, mom.y()*GeV, mom.z()*GeV, 
-							 mom.e()*GeV );        
+                                                         mom.x()*CLHEP::GeV, mom.y()*CLHEP::GeV, mom.z()*CLHEP::GeV, 
+							 mom.e()*CLHEP::GeV );        
       g4vtx->SetPrimary(g4prim);
       fCurrentG4Event->AddPrimaryVertex(g4vtx);
    }

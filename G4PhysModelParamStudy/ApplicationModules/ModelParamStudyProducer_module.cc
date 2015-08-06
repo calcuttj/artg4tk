@@ -1,11 +1,10 @@
 
-#include "artg4tk/G4PhysModelParamStudy/DataProd/ArtG4tkVtx.hh"
-
-
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
+// #include "art/Framework/Services/Optional/RandomNumberGenerator.h"
+#include "messagefacility/MessageLogger/MessageLogger.h" 
 
 #include <iostream>
 #include <cmath>
@@ -16,16 +15,24 @@
 // G4 (or derived) includes
 //
 #include "Geant4/G4RunManager.hh"
-
+#include "Geant4/G4SDManager.hh"
+#include "Geant4/G4GeometryManager.hh"
 #include "Geant4/G4StateManager.hh"
 #include "Geant4/G4UImanager.hh"
 #include "Geant4/G4CascadeParameters.hh"
-
-#include "artg4tk/G4PhysModelParamStudy/G4Services/G4ModelParamStudy_service.hh"
-#include "artg4tk/G4PhysModelParamStudy/G4Components/ModelParamStudyStepping.hh"
-
-#include "artg4tk/DataProducts/GenParticle.hh"
-#include "artg4tk/DataProducts/GenParticleCollection.hh"
+#include "Geant4/FTFP_BERT.hh"
+#include "Geant4/QGSP_FTFP_BERT.hh"
+#include "Geant4/QGSP_BERT.hh"
+//
+#include "artg4tk/G4PhysModelParamStudy/G4Components/ModelParamStudyGeom.hh"
+// --> old inc --> #include "artg4tk/G4PhysModelParamStudy/G4Components/HadInteractionSD.hh"
+#include "artg4tk/pluginDetectors/gdml/HadInteractionSD.hh"
+//
+// --> old inc --> #include "artg4tk/G4PhysModelParamStudy/DataProd/ArtG4tkVtx.hh"
+#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"
+//
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
 namespace artg4tk {
 
@@ -49,22 +56,22 @@ namespace artg4tk {
      void fillBertiniDefaults();
      void printDefaults();
      void restoreDefaults();
-     void modifyParameters();
+     void modifyParameters( bool changestate=false );
+     
+     void clear();
 
     // data members
     
-    // G4 (or derived) things 
-    //
-    G4UImanager*             fUI;
-    // ModelParamStudyRunManager*     fRMPtr;
-    G4RunManager*            fRMPtr;
-    ModelParamStudyStepping* fSteppingPtr;
-    G4Event*                 fCurrentG4Event;
-
     // Diagnostics level (verbosity)
     //
     int         fVerbosity;
     
+    // G4 (or derived) things 
+    //
+    // ModelParamStudyRunManager*     fRM;
+    G4RunManager*            fRM;
+    //
+    G4UImanager*             fUI;
     // data members specifically to study parameters modification
     //
     bool                           fDefaultPhysics;
@@ -75,29 +82,134 @@ namespace artg4tk {
     //            of available commands paired with D(efault)
     //            BUT !!! Bertini params are of different types (double, bool, etc.)
     //
-    std::vector<std::string>       fCommands2ModifyParam;
-    std::vector<std::string>       fDefaultBertiniParam;
-
+    std::vector<std::string>       fCommands2ModifyBertini;
+    std::vector<std::string>       fDefaultBertini;
+    //
+    std::string              fPhysList;
+    //
+    HadInteractionSD*        f1stHadIntSD;
+    G4Event*                 fCurrentG4Event;
+    //
+    long                     fRandomSeed;
+    
+    // diagnostics printouts
+    //
+    mf::LogInfo fLogInfo;
+    
 
   };
 
 }
 
 artg4tk::ModelParamStudyProducer::ModelParamStudyProducer( const fhicl::ParameterSet& p )
+   : fLogInfo("ModelParamStudyProducer")
 {
     
-   fUI              = G4UImanager::GetUIpointer();
-   fRMPtr           = 0;
-   fSteppingPtr     = 0;
-   fCurrentG4Event  = 0;
    fVerbosity       = p.get<int>("Verbosity",0);
+
+   // Check the state
+   //
+   if(!G4StateManager::GetStateManager()->SetNewState(G4State_PreInit))
+      fLogInfo << "G4StateManager PROBLEM! "; //  << G4endl;
+
+   // Get the run manager and check if it's been initialized in any way
+   // NOTE-1: attempt to call the ctor more than once will result
+   //         in a fatal throw on the G4 side (in the ctor itself)
+   // NOTE-2: attempt to call G4RunManager::GetRunManager() BEFORE
+   //         it's initialized (via new) will result in return of
+   //         a NULL pointer !
+   //
+   fRM              = new G4RunManager();
+
+   // CRITICAL !!!
+   // Model(s) (or at least Bertini) config/params should be in BEFORE
+   // Physics List is instantiated/initialized !!!
+   //
+   fUI              = G4UImanager::GetUIpointer();
+   // FIXME !!!
+   // Need to put in a check: if list of mod.commands is NOT empty, it's NOT a "default" !!!   
    fDefaultPhysics  = p.get<bool>("DefaultPhysics",true);
-   fCommands2ModifyParam = p.get<std::vector<std::string> >("ModelParamCommands");
-   
+   fCommands2ModifyBertini = p.get<std::vector<std::string> >("BertiniConfig");
    fillBertiniDefaults();
+   if ( !fDefaultPhysics )
+   {
+      modifyParameters();
+      std::cout << "RADIUS_SCALE " << G4CascadeParameters::radiusScale() << std::endl;
+      std::cout << "XSEC_SCALE " << G4CascadeParameters::xsecScale() << std::endl;
+   }
+   //
+   // Bertini allows a verbosity switch which has nothing to do with the model params/configuration
+   // but it is useful for some debugging purposes, so we will pass in the app's general verbosity.
+   //
+   // NOTE: We will also do similar to other models when we get to it
+   //
+   std::ostringstream cmd;
+   cmd << "/process/had/cascade/verbose " << fVerbosity;
+//   std::cout << " cmd = " << cmd.str() << std::endl;
+   fUI->ApplyCommand( cmd.str() );
+//   std::cout << " Bertini verbosity " << G4CascadeParameters::verbose() << std::endl;
+//   cmd.str( "" );
+//   cmd.clear();
 
+   // Setup phys.lists
+   //
+   fPhysList        = p.get<std::string>("PhysicsList","QGSP_FTFP_BERT");
+   // Get the physics list and pass it to Geant and initialize the list if necessary
+   //
+   // FIXME !!!
+   // For some reason, it works with artg4tk_Main but not here...
+   // ... perhaps it's because of the (random?) order of instantiating Services ?
+   //
+   // art::ServiceHandle<PhysicsListHolderService> physicsListHolder;
+   // fRunManager->SetUserInitialization( physicsListHolder->makePhysicsList() );
+   //
+   if ( fPhysList == "FTFP_BERT" )
+   {
+     fRM->SetUserInitialization( new FTFP_BERT() );
+   }
+   else if ( fPhysList == "QGSP_BERT" )
+   {
+     fRM->SetUserInitialization( new QGSP_BERT() );
+   }
+   else if ( fPhysList == "QGSP_FTFP_BERT" )
+   {
+     fRM->SetUserInitialization( new QGSP_FTFP_BERT() );
+   }
+   
+   // Declare the detector construction to Geant
+   // First, get the corresponding PSet for Geometry
+   //
+   const fhicl::ParameterSet& psgeom = p.get<fhicl::ParameterSet>("TargetGeom");
+   fRM->SetUserInitialization( new ModelParamStudyGeom( psgeom) );
+   fRM->GeometryHasBeenModified();
+
+   // inits
+   //
+   fRM->Initialize();   
+   fRM->ConfirmBeamOnCondition();
+   fRM->ConstructScoringWorlds();
+   fRM->RunInitialization(); // this is part of BeamOn 
+                             // and needs be done (at least) to set GeomClosed status 
+
+   f1stHadIntSD     = 0;
+
+   fCurrentG4Event  = 0;
+
+
+   fRandomSeed      = p.get<long>("RNDMSeed",-1);
+   if ( fRandomSeed == -1) 
+   {
+	  // Construct seed from time and pid. (default behavior if 
+	  // no seed is provided by the fcl file)
+	  // Note: According to Kevin Lynch, the two lines below are not portable. 
+	  fRandomSeed = time(0) + getpid();
+	  fRandomSeed = ((fRandomSeed & 0xFFFF0000) >> 16) | ((fRandomSeed & 0x0000FFFF) << 16); //exchange upper and lower word
+	  fRandomSeed = fRandomSeed % 900000000; // ensure the seed is in the correct range for engine
+   }
+   createEngine( fRandomSeed, "G4Engine" ); // inherited from "EngineCreator" base class
+        
    produces<ArtG4tkVtx>();
-
+   
 }
 
 artg4tk::ModelParamStudyProducer::~ModelParamStudyProducer()
@@ -106,8 +218,12 @@ artg4tk::ModelParamStudyProducer::~ModelParamStudyProducer()
    // no need to clean up UI pointer - I don't "new" it, I just "get it"
 
    if ( fCurrentG4Event ) delete fCurrentG4Event;
-   fCommands2ModifyParam.clear();
-   fDefaultBertiniParam.clear();
+   
+   fCommands2ModifyBertini.clear();
+   fDefaultBertini.clear();
+
+   fRM->RunTermination();
+   delete fRM;
    
 }
 
@@ -116,16 +232,8 @@ artg4tk::ModelParamStudyProducer::~ModelParamStudyProducer()
 void artg4tk::ModelParamStudyProducer::beginJob()
 {
 
-   art::ServiceHandle<G4ModelParamStudyService> mpstudy;
-   fRMPtr       = mpstudy->GetRunManager();
-   fSteppingPtr = mpstudy->GetStepping();
-
-   // NEED TO THROW IF NULL PTR
-   //
-   if ( !fRMPtr )
-   {
-      std::cout << " NULL RunManager Ptr !!!" << std::endl;
-   }
+   G4SDManager* sdman = G4SDManager::GetSDMpointer();
+   f1stHadIntSD = dynamic_cast<HadInteractionSD*>(sdman->FindSensitiveDetector("HadInteractionSD"));
    
    return;
 
@@ -158,7 +266,7 @@ void artg4tk::ModelParamStudyProducer::produce( art::Event& e )
    e.getByLabel( "PrimaryGenerator", primgenparts );
    if ( !primgenparts.isValid() )
    {
-       std::cout << " primgen handle is NOT valid " << std::endl;
+       fLogInfo << " primgen handle is NOT valid "; //  << std::endl;
        return;
    }
 
@@ -178,31 +286,36 @@ void artg4tk::ModelParamStudyProducer::produce( art::Event& e )
       // This needs to be configurable !!!
       //
       CLHEP::Hep3Vector pos(0.,0.,-1300.); // in mm !!!
-      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( pos*mm, 0. ); // 4th arg is time(ns)
+      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( pos*CLHEP::mm, 0. ); // 4th arg is time(ns)
       const CLHEP::HepLorentzVector& mom = i->momentum();
       G4PrimaryParticle* g4prim = new G4PrimaryParticle( g4pd, 
-                                                         mom.x()*GeV, mom.y()*GeV, mom.z()*GeV, 
-							 mom.e()*GeV );        
+                                                         mom.x()*CLHEP::GeV, mom.y()*CLHEP::GeV, mom.z()*CLHEP::GeV, 
+							 mom.e()*CLHEP::GeV );        
       g4vtx->SetPrimary(g4prim);
       fCurrentG4Event->AddPrimaryVertex(g4vtx);
    }
-
+   
    if ( fVerbosity > 0 )  
    {
-      std::cout << "Processing art::Event " << e.id().event() << "\n" << std::endl;   
-      std::cout << "G4Event " << e.id().event() << " has been generated " << std::endl; 
+      fLogInfo << "Processing art::Event " << e.id().event(); //  << "\n" << std::endl;   
+      fLogInfo << "G4Event " << e.id().event() << " has been generated "; // << std::endl; 
       fCurrentG4Event->Print();
       int nprimvtx = fCurrentG4Event->GetNumberOfPrimaryVertex();
       for ( int i=0; i<nprimvtx; ++i )
       {
          fCurrentG4Event->GetPrimaryVertex(i)->Print();
       }
-      const G4String& version = fRMPtr->GetVersionString();
-      std::cout << "Now Process it through " << version << std::endl;
+      // const G4String& version = fRM->GetVersionString();
+      // fLogInfo << "Now Process it through " << version; // << std::endl;
    }
    
    // now either restore defaults or modify parameters if needs be
+   //
+   // NOTE (JVY): Unfortunately, this scenario does NOT work as modifications only make
+   //             to the G4CascadeParameters "central holder" but NOT TO THE GUTS of Bertini
+   //             (e.g. G4NucleiModel takes the params via its ctor, and that's it...) 
    // 
+/*
    if ( fDefaultPhysics )
    {
       restoreDefaults();
@@ -211,50 +324,48 @@ void artg4tk::ModelParamStudyProducer::produce( art::Event& e )
    {
       modifyParameters();
    }
-   
-   // fRMPtr->ProcessOneEvent( fCurrentG4Event );
+*/   
+   // fRMP->ProcessOneEvent( fCurrentG4Event );
    G4EventManager::GetEventManager()->ProcessOneEvent( fCurrentG4Event );
    if ( fVerbosity > 0 )
    {
-      std::cout << "G4Event " << e.id().event() << " has been processed by EventManager " << std::endl;
+      fLogInfo << "G4Event " << e.id().event() << " has been processed by EventManager "; // << std::endl;
    } 
-   fRMPtr->AnalyzeEvent( fCurrentG4Event );
-   // fRMPtr->UpdateScoring(); // can NOT use it outside G4RunManager (or deribved) since this method is protected
+   fRM->AnalyzeEvent( fCurrentG4Event );
+   // fRM->UpdateScoring(); // can NOT use it outside G4RunManager (or deribved) since this method is protected
 
 //--------------------------
-  // Create an empty output data product
-  //
-  std::unique_ptr<ArtG4tkVtx> firstint(new ArtG4tkVtx());
 
-  // Product Id of the data product to be created; needed for persistent pointers.
-  art::ProductID firstintID(getProductID<ArtG4tkVtx>(e));
-
-/*
-
-  // Put the phi into the output collection; it is a primary particle that has no parent.
-  // gens->push_back ( GenParticle(  PDGCode::proton, art::Ptr<GenParticle>(), origin, lmom, GenParticle::alive));
-  
-  double e = std::sqrt( fMomentum.mag2() + fMass*fMass ); 
-  CLHEP::HepLorentzVector mom4( fMomentum, e ); 
-  PDGCode::type code = static_cast<PDGCode::type>(fPDG);
-  gens->push_back ( GenParticle(  code, art::Ptr<GenParticle>(), fVertex, mom4, GenParticle::alive) );
-
-*/
-  // Put the output collection into the event.
-  e.put(std::move(firstint));
-//------------------------------
-   
-   fSteppingPtr->ClearForNextEvent();
-
-   // NOTE(JVY): in principle, one can call G4RunManager::TerminateOneEvent() method,
-   //            where a G4Event gets deleted unless it's marked "toBeKept"...
-   //            ... which is not the case/goal for this app
+   // get the "hits" from SensitiveDetector (see also beginJob)
    //
-   delete fCurrentG4Event;
-   fCurrentG4Event = 0;
+   if ( !f1stHadIntSD ) 
+   {
+      fLogInfo << " Invalid HadInteractionSD ptr "; // << std::endl;
+      return;
+   }
 
+   const ArtG4tkVtx& inter = f1stHadIntSD->Get1stInteraction();
+   
+   if ( inter.GetNumOutcoming() <= 0 )
+   {
+      clear();
+      return;
+   }
+      
+   // Create a (no longer empty!) output data product
+   //
+   std::unique_ptr<ArtG4tkVtx> firstint(new ArtG4tkVtx(inter));
+
+   // Product Id of the data product to be created; needed for persistent pointers.
+   art::ProductID firstintID(getProductID<ArtG4tkVtx>(e));
+
+   // Put the output collection into the event
+   //
+   e.put(std::move(firstint));
+
+   clear();
    return;
-
+    
 }
 
 // At end run
@@ -275,8 +386,17 @@ void artg4tk::ModelParamStudyProducer::fillBertiniDefaults()
    
    std::ostringstream cmd;
    
+   // general purpose verbosity switch
+   // has nothing to do with the model params/configuration
+   // but is useful for some debugging purposes
+   //
+   cmd << "process/had/cascade/verbose " << G4CascadeParameters::verbose();
+   fDefaultBertini.push_back( cmd.str() );
+   cmd.str( "" );
+   cmd.clear();
+   
    cmd << "/process/had/cascade/doCoalescence " << G4CascadeParameters::doCoalescence();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
 /*
@@ -284,67 +404,67 @@ void artg4tk::ModelParamStudyProducer::fillBertiniDefaults()
 // uncomment when switch to 10.1-ref03 or later !!!
    
    cmd << "/process/had/cascade/piNAbsorption " << G4CascadeParameters::piNAbsorption();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/use3BodyMom " << G4CascadeParameters::use3BodyMom();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/usePhaseSpace " << G4CascadeParameters::usePhaseSpace();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
 */
    cmd << "/process/had/cascade/useBestNuclearModel false"; // no corresponding access method; unclear D !!!
                                                             // From G4CascadeParameters.cc: BEST_PAR = (0!=G4NUCMODEL_USE_BEST);
 							    // probably means that if env.var. is NOT set, this option isn't in use
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
 
    cmd << "/process/had/cascade/useTwoParamNuclearRadius " << G4CascadeParameters::useTwoParam();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/nuclearRadiusScale " << G4CascadeParameters::radiusScale();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/smallNucleusRadius " << G4CascadeParameters::radiusSmall();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/alphaRadiusScale " << G4CascadeParameters::radiusAlpha();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/shadowningRadius " << G4CascadeParameters::radiusTrailing(); 
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/fermiScale " << G4CascadeParameters::fermiScale();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/crossSectionScale " << G4CascadeParameters::xsecScale();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/gammaQuasiDeutScale " << G4CascadeParameters::gammaQDScale();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/cluster2DPmax " << G4CascadeParameters::dpMaxDoublet();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/cluster3DPmax " << G4CascadeParameters::dpMaxTriplet();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
    cmd << "/process/had/cascade/cluster4DPmax " << G4CascadeParameters::dpMaxAlpha();
-   fDefaultBertiniParam.push_back( cmd.str() );
+   fDefaultBertini.push_back( cmd.str() );
    cmd.str( "" );
    cmd.clear();
 
@@ -354,11 +474,11 @@ void artg4tk::ModelParamStudyProducer::fillBertiniDefaults()
 void artg4tk::ModelParamStudyProducer::printDefaults()
 {
 
-   std::cout << "BERTINI Cascade Default Parameters: " << std::endl;
-   std::cout << std::endl;
-   for ( unsigned int i=0; i<fDefaultBertiniParam.size(); ++i )
+   fLogInfo << "BERTINI Cascade Default Parameters: \n"; // << std::endl;
+   //std::cout << std::endl;
+   for ( unsigned int i=0; i<fDefaultBertini.size(); ++i )
    {
-      std::cout << fDefaultBertiniParam[i] << std::endl;
+      fLogInfo << fDefaultBertini[i] << "\n"; // << std::endl;
    }
    
    return;
@@ -378,64 +498,85 @@ void artg4tk::ModelParamStudyProducer::restoreDefaults()
       // for this reason, G4UIcommend::IsAvailable will return false, and G4UImanager will NOT apply it
       //
       if(!G4StateManager::GetStateManager()->SetNewState(G4State_Idle))            
-         std::cout << "G4StateManager PROBLEM! " << std::endl;
+         fLogInfo << "G4StateManager PROBLEM! "; // << std::endl;
       // run over the container of default Bertini parameters
       // and restore defaults
-      for ( unsigned int i=0; i<fDefaultBertiniParam.size(); ++i )
+      for ( unsigned int i=0; i<fDefaultBertini.size(); ++i )
       {
 //         std::ostringstream cmd;
 //         cmd << (it->first).c_str() << " " << it->second ;
 //         fUI->ApplyCommand( cmd.str() );
-         fUI->ApplyCommand( (fDefaultBertiniParam[i]).c_str() );
-	 if (fVerbosity > 0 ) std::cout << "Default restored: " << fDefaultBertiniParam[i] << std::endl;
+         fUI->ApplyCommand( (fDefaultBertini[i]).c_str() );
+	 if (fVerbosity > 0 ) fLogInfo << "Default restored: " << fDefaultBertini[i] << "\n"; // << std::endl;
       }
       //
       // Now return G4State back to GeomClosed
       //
       if(!G4StateManager::GetStateManager()->SetNewState(G4State_GeomClosed))            
-         std::cout << "G4StateManager PROBLEM! " << std::endl;
+         fLogInfo << "G4StateManager PROBLEM! "; // << std::endl;
    }
    
    return;
 
 }
 
-void artg4tk::ModelParamStudyProducer::modifyParameters()
+void artg4tk::ModelParamStudyProducer::modifyParameters( bool changestate )
 {
 
    if ( fDefaultPhysics ) return; // better if spit a warning !
 
-   // Change G4State to Idle
-   // G4UImanager will only apply modifications if
+   // Change G4State to Idle because...
+   // ...once initialized, G4UImanager will only apply modifications if
    // 1. G4State_Idle
    // 2. G4State_PreInit
    // 
    // Once run is initialized and prepared to start, the state is set to GeomClosed;
    // for this reason, G4UIcommend::IsAvailable will return false, and G4UImanager will NOT apply it
    //
-   if(!G4StateManager::GetStateManager()->SetNewState(G4State_Idle))            
-      std::cout << "G4StateManager PROBLEM! " << std::endl;
+   if ( changestate )
+   {
+      if(!G4StateManager::GetStateManager()->SetNewState(G4State_Idle))            
+         fLogInfo << "G4StateManager PROBLEM! "; // << std::endl;
+   }
    
    // run over params to modify
    //
-   for ( unsigned int i=0; i<fCommands2ModifyParam.size(); ++i )
+   for ( unsigned int i=0; i<fCommands2ModifyBertini.size(); ++i )
    {
-      fUI->ApplyCommand( (fCommands2ModifyParam[i]).c_str() );
+      fUI->ApplyCommand( (fCommands2ModifyBertini[i]).c_str() );
       if (fVerbosity > 0 ) 
       {
-         std::cout << "Modification applied: " << fCommands2ModifyParam[i] << std::endl;
-         // std::cout << " Check it !!! " << G4CascadeParameters::radiusScale() << std::endl;
+         fLogInfo << "Modification applied: " << fCommands2ModifyBertini[i] << "\n"; // << std::endl;
       }
+      std::cout << "Modification applied: " << fCommands2ModifyBertini[i] << "\n" << std::endl;
    }
    
    // Now rerutn the State back to GeomClosed
    //
-   if(!G4StateManager::GetStateManager()->SetNewState(G4State_GeomClosed))            
-      std::cout << "G4StateManager PROBLEM! " << std::endl;
+   if ( changestate )
+   {
+      if(!G4StateManager::GetStateManager()->SetNewState(G4State_GeomClosed))            
+         fLogInfo << "G4StateManager PROBLEM! "; // << std::endl;
+   }
    
    return;
 
 }
 
+void artg4tk::ModelParamStudyProducer::clear()
+{
+
+   f1stHadIntSD->clear();
+   
+   // NOTE(JVY): in principle, one can call G4RunManager::TerminateOneEvent() method,
+   //            where a G4Event gets deleted unless it's marked "toBeKept"...
+   //            ... which is not the case/goal for this app
+   //
+   delete fCurrentG4Event;
+   fCurrentG4Event = 0;
+
+   return;
+
+}
 
 DEFINE_ART_MODULE(artg4tk::ModelParamStudyProducer)

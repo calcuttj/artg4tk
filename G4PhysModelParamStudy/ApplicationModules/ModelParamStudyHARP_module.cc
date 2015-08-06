@@ -19,7 +19,7 @@
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4HadronCrossSections.hh"
 
-#include "artg4tk/G4PhysModelParamStudy/DataProd/G4Interaction.hh"
+#include "artg4tk/DataProducts/G4DetectorHits/G4Interaction.hh"
 #include "Geant4/G4Track.hh"
 
 #include "TFile.h"
@@ -27,8 +27,8 @@
 #include "TH1D.h"
 #include "CLHEP/Units/SystemOfUnits.h"
 
-#include "artg4tk/DataProducts/GenParticle.hh"
-#include "artg4tk/DataProducts/GenParticleCollection.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
 namespace artg4tk {
 
@@ -295,7 +295,7 @@ void artg4tk::ModelParamStudyHARP::fill1stInteraction()
         sec = interaction->GetSecondary(i)->GetDynamicParticle();			
 	const G4String& pname = sec->GetDefinition()->GetParticleName();
 
-	double pmom = sec->GetTotalMomentum() / GeV ;
+	double pmom = sec->GetTotalMomentum() / CLHEP::GeV ;
 	double theta = (sec->GetMomentum()).theta();
 	
 	if ( theta < fThetaMinFW ) continue;
@@ -388,11 +388,11 @@ void artg4tk::ModelParamStudyHARP::initXSecOnTarget( const art::Event& e )
    G4ParticleDefinition* g4pd = ptable->FindParticle( pdgcode );
    assert(g4pd);
    // const CLHEP::HepLorentzVector& mom = i->momentum();
-   G4DynamicParticle g4pdyn( g4pd, (i->momentum()*GeV) );   
+   G4DynamicParticle g4pdyn( g4pd, (i->momentum()*CLHEP::GeV) );   
    fXSecOnTarget = (G4HadronCrossSections::Instance())->GetInelasticCrossSection( &g4pdyn, Z, A );
    
-   fXSecOnTarget /= millibarn;
-   
+   fXSecOnTarget /= CLHEP::millibarn;
+      
    fXSecInit = true;
 
    return;

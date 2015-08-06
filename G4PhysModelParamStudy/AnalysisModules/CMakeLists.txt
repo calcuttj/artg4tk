@@ -4,14 +4,7 @@
 #            it was NOT the case in the v1_12-series, and I do NOT know why the hell this change !...
 #            need to talk to M.P. when he's back from "art school"
 # 
-art_make( MODULE_LIBRARIES  
-          art_Framework_Services_Optional_TFileService_service 
-	  "artg4tk_G4PhysModelParamStudy_ApplicationBase" 
-	  "artg4tk_G4PhysModelParamStudy_G4Components" 
-	  "${G4_LIB_LIST}" 
-	)
-
-# art_make( MODULE_LIBRARIES  "artg4tk_G4PhysModelParamStudy_ApplicationBase" "${XERCESCLIB}" "${G4_LIB_LIST}" )
+art_make( MODULE_LIBRARIES  art_Framework_Services_Optional_TFileService_service "${G4_LIB_LIST}" )
 # art_make( MODULE_LIBRARIES  "${XERCESCLIB}" "${G4_LIB_LIST}" )
 
 #install_headers()

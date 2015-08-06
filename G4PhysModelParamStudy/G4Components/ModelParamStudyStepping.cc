@@ -1,6 +1,7 @@
 
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ModelParamStudyStepping.hh"
-#include "artg4tk/G4PhysModelParamStudy/DataProd/G4Interaction.hh"
+// --> old inc --> #include "artg4tk/G4PhysModelParamStudy/DataProd/G4Interaction.hh"
+#include "artg4tk/DataProducts/G4DetectorHits/G4Interaction.hh"
 #include "Geant4/G4Track.hh"
 #include "Geant4/G4Step.hh"
 
@@ -50,6 +51,22 @@ void ModelParamStudyStepping::UserSteppingAction( const G4Step* theStep )
       {
          is_1st_inelastic_int = true;
          fFirstInter->SetIncomingTrack( theStep->GetTrack() );
+/*
+	 
+	 std::cout << " Stepping: 1st hadronic interaction " << std::endl;
+	 std::cout << " Stepping: volume ptr = " << vol << std::endl;
+	 std::cout << " Stepping: volume name = " << vol->GetName() << std::endl;
+	 std::cout << " Stepping: position = " << theStep->GetTrack()->GetPosition().x() << " "
+	                                       << theStep->GetTrack()->GetPosition().y() << " "
+					       << theStep->GetTrack()->GetPosition().z() << std::endl;
+         std::cout << " Stepping: total momentum = " << theStep->GetTrack()->GetMomentum().mag() << std::endl;
+	 std::cout << " Stepping: re-check total momentum = " 
+	           << theStep->GetTrack()->GetDynamicParticle()->GetTotalMomentum() << std::endl;
+         std::cout << " Stepping: re-check pre-step total momentum = " 
+	           << theStep->GetPreStepPoint()->GetMomentum().mag() << std::endl;
+*/
+	 
+	 
 	 if ( fStopAfter1stInt ) theStep->GetTrack()->SetTrackStatus( fStopAndKill );
          for ( int i=0; i<nsec; i++ )
          {

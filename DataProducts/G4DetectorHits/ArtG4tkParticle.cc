@@ -1,5 +1,5 @@
 
-#include "artg4tk/G4PhysModelParamStudy/DataProd/ArtG4tkParticle.hh"
+#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkParticle.hh"
 
 #include "Geant4/G4ParticleTable.hh"
 
