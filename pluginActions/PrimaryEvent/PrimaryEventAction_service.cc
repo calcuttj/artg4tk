@@ -1,8 +1,8 @@
 #include "artg4tk/pluginActions/PrimaryEvent/PrimaryEventAction_service.hh"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/ActionHolder_service.hh"
-#include "artg4tk/DataProducts/GenParticle.hh"
-#include "artg4tk/DataProducts/GenParticleCollection.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 // Geant4  includes
 
 #include "Geant4/G4Event.hh"

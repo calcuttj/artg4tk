@@ -48,7 +48,7 @@ services: {
     }   
 
     // Action(s) for the simulation
-    ClockAction: {}
+//    ClockAction: {}
 
 
     ExampleGeneralAction: {
@@ -71,7 +71,8 @@ physics: {
   producers: {
 evtgen   : {
   module_type : EventGenerator
-nparticles : 1	
+nparticles : 1
+momentum: [ 0., 0., 5. ]	
 }
     artg4Main: {
 

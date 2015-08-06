@@ -33,9 +33,9 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "art/Framework/Principal/Provenance.h"
 // artg4tk includes:
-#include "artg4tk/services/DetectorHolder_service.hh"
-#include "artg4tk/DataProducts/GenParticle.hh"
-#include "artg4tk/DataProducts/GenParticleCollection.hh"
+// --> NOT NEEDED HERE --> #include "artg4tk/services/DetectorHolder_service.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 // Root includes.
 #include "TFile.h"
 #include "TH1F.h"

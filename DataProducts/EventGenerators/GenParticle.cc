@@ -2,7 +2,7 @@
 // A minimal class to hold information about generated particles.
 //
 
-#include "artg4tk/DataProducts/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
 #include <iostream>
 
 artg4tk::GenParticle::GenParticle():

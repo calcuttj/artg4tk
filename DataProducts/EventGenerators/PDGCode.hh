@@ -13,8 +13,8 @@
 // time access to the PDG identifier codes.
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#ifndef DataProducts_PDGCode_h
-#define DataProducts_PDGCode_h
+#ifndef DataProducts_EventGenerators_PDGCode_h
+#define DataProducts_EventGenerators_PDGCode_h
 //
 // A minimal version of a convenience class to allow compile time access
 // to the PDG identifier codes.

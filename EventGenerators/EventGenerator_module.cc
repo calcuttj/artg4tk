@@ -3,7 +3,7 @@
 //
 
 
-#include "artg4tk/DataProducts/GenParticleCollection.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
 
 #include "art/Framework/Core/EDProducer.h"

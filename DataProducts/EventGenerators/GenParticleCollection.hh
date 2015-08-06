@@ -1,11 +1,11 @@
-#ifndef DataProducts_GenParticleCollection_h
-#define DataProducts_GenParticleCollection_h
+#ifndef DataProducts_EventGenerators_GenParticleCollection_h
+#define DataProducts_EventGenerators_GenParticleCollection_h
 
 //
 // A collection of generated particles.
 //
 
-#include "artg4tk/DataProducts/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
 
 #include <vector>
 

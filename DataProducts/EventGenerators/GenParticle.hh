@@ -1,11 +1,11 @@
-#ifndef DataProducts_GenParticle_h
-#define DataProducts_GenParticle_h
+#ifndef DataProducts_EventGenerators_GenParticle_h
+#define DataProducts_EventGenerators_GenParticle_h
 
 //
 // A minimal class to hold information about generated particles.
 //
 
-#include "artg4tk/DataProducts/PDGCode.hh"
+#include "artg4tk/DataProducts/EventGenerators/PDGCode.hh"
 
 #include "art/Persistency/Common/Ptr.h"
 #include "art/Persistency/Common/PtrVector.h"
