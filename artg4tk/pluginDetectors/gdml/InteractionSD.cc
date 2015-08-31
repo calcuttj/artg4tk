@@ -25,7 +25,7 @@
 #include "Geant4/G4ParticleGun.hh"
 //artg4tk includes:
 #include "artg4tk/pluginDetectors/gdml/InteractionSD.hh"
-#include "pluginActions/myparticleGun/myParticleGunAction_service.hh"
+#include "artg4tk/pluginActions/myparticleGun/myParticleGunAction_service.hh"
 // c++ includes:
 #include <typeinfo>
 

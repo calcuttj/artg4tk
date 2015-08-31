@@ -28,10 +28,8 @@ ${CMAKE_MODULE_PATH})
 include(CetCMakeEnv)
 cet_cmake_env()
 
-set_install_root()
+#set_install_root()
 
-# artg4tk wants the product name in the library name
-set (ART_MAKE_PREPEND_PRODUCT_NAME TRUE)
 
 if ( ${APPLE} )
 cet_set_compiler_flags(DIAGS CAUTIOUS
@@ -71,24 +69,10 @@ include(ArtMake)
 include(BuildPlugins)
 
 # Build these directories
-add_subdirectory( geantInit )
-add_subdirectory( actionBase )
-add_subdirectory( Core )
-add_subdirectory( services )
-add_subdirectory( pluginActions )
-add_subdirectory( pluginDetectors )
-add_subdirectory( DataProducts )
-add_subdirectory( EventGenerators )
-add_subdirectory( Analysis )
-add_subdirectory( util )
+add_subdirectory( artg4tk )
 add_subdirectory( fcl )
 add_subdirectory( gdml )
-#add_subdirectory( ups )
 
-#
-# UNcomment to activate G4 model param study tools
-#
-# ---> add_subdirectory( G4PhysModelParamStudy )
 
 # ups - table and config files
 
