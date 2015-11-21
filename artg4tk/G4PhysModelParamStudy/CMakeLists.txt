@@ -1,10 +1,17 @@
 #
 # add_subdirectory( world )
-# add_subdirectory( DataProd )
+#
+# obsolete!!! add_subdirectory( DataProd )
+#
 add_subdirectory( G4Components )
 add_subdirectory( G4Services )
-add_subdirectory( ApplicationBase )
+#
+# obsolete !!! add_subdirectory( ApplicationBase )
+#
 add_subdirectory( ApplicationModules )
-add_subdirectory( Toys )
+#
+# obsolete !!! add_subdirectory( Toys )
+#
 add_subdirectory( RooMUTools )
+add_subdirectory( AnalysisBase )
 add_subdirectory( AnalysisModules )

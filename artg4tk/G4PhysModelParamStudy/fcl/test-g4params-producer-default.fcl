@@ -4,7 +4,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:  2000
+  maxEvents:  10
 }
 
 services: 
@@ -30,17 +30,32 @@ services:
 
   TFileService :
   {
-    fileName: "G4BertiniParamDefault.root"
+    fileName: "HARPBertiniDefault.root"
   }
 
   user: 
   {
 
      RandomNumberGenerator: {}
-    
-    // Action(s) for the simulation
-//    ClockAction: {}
 
+//     DetectorHolder: {}
+//     GDMLDetector:
+//     {
+//        category: "world"
+//	gdmlFileName_: "./gdml/be_target.gdml"
+//     }
+
+     PhysicsListHolder: {}
+     PhysicsList: 
+     {
+        PhysicsListName: "QGSP_FTFP_BERT"
+     }
+     
+     PhysModelConfig: 
+     {
+//        Verbosity: true
+     }
+         
   }
 
 }
@@ -50,7 +65,7 @@ outputs:
    out1: 
    {
       module_type: RootOutput   
-      fileName: "BertiniDefault.root"
+      fileName: "EvtBertiniDefault.root"
    }
 }
 
@@ -73,15 +88,19 @@ physics: {
         RNDMSeed: 54321
         TargetGeom:
         {
-           targetSize: [ 0., 31.5, 1600. ]
+           targetSize: [ 0., 3.15, 160. ]
 	   targetPosition: [ 0, 0, 0 ]
-	   targetMaterial: "Be"
+	   targetMaterial: "Pb"
 	   targetShape: "G4Tubs"
         }
-	PhysicsList: "QGSP_FTFP_BERT"
 	Verbosity: 0
-	DefaultPhysics: true
-	BertiniConfig: []
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: true
+//	   Bertini:
+//	   {
+//	   }
+	}
      }
 
   }
@@ -89,7 +108,7 @@ physics: {
   analyzers:
   {
   
-     HARPDefault:
+     HARPTest:
      {
         module_type: AnalyzerHARP
 	ProductLabel: "G4BertiniDefault"
@@ -98,7 +117,7 @@ physics: {
   }
   
   path1:   [ PrimaryGenerator, G4BertiniDefault ] 
-  path2:   [ HARPDefault  ]
+  path2:   [ HARPTest  ]
   stream1: [ out1 ]
 
   trigger_paths: [ path1 ]

@@ -1,26 +1,14 @@
 
-#include "art/Framework/Core/EDAnalyzer.h"
+#include "artg4tk/G4PhysModelParamStudy/AnalysisBase/ModelParamAnalyzerBase.hh"
+
 #include "art/Framework/Core/ModuleMacros.h"
+
 #include "art/Framework/Principal/Event.h"
-#include "art/Framework/Principal/Run.h"
 
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "messagefacility/MessageLogger/MessageLogger.h" 
-
-// EDM product
-// --> old inc --> #include "artg4tk/G4PhysModelParamStudy/DataProd/ArtG4tkVtx.hh"
-#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"
-
-// G4-specific headers
-#include "Geant4/G4Material.hh"
-#include "Geant4/G4NistManager.hh"
-#include "Geant4/G4ParticleTable.hh"
-#include "Geant4/G4DynamicParticle.hh"
-#include "Geant4/G4HadronCrossSections.hh"
+// Run/Eevent data products
+#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        // Event data product
 
 // Root-specific headers
-#include "TFile.h"
-#include "TDirectory.h"
 #include "TH1D.h"
 
 #include "CLHEP/Units/SystemOfUnits.h"
@@ -34,7 +22,7 @@
 
 namespace artg4tk {
 
-   class AnalyzerHARP : public art::EDAnalyzer {
+   class AnalyzerHARP : public ModelParamAnalyzerBase {
    
    public:
    
@@ -44,17 +32,9 @@ namespace artg4tk {
       virtual void analyze( const art::Event& event ) override;
       virtual void beginJob()                         override;
       virtual void endJob()                           override;
-//      virtual void beginRun( const art::Run&  )       override;
-//      virtual void endRun( const art::Run& )          override; 
-      
-      // virtual void fillHisto();     
-   
+         
    private:
-   
-      void initXSecOnTarget( const std::string&, const ArtG4tkParticle& );
-
-      std::string fProdLabel;
-      
+         
       TH1D*              fNSec;
       std::vector<TH1D*> fHistoSecPiMinusFW; 
       std::vector<TH1D*> fHistoSecPiPlusFW; 
@@ -69,29 +49,21 @@ namespace artg4tk {
       int                fNThetaBinsLA;
       double             fThetaMinLA;
       double             fDeltaThetaLA;  
-      
-      // NOTE: Will also need XSec on TARGET !!!!!
-      double fXSecOnTarget; 
-      bool   fXSecInit;
-      
+            
       // diagnostics output
       //
-      mf::LogInfo fLogInfo;
+// -->      mf::LogInfo fLogInfo; // now in Base... do I nead a separate one for each analyzer ???
         
    };
 
 }
 
 artg4tk::AnalyzerHARP::AnalyzerHARP( const fhicl::ParameterSet& p )
-  : art::EDAnalyzer(p),
+  : artg4tk::ModelParamAnalyzerBase(p), 
     fNThetaBinsFW(4), fThetaMinFW(0.05), fDeltaThetaFW(0.05),
-    fNThetaBinsLA(9), fThetaMinLA(0.35), fDeltaThetaLA(0.2),
-    fXSecOnTarget(0.), fXSecInit(false),
-    fLogInfo("AnalyzerHARP")
+    fNThetaBinsLA(9), fThetaMinLA(0.35), fDeltaThetaLA(0.2) 
+    // fLogInfo("AnalyzerHARP") // well, maybe each module does need its's own logger ???
 {
-
-   fProdLabel = p.get<std::string>("ProductLabel");
-   
 }
 
 artg4tk::AnalyzerHARP::~AnalyzerHARP()
@@ -107,7 +79,7 @@ void artg4tk::AnalyzerHARP::beginJob()
       
    art::ServiceHandle<art::TFileService> tfs;
    fNSec = tfs->make<TH1D>( "NSec", "Number of secondary per inelastic interaction", 100, 0., 100 );
-
+   
    double thetaMin = 0.;
    double thetaMax = 0.;
    std::string theta_bin_fw;
@@ -273,15 +245,17 @@ void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
    // const std::vector<ArtG4tkParticle>& secs = firstint->GetAllOutcoming();
    // int nsec = secs.size();
    int nsec = firstint->GetNumOutcoming();
+      
    if ( nsec > 0 ) fNSec->Fill( (double)nsec );
    
    for ( int ip=0; ip<nsec; ++ip )
    {
+      
       const ArtG4tkParticle& sec = firstint->GetOutcoming( ip );
       
       std::string pname = sec.GetName();
-      double pmom = sec.GetMomentum().vect().mag();
       
+      double pmom = sec.GetMomentum().vect().mag();      
       pmom /= CLHEP::GeV;
       double theta = sec.GetMomentum().vect().theta();
       
@@ -322,44 +296,10 @@ void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
       }    
 
    } // end loop over secondaries
-
+   
    return;
    
 }
-
-void artg4tk::AnalyzerHARP::initXSecOnTarget( const std::string& mname,
-                                               const ArtG4tkParticle& part )
-{
-
-// NOTE/FIXME (JV): probably it's better to take the beam particle 
-//                  directly from the generator record, voa the event !!!
-
-   G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial( mname );
-   assert(mat);
-   
-   const G4Element* elm = mat->GetElement(0);  
-
-   int A = (int)(elm->GetN()+0.5);
-   int Z = (int)(elm->GetZ()+0.5);
-   assert(A);
-   assert(Z);
-   
-   G4ParticleTable* ptable = G4ParticleTable::GetParticleTable();
-   G4ParticleDefinition* g4pd = ptable->FindParticle( part.GetPDG() );
-   assert(g4pd);
-      
-//   G4DynamicParticle g4pdyn( g4pd, (part.GetMomentum().vect())*CLHEP::GeV );
-   G4DynamicParticle g4pdyn( g4pd, part.GetMomentum().vect() );
-   fXSecOnTarget = (G4HadronCrossSections::Instance())->GetInelasticCrossSection( &g4pdyn, Z, A );
-   
-   fXSecOnTarget /= CLHEP::millibarn;
-      
-   fXSecInit = true;
-   
-   return;
-
-}
-
 
 using artg4tk::AnalyzerHARP;
 DEFINE_ART_MODULE(AnalyzerHARP)

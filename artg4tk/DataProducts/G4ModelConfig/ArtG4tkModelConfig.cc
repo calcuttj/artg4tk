@@ -19,7 +19,7 @@ void artg4tk::ArtG4tkModelConfig::Fill( const fhicl::ParameterSet& pset )
    std::vector<std::string> keys = pset.get_keys();
    std::vector<std::string> modkeys;
    for ( unsigned int i=0; i<keys.size(); ++i )
-   {
+   {      
       if ( keys[i] == "DefaultPhysics" )
       {
          fDefaultPhysics = pset.get<bool>("DefaultPhysics",true);

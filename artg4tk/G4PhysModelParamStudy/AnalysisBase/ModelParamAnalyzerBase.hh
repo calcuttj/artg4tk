@@ -33,6 +33,7 @@ namespace artg4tk {
          
    protected:
    
+      void prepareG4PTable();
       void initXSecOnTarget( const std::string&, const ArtG4tkParticle& );
 
       // These two data members below can go into a base class for

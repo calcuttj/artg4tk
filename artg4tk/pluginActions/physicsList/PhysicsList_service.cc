@@ -11,14 +11,14 @@
 
 artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p, art::ActivityRegistry &) :
   PhysicsListName_( p.get<std::string>("PhysicsListName")),
-  DumpList_( p.get<bool>("DumpList")),
-  enableCerenkov_( p.get<bool>("enableCerenkov")),    
-  enableScintillation_( p.get<bool>("enableScintillation")),
-  enableAbsorption_( p.get<bool>("enableAbsorption")),   
-  enableRayleigh_( p.get<bool>("enableRayleigh")),     
-  enableMieHG_( p.get<bool>("enableMieHG")),        
-  enableBoundary_( p.get<bool>("enableBoundary")),     
-  enableWLS_( p.get<bool>("enableWLS"))
+  DumpList_( p.get<bool>("DumpList",false)),
+  enableCerenkov_( p.get<bool>("enableCerenkov",false)),    
+  enableScintillation_( p.get<bool>("enableScintillation",false)),
+  enableAbsorption_( p.get<bool>("enableAbsorption",false)),   
+  enableRayleigh_( p.get<bool>("enableRayleigh",false)),     
+  enableMieHG_( p.get<bool>("enableMieHG",false)),        
+  enableBoundary_( p.get<bool>("enableBoundary",false)),     
+  enableWLS_( p.get<bool>("enableWLS",false))
 {}
 
 G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {

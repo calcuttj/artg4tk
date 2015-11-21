@@ -115,6 +115,13 @@ void artg4tk::RooMUHistSummary::endJob()
    {
 
       // if ( !(TClass::GetClass(key->GetClassName())->InheritsFrom(TH1::Class())) ) 
+      
+      std::cout << "ClassName = " << obj->ClassName() << std::endl;
+      if ( (TClass::GetClass(obj->ClassName())->InheritsFrom(TCollection::Class())) )
+      {
+         std::cout << " This is a collection " << std::endl;
+      }
+      
       if ( !(TClass::GetClass(obj->ClassName())->InheritsFrom(TH1::Class())) ) 
       {
          // key = (TKey*)next();

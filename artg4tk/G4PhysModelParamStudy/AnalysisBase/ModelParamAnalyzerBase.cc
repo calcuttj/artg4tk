@@ -27,7 +27,6 @@
 #include <cmath>
 #include <memory>
 
-
 artg4tk::ModelParamAnalyzerBase::ModelParamAnalyzerBase( const fhicl::ParameterSet& p )
   : art::EDAnalyzer(p),
     fXSecInit(false),
@@ -35,6 +34,11 @@ artg4tk::ModelParamAnalyzerBase::ModelParamAnalyzerBase( const fhicl::ParameterS
 {
 
    fProdLabel = p.get<std::string>("ProductLabel");
+   
+   if ( !(G4ParticleTable::GetParticleTable()->GetReadiness()) )
+   {
+      prepareG4PTable();
+   }
    
 }
 
@@ -73,7 +77,7 @@ void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
 	 cfginfo += ( (*mcfg)[ii].first + "=" );
 	 std::ostringstream os;
 	 os << (*mcfg)[ii].second;
-	 cfginfo += os.str();
+	 cfginfo += os.str();	 
 	 fModelConfig->Add( new TObjString( cfginfo.c_str() ) );
       }  
    }
@@ -109,7 +113,7 @@ void artg4tk::ModelParamAnalyzerBase::initXSecOnTarget( const std::string& mname
    assert(Z);
    
    G4ParticleTable* ptable = G4ParticleTable::GetParticleTable();
-   G4ParticleDefinition* g4pd = ptable->FindParticle( part.GetPDG() );
+   G4ParticleDefinition* g4pd = ptable->FindParticle( part.GetPDG() );   
    assert(g4pd);
       
 //   G4DynamicParticle g4pdyn( g4pd, (part.GetMomentum().vect())*CLHEP::GeV );
@@ -119,6 +123,58 @@ void artg4tk::ModelParamAnalyzerBase::initXSecOnTarget( const std::string& mname
    fXSecOnTarget /= CLHEP::millibarn;
       
    fXSecInit = true;
+      
+   return;
+
+}
+
+#include "Geant4/G4MesonConstructor.hh"
+#include "Geant4/G4BaryonConstructor.hh"
+#include "Geant4/G4IonConstructor.hh"
+#include "Geant4/G4LeptonConstructor.hh"
+#include "Geant4/G4BosonConstructor.hh"
+#include "Geant4/G4GenericIon.hh"
+#include "Geant4/G4IonTable.hh"
+#include "Geant4/G4ProcessManager.hh"
+
+void artg4tk::ModelParamAnalyzerBase::prepareG4PTable()
+{
+
+   // physics needs to be initialized before the 1st use of particle table,
+   // because it constructs particles - otherwise the table is just empty
+   //
+   G4MesonConstructor pMesonConstructor;
+   pMesonConstructor.ConstructParticle();
+
+   G4BaryonConstructor pBaryonConstructor;
+   pBaryonConstructor.ConstructParticle();  
+  
+   // This is needed because starting 9.6.ref05 G4IonTable::CreateIon(...)
+   // explicitly checks if generic ion has a process manager
+   //
+   G4GenericIon* gion = G4GenericIon::GenericIon();
+   gion->SetProcessManager(new G4ProcessManager(gion));    
+   //
+   G4IonConstructor pIonConstructor;
+   pIonConstructor.ConstructParticle();
+  
+   G4LeptonConstructor pLeptonConstructor;
+   pLeptonConstructor.ConstructParticle();
+  
+   G4BosonConstructor pBosonConstructor;
+   pBosonConstructor.ConstructParticle();
+
+   G4ParticleTable* partTable = G4ParticleTable::GetParticleTable();
+
+   // NOTE(JVY): This does not do much - it only puts in 6 ions (incl.p). 
+   //            Other ions get created on the fly but apparently one needs
+   //            to know A & Z, and that's how the code is generated...
+   //
+   G4IonTable* ionTable = partTable->GetIonTable();
+   ionTable->CreateAllIon();
+   ionTable->CreateAllIsomer();
+   
+   partTable->SetReadiness();
    
    return;
 

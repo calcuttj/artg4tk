@@ -45,8 +45,15 @@
 #include "artg4tk/pluginDetectors/gdml/myPhotonArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
+//
 #include "artg4tk/pluginDetectors/gdml/InteractionSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myInteractionArtHitData.hh"
+//
+// NOTE; No need to include the products because they'll come via HadInteractionSD.hh
+//       but just in case, they're artg4tk/DataProducts/G4DetectorHits/ArtG4tk*
+//
+#include "artg4tk/pluginDetectors/gdml/HadInteractionSD.hh"
+//
 //#include "artg4tk/services/DetectorHolder_service.hh"
 // Geant 4 includes:
 #include "Geant4/G4SDManager.hh"
@@ -163,6 +170,15 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
                     std::cout << "Attaching sensitive Detector: " << (*vit).value
                             << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
                     DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
+                } else if ((*vit).value == "HadInteraction") {
+                    G4String name = ((*iter).first)->GetName() + "_HadInteraction";
+                    HadInteractionSD* aHadInteractionSD = new HadInteractionSD(name);
+                    // NOTE: This will be done in the HadInteractionSD ctor
+		    // SDman->AddNewDetector(aHadInteractionSD);
+                    ((*iter).first)->SetSensitiveDetector(aHadInteractionSD);
+                    std::cout << "Attaching sensitive Detector: " << (*vit).value
+                            << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
+                    DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
                 }
             }
         }
@@ -214,7 +230,10 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer)
         } else if ((*cii).second == "Interaction") {
             std::string identifier = myName() + (*cii).first;
             producer -> produces<myInteractionArtHitDataCollection>(identifier);
-        }
+        } else if ( (*cii).second == "HadInteraction") {
+            // std::string identifier = myName() + (*cii).first;
+            producer -> produces<ArtG4tkVtx>(); // do NOT use product instance name (for now)
+        } 
     }
 }
 
@@ -226,6 +245,36 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
     std::unique_ptr<myInteractionArtHitDataCollection> myInteractionHits(new myInteractionArtHitDataCollection);
     std::unique_ptr<myParticleEContribArtData> myEdepCon(new myParticleEContribArtData);
     std::unique_ptr<myParticleEContribArtData> myNCerenCon(new myParticleEContribArtData);
+    
+    // NOTE(JVY): 1st hadronic interaction will be fetched as-is from HadInteractionSD
+    //            a copy (via copy ctor) will be placed directly into art::Event
+    //            NO BUSINESS with G4HCofThisEvent !!!
+    //
+    std::vector<std::pair<std::string, std::string> >::const_iterator cii;
+    for (cii = DetectorList.begin(); cii != DetectorList.end(); cii++) 
+    {
+       std::string sdname = (*cii).first + "_" + (*cii).second;
+       if ( (*cii).second == "HadInteraction" )
+       {
+	  G4SDManager* sdman = G4SDManager::GetSDMpointer();
+	  HadInteractionSD* hisd = dynamic_cast<HadInteractionSD*>(sdman->FindSensitiveDetector(sdname));
+	  if ( hisd )
+	  {
+             const ArtG4tkVtx& inter = hisd->Get1stInteraction();
+	     if ( inter.GetNumOutcoming() > 0 )
+	     {
+	        std::unique_ptr<ArtG4tkVtx> firstint(new ArtG4tkVtx(inter));
+                art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
+                art::Event & e = detectorHolder -> getCurrArtEvent();
+                e.put(std::move(firstint)); // note that there's NO product instance name (for now, at least)
+		                            // (part of) the is that the name is encoded into the "collection"
+					    // which is NOT used in this specific case
+	     } 	     
+	     hisd->clear(); // clear out after movind info to EDM; no need to clea out in the producer !
+	  }
+       }
+    }    
+        
     for (int i = 0; i < myHC->GetNumberOfCollections(); i++) {
         G4VHitsCollection* hc = myHC->GetHC(i);
         G4String hcname = hc->GetName();
@@ -360,10 +409,11 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
             art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
             art::Event & e = detectorHolder -> getCurrArtEvent();
             std::string dataname = myName() + Volume;
-            e.put(std::move(myInteractionHits), dataname);
-        } else {
+            e.put(std::move(myInteractionHits), dataname);  
+	} else {
             G4cout << "SD type: " << Classname << " unknown" << G4endl;
         }
+	
     };
 }
 using artg4tk::GDMLDetectorService;

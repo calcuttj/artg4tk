@@ -77,16 +77,19 @@ G4bool artg4tk::HadInteractionSD::ProcessHits( G4Step* theStep, G4TouchableHisto
       {
 
          // OK, it's 1st (hadron inelastic) interaction
-/*		 	 
+		 	 
+/*
 	 std::cout << " HadIntSD: 1st hadronic interaction " << std::endl;
 	 std::cout << " HadIntSD: volume ptr = " << vol << std::endl;
 	 std::cout << " HadIntSD: volume name = " << vol->GetName() << std::endl;
 	 std::cout << " HadIntSD: position = " << theStep->GetTrack()->GetPosition().x() << " "
 	                                       << theStep->GetTrack()->GetPosition().y() << " "
 					       << theStep->GetTrack()->GetPosition().z() << std::endl;
-*/
+
 	 
-         fFirstInter.SetPosition( CLHEP::HepLorentzVector( trk->GetPosition(), trk->GetGlobalTime() ) );
+         std::cout << " nsec = " << nsec << std::endl;
+*/	 
+	 fFirstInter.SetPosition( CLHEP::HepLorentzVector( trk->GetPosition(), trk->GetGlobalTime() ) );
 	 fFirstInter.SetPhysVolumeName( vol->GetName().c_str() );
 	 fFirstInter.SetMaterialName( mat->GetName().c_str() );
 	 fFirstInter.SetIncoming( ArtG4tkParticle( trk->GetParticleDefinition()->GetPDGEncoding(),
