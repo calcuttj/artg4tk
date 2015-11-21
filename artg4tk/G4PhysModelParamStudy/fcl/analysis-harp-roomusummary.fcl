@@ -1,0 +1,102 @@
+// #include "detectorDefaults.fcl"
+process_name:processA
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "EvtBertini-ProcL.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "BertiniParamStudySummary.root"
+  }
+
+  user: 
+  {
+     //
+  }
+
+}
+
+physics: {
+
+  producers: 
+  {
+     //
+  }
+
+  analyzers: 
+  {
+     
+     BertiniDefaultHARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniDefault"
+     }
+     
+     BertiniVar1HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniVar1"
+     }
+
+     BertiniVar2HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniVar2"
+     }
+
+     BertiniVar3HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniVar3"
+     }
+
+     BertiniVar4HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniVar4"
+     }
+
+// JVY, 11/21/15: does NOT work yet - segfaults, needs update
+//     
+//     RooMUSummary:
+//     {
+//        module_type: RooMUHistSummary
+//	//
+//	Verbosity: 0
+//	G4DefaultDirectory: "BertiniDefaultHARP"
+//	G4VariantDirectories: [ "BertiniVar1HARP", "BertiniVar2HARP", "BertiniMVar3HARP", "BertiniVar4HARP" ]
+//     }
+
+  }
+  
+//  path:   [ BertiniDefaultHARP, BertiniVar1HARP, BertiniVar2HARP, BertiniVar3HARP, BertiniVar4HARP, RooMUSummary  ]
+  path:   [ BertiniDefaultHARP, BertiniVar1HARP, BertiniVar2HARP, BertiniVar3HARP, BertiniVar4HARP  ]
+
+  trigger_paths: [ path ]
+
+}
