@@ -4,8 +4,8 @@ process_name:processA
 source: 
 {
   module_type: RootInput
-  maxEvents:  -1
-  fileNames: [ "EvtBertini-ProcL.root" ]
+  maxEvents:  -1 // default - will take all events in the input file(s)
+  fileNames: [ "EvtBertini-ProcL-RScale-XScale-Variants.root" ]
 }
 
 services: 
@@ -31,12 +31,12 @@ services:
 
   TFileService :
   {
-    fileName: "BertiniParamStudySummary.root"
+    fileName: "BertiniParamStudySummary-RScale-XScale.root"
   }
 
   user: 
   {
-     //
+     // None
   }
 
 }
@@ -45,7 +45,7 @@ physics: {
 
   producers: 
   {
-     //
+     // None
   }
 
   analyzers: 
@@ -57,45 +57,156 @@ physics: {
 	ProductLabel: "G4BertiniDefault"
      }
      
-     BertiniVar1HARP:
+// analyze RadiusScale variants     
+
+     BertiniRsc1HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar1"
+	ProductLabel: "G4BertiniRsc1"
      }
 
-     BertiniVar2HARP:
+     BertiniRsc2HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar2"
+	ProductLabel: "G4BertiniRsc2"
      }
 
-     BertiniVar3HARP:
+     BertiniRsc3HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar3"
+	ProductLabel: "G4BertiniRsc3"
      }
 
-     BertiniVar4HARP:
+     BertiniRsc4HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar4"
+	ProductLabel: "G4BertiniRsc4"
+     }
+     
+     BertiniRsc5HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc5"
+     }
+     
+     BertiniRsc6HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc6"
      }
 
-// JVY, 11/21/15: does NOT work yet - segfaults, needs update
-//     
-//     RooMUSummary:
-//     {
-//        module_type: RooMUHistSummary
-//	//
-//	Verbosity: 0
-//	G4DefaultDirectory: "BertiniDefaultHARP"
-//	G4VariantDirectories: [ "BertiniVar1HARP", "BertiniVar2HARP", "BertiniMVar3HARP", "BertiniVar4HARP" ]
-//     }
+     BertiniRsc7HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc7"
+     }
+     
+     BertiniRsc8HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc8"
+     }
+     
+     BertiniRsc9HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc9"
+     }
+     
+     BertiniRsc10HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc10"
+     }
+
+// analyze XSecScale variants     
+
+     BertiniXsc1HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc1"
+     }
+
+     BertiniXsc2HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc2"
+     }
+
+     BertiniXsc3HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc3"
+     }
+
+     BertiniXsc4HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc4"
+     }
+     
+     BertiniXsc5HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc5"
+     }
+     
+     BertiniXsc6HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc6"
+     }
+     
+     BertiniXsc7HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc7"
+     }
+     
+     BertiniXsc8HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc8"
+     }
+     
+     BertiniXsc9HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc9"
+     }
+     
+     BertiniXsc10HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc10"
+     }
+
+// RooMUHistos summary of 2 (two) groups of variants
+// Each group of varinats will make a separate band on the SAME Default histo
+
+     RooMUSummary:
+     {
+        module_type: RooMUHistSummary
+	//
+	Verbosity: 0
+	G4DefaultDirectory: "BertiniDefaultHARP"
+        G4GroupsOfVariants:
+	{
+	   RadiusScale: [ "BertiniRsc1HARP", "BertiniRsc2HARP", "BertiniRsc3HARP", "BertiniRsc4HARP", "BertiniRsc5HARP", 
+	                  "BertiniRsc6HARP", "BertiniRsc7HARP", "BertiniRsc8HARP", "BertiniRsc9HARP", "BertiniRsc10HARP" ]
+	   XSecScale:   [ "BertiniXsc1HARP", "BertiniXsc2HARP", "BertiniXsc3HARP", "BertiniXsc4HARP", "BertiniXsc5HARP",
+	                  "BertiniXsc6HARP", "BertiniXsc7HARP", "BertiniXsc8HARP", "BertiniXsc9HARP", "BertiniXsc10HARP" ]
+	}
+     }
 
   }
   
-//  path:   [ BertiniDefaultHARP, BertiniVar1HARP, BertiniVar2HARP, BertiniVar3HARP, BertiniVar4HARP, RooMUSummary  ]
-  path:   [ BertiniDefaultHARP, BertiniVar1HARP, BertiniVar2HARP, BertiniVar3HARP, BertiniVar4HARP  ]
+  path:   [ BertiniDefaultHARP, 
+            BertiniRsc1HARP, BertiniRsc2HARP, BertiniRsc3HARP, BertiniRsc4HARP, BertiniRsc5HARP,
+	    BertiniRsc6HARP, BertiniRsc7HARP, BertiniRsc8HARP, BertiniRsc9HARP, BertiniRsc10HARP,
+            BertiniXsc1HARP, BertiniXsc2HARP, BertiniXsc3HARP, BertiniXsc4HARP, BertiniXsc5HARP,
+	    BertiniXsc6HARP, BertiniXsc7HARP, BertiniXsc8HARP, BertiniXsc9HARP, BertiniXsc10HARP,
+            RooMUSummary  ]
 
   trigger_paths: [ path ]
 

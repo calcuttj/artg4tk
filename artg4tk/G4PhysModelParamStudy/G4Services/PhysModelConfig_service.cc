@@ -43,6 +43,15 @@ void artg4tk::PhysModelConfigService::ConfigureModel( const std::string& mname,
                                                       const fhicl::ParameterSet& mpset )
 {
 
+   // NOTE (JVY): This logic assumes that the model's verbosity key with within the model config.
+   //             This is the case when using a physics list where multiple models can be configured.
+   //             But NOT the case when running at the "process level" where the verbosity key is
+   //             OUTSIDE of the model configuration specs and rather applies to the whole module.
+   //             FIXME !!!
+   //             Need to find a transparent solution !!!
+   //             Using the verbosity key at the level of CENTRAL config service will work but it'll
+   //             make the models (or at least Bertini) way to noisy. 
+   
    std::string mod = mname;
    mod = fConfigMapper->ToLower(mod);
    if ( mod == "bertini" )

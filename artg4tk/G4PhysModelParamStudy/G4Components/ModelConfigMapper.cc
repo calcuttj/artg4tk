@@ -194,7 +194,7 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
    {
       G4cout << " New value of parameter " << param << "=" << value << G4endl;
       G4cout << " Applying G4UI command: " << command << G4endl;
-   }
+  }
 
    G4UImanager* uim = G4UImanager::GetUIpointer();   
    uim->ApplyCommand( command.c_str() );   

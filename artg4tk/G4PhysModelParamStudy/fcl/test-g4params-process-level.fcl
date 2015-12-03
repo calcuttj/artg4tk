@@ -4,7 +4,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:  20000
+  maxEvents:  25000
 }
 
 services: 
@@ -30,7 +30,7 @@ services:
 
   TFileService :
   {
-    fileName: "HARPBertini-ProcL.root"
+    fileName: "HARPBertini-ProcL-RScale-XScale-Variants.root"
   }
 
   user: 
@@ -59,7 +59,7 @@ outputs:
    out1: 
    {
       module_type: RootOutput   
-      fileName: "EvtBertini-ProcL.root"
+      fileName: "EvtBertini-ProcL-RScale-XScale-Variants.root"
    }
 }
 
@@ -89,7 +89,9 @@ physics: {
 	}
      }
      
-     G4BertiniVar1:
+// RadiusScale variants
+//
+     G4BertiniRsc1:
      {
         module_type: ProcLevelMPVaryProducer
 	Verbosity: 0
@@ -98,12 +100,12 @@ physics: {
 	   DefaultPhysics: false
 	   ModelParameters:
 	   {
-	      RadiusScaleByRatio: 0.75
+	      RadiusScaleByRatio: 0.9
 	   }
 	}
      }
 
-     G4BertiniVar2:
+     G4BertiniRsc2:
      {
         module_type: ProcLevelMPVaryProducer
 	Verbosity: 0
@@ -112,12 +114,96 @@ physics: {
 	   DefaultPhysics: false
 	   ModelParameters:
 	   {
-	      RadiusScaleByRatio: 1.25
+	      RadiusScaleByRatio: 1.1
 	   }
 	}
      }
 
-     G4BertiniVar3:
+     G4BertiniRsc3:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      RadiusScaleByRatio: 0.8
+	   }
+	}
+     }
+
+     G4BertiniRsc4:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      RadiusScaleByRatio: 1.2
+	   }
+	}
+     }
+
+     G4BertiniRsc5:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      RadiusScaleByRatio: 0.7
+	   }
+	}
+     }
+
+     G4BertiniRsc6:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      RadiusScaleByRatio: 1.3
+	   }
+	}
+     }
+
+     G4BertiniRsc7:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      RadiusScaleByRatio: 0.6
+	   }
+	}
+     }
+
+     G4BertiniRsc8:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      RadiusScaleByRatio: 1.4
+	   }
+	}
+     }
+
+     G4BertiniRsc9:
      {
         module_type: ProcLevelMPVaryProducer
 	Verbosity: 0
@@ -131,7 +217,7 @@ physics: {
 	}
      }
 
-     G4BertiniVar4:
+     G4BertiniRsc10:
      {
         module_type: ProcLevelMPVaryProducer
 	Verbosity: 0
@@ -141,6 +227,148 @@ physics: {
 	   ModelParameters:
 	   {
 	      RadiusScaleByRatio: 1.5
+	   }
+	}
+     }
+
+// XSecScale variants
+//
+     G4BertiniXsc1:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 0.9
+	   }
+	}
+     }
+
+     G4BertiniXsc2:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 1.1
+	   }
+	}
+     }
+
+     G4BertiniXsc3:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 0.8
+	   }
+	}
+     }
+
+     G4BertiniXsc4:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 1.2
+	   }
+	}
+     }
+
+     G4BertiniXsc5:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 0.7
+	   }
+	}
+     }
+
+     G4BertiniXsc6:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 1.3
+	   }
+	}
+     }
+
+     G4BertiniXsc7:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 0.6
+	   }
+	}
+     }
+
+     G4BertiniXsc8:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 1.4
+	   }
+	}
+     }
+
+     G4BertiniXsc9:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 0.5
+	   }
+	}
+     }
+
+     G4BertiniXsc10:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      XSecScaleByRatio: 1.5
 	   }
 	}
      }
@@ -156,46 +384,143 @@ physics: {
 	ProductLabel: "G4BertiniDefault"
      }
      
-     BertiniVar1HARP:
+// analyze RadiusScale variants     
+//
+     BertiniRsc1HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar1"
+	ProductLabel: "G4BertiniRsc1"
      }
 
-     BertiniVar2HARP:
+     BertiniRsc2HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar2"
+	ProductLabel: "G4BertiniRsc2"
      }
 
-     BertiniVar3HARP:
+     BertiniRsc3HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar3"
+	ProductLabel: "G4BertiniRsc3"
      }
 
-     BertiniVar4HARP:
+     BertiniRsc4HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniVar4"
+	ProductLabel: "G4BertiniRsc4"
+     }
+     
+     BertiniRsc5HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc5"
+     }
+     
+     BertiniRsc6HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc6"
+     }
+
+     BertiniRsc7HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc7"
+     }
+     
+     BertiniRsc8HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc8"
+     }
+     
+     BertiniRsc9HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc9"
+     }
+     
+     BertiniRsc10HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc10"
+     }
+
+// analyze XSecScale variants     
+//
+     BertiniXsc1HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc1"
+     }
+
+     BertiniXsc2HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc2"
+     }
+
+     BertiniXsc3HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc3"
+     }
+
+     BertiniXsc4HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc4"
+     }
+     
+     BertiniXsc5HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc5"
+     }
+     
+     BertiniXsc6HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc6"
+     }
+     
+     BertiniXsc7HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc7"
+     }
+     
+     BertiniXsc8HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc8"
+     }
+     
+     BertiniXsc9HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc9"
+     }
+     
+     BertiniXsc10HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc10"
      }
   
-// JVY, 11/21/15: does NOT work at the moment - segfaults, need update
-//
-//     RooMUSummary:
-//     {
-//        module_type: RooMUHistSummary
-//	//
-//	Verbosity: 0
-//	G4DefaultDirectory: "BertiniDefaultHARP"
-//	G4VariantDirectories: [ "BertiniVar1HARP", "BertiniVar2HARP", "BertiniMVar3HARP", "BertiniVar4HARP" ]
-//     }
-
   }
   
-  path1:   [ PrimaryGenerator, G4BertiniDefault, G4BertiniVar1, G4BertiniVar2, G4BertiniVar3, G4BertiniVar4 ] 
-//  path2:   [ BertiniDefaultHARP, BertiniVar1HARP, BertiniVar2HARP, BertiniVar3HARP, BertiniVar4HARP, RooMUSummary  ]
-  path2:   [ BertiniDefaultHARP, BertiniVar1HARP, BertiniVar2HARP, BertiniVar3HARP, BertiniVar4HARP ]
+  path1:   [ PrimaryGenerator, 
+             G4BertiniDefault, 
+	     G4BertiniRsc1, G4BertiniRsc2, G4BertiniRsc3, G4BertiniRsc4,G4BertiniRsc5, 
+	     G4BertiniRsc6, G4BertiniRsc7, G4BertiniRsc8, G4BertiniRsc9,G4BertiniRsc10, 
+	     G4BertiniXsc1, G4BertiniXsc2, G4BertiniXsc3, G4BertiniXsc4, G4BertiniXsc5, 
+	     G4BertiniXsc6, G4BertiniXsc7, G4BertiniXsc8, G4BertiniXsc9, G4BertiniXsc10 ] 
+  path2:   [ BertiniDefaultHARP, 
+             BertiniRsc1HARP, BertiniRsc2HARP, BertiniRsc3HARP, BertiniRsc4HARP, BertiniRsc5HARP,
+             BertiniRsc6HARP, BertiniRsc7HARP, BertiniRsc8HARP, BertiniRsc9HARP, BertiniRsc10HARP,
+	     BertiniXsc1HARP, BertiniXsc2HARP, BertiniXsc3HARP, BertiniXsc4HARP, BertiniXsc5HARP,
+	     BertiniXsc6HARP, BertiniXsc7HARP, BertiniXsc8HARP, BertiniXsc9HARP, BertiniXsc10HARP ]
   stream1: [ out1 ]
 
   trigger_paths: [ path1 ]

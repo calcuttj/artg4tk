@@ -67,6 +67,11 @@
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
 #include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
+//
+// TMP stuff - just for cross-checks at the dev stage !!! 
+//
+// !!! #include "Geant4/G4CascadeParameters.hh"
+
 namespace artg4tk {
 
   class ProcLevelMPVaryProducer : public art::EDProducer {
@@ -162,6 +167,12 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
       art::ServiceHandle<PhysModelConfigService> physcfgservice;
       if ( !modelcfg.is_empty() ) physcfgservice->ConfigureModel(fModelName,modelcfg);
    }
+   
+//
+// TMP stuff - just for cross-checks at the dev stage !!! 
+//
+// !!!      G4cout << " Cross-check RadiusScale = " << G4CascadeParameters::radiusScale() << G4endl;
+// !!!      G4cout << " Cross-check XSecScale = " << G4CascadeParameters::xsecScale() << G4endl;
    
    fProcWrapper = 0;
    fProcManager = 0;
