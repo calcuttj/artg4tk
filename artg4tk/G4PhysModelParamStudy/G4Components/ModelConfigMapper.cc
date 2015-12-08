@@ -74,6 +74,18 @@ void ModelConfigMapper::PrintDefaults( const std::string& model ) // const
 
 }
 
+void ModelConfigMapper::PrintCurrentSettings()
+{
+
+   PrintBertiniSettings();
+   PrintINCLXXSettings();
+   
+   // etc. in the future...
+   
+   return;
+   
+}
+
 void ModelConfigMapper::SetVerbosity( const std::string& model, const bool& verb )
 {
 
@@ -199,10 +211,9 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
    G4UImanager* uim = G4UImanager::GetUIpointer();   
    uim->ApplyCommand( command.c_str() );   
 
-//   if ( par == "radiusscale" )
-//   {
-//      G4cout << " Cross-check " << par << "=" << G4CascadeParameters::radiusScale() << G4endl;
-//   }
+//      G4cout << " Cross-check  usePreCompound = " << G4CascadeParameters::usePreCompound() << G4endl;
+//      G4cout << " Cross-check radiusScale = " << G4CascadeParameters::radiusScale() << G4endl;
+//      G4cout << " Cross-check xsecScale = = " << G4CascadeParameters::xsecScale() << G4endl;
 
    // restore previous state
    //  
@@ -222,9 +233,11 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
 
 }
 
-void ModelConfigMapper::ChangeParameter( const std::string& model, const std::string& param, const int& value )
+void ModelConfigMapper::ChangeParameter( const std::string& model, const std::string& param, const int& value, bool verb )
 {
 
+   double v1 = (double)value;
+   ChangeParameter( model, param, v1, verb );
    return;
 
 }
@@ -285,11 +298,6 @@ void ModelConfigMapper::ChangeParameterByRatio( const std::string& model, const 
       
    ChangeParameter( model, par, newvalue, verb );
    
-//   if ( par == "radiusscale" )
-//   {
-//      G4cout << " Cross-check " << par << "=" << G4CascadeParameters::radiusScale() << G4endl;
-//   }
-
    return;
 
 }
@@ -299,6 +307,19 @@ void ModelConfigMapper::ChangeParameterByRatio( const std::string& model, const 
 
    double v1 = ratio;
    ChangeParameterByRatio( model, param, v1, verb );
+   return;
+
+}
+
+void ModelConfigMapper::RestoreAllDefaults()
+{
+
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr=fDEFAULTS.begin();
+   for ( ; itr!=fDEFAULTS.end(); ++itr )
+   {
+      RestoreDefaults( itr->first );
+   }
+      
    return;
 
 }
@@ -403,7 +424,7 @@ void ModelConfigMapper::FillBertiniDefaults()
 // these params/methods are NOT available in G4.9.6-series, but only starting 10.1-ref03
 //   
    cmd << G4CascadeParameters::piNAbsorption();
-   (itr2->second).insert( std::pair<std::string,std::string>("piNAbsorption",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("/piNAbsorption",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::use3BodyMom();
@@ -426,7 +447,7 @@ void ModelConfigMapper::FillBertiniDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("/nuclearRadiusScale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-   cmd << G4CascadeParameters::radiusSmall();
+   cmd << (G4CascadeParameters::radiusSmall()/G4CascadeParameters::radiusScale()); // due to specifics of Bertini implementation
    (itr2->second).insert( std::pair<std::string,std::string>("/smallNucleusRadius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
@@ -438,7 +459,7 @@ void ModelConfigMapper::FillBertiniDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("/shadowningRadius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-   cmd << G4CascadeParameters::fermiScale();
+   cmd << (G4CascadeParameters::fermiScale()/G4CascadeParameters::radiusScale()); // due to specifics of Bertini implementation
    (itr2->second).insert( std::pair<std::string,std::string>("/fermiScale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
@@ -462,12 +483,12 @@ void ModelConfigMapper::FillBertiniDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("/cluster4DPmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-   cmd << "/usePreCoumpound " << G4CascadeParameters::usePreCompound() ; // false/0 by default
-   (itr2->second).insert( std::pair<std::string,std::string>("/usePreCoumpound",cmd.str()) );
+   cmd << G4CascadeParameters::usePreCompound() ; // false/0 by default
+   (itr2->second).insert( std::pair<std::string,std::string>("/usePreCompound",cmd.str()) );
    cmd.str("");
    cmd.clear();
 
-   (itr2->second).insert( std::pair<std::string,std::string>("/useBestNuclearModel","false") ); // no corresponding access method; unclear D !!!
+// !!!   (itr2->second).insert( std::pair<std::string,std::string>("/useBestNuclearModel","false") ); // no corresponding access method; unclear D !!!
                                                                                                 // From G4CascadeParameters.cc: BEST_PAR = (0!=G4NUCMODEL_USE_BEST);
 				                                                                // probably means that if env.var. is NOT set, this option isn't in use
 
@@ -491,7 +512,77 @@ void ModelConfigMapper::FillConfigParamMapBertini()
    
    (itr->second).insert( std::pair<std::string,std::string>("radiusscale","/nuclearRadiusScale") );
    (itr->second).insert( std::pair<std::string,std::string>("xsecscale","/crossSectionScale") );
+   (itr->second).insert( std::pair<std::string,std::string>("useprecompound", "/usePreCompound") );
    (itr->second).insert( std::pair<std::string,std::string>("verbosity","/verbose") );  
+
+   return;
+
+}
+
+void ModelConfigMapper::PrintBertiniSettings()
+{
+
+   G4cout << " *** BERTINI CASCADE *** CURRENT SETTINGS ARE THE FOLLOWING: " << G4endl; 
+   G4cout << " =========================================================== " << G4endl;
+   
+   // general purpose verbosity switch
+   // has nothing to do with the model params/configuration
+   // but is useful for some debugging purposes
+   //
+   G4cout << fBaseCommand << "cascade/verbosity " <<  G4CascadeParameters::verbose() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/doCoalescence " << G4CascadeParameters::doCoalescence() << G4endl;
+
+// these params/methods are NOT available in G4.9.6-series, but only starting 10.1-ref03
+//   
+   G4cout << fBaseCommand << "cascade/piNAbsorption " << G4CascadeParameters::piNAbsorption() << G4endl;
+
+   G4cout << fBaseCommand << "cascade/use3BodyMom " << G4CascadeParameters::use3BodyMom() << G4endl;
+
+   G4cout << fBaseCommand << "cascade/usePhaseSpace "  << G4CascadeParameters::usePhaseSpace() << G4endl;
+
+// technically speaking, these parameters are available in 9.6-series, together with their G4UI,  
+// but in practice they can only be changed via env.variables, due to some implementation details 
+//
+   G4cout << fBaseCommand << "cascade/useTwoParamNuclearRadius " << G4CascadeParameters::useTwoParam() << G4endl;
+
+   G4cout << fBaseCommand << "cascade/nuclearRadiusScale " << G4CascadeParameters::radiusScale() << G4endl;
+
+   G4cout << fBaseCommand << "cascade/smallNuclearRadius " << (G4CascadeParameters::radiusSmall()/G4CascadeParameters::radiusScale()) 
+                          << "*radiusScale(" << G4CascadeParameters::radiusScale() << ") = " << G4CascadeParameters::radiusSmall() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/alphaRadiusScale " << G4CascadeParameters::radiusAlpha() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/shadowingRadius " << G4CascadeParameters::radiusTrailing() << G4endl; 
+   
+   G4cout << fBaseCommand << "cascade/fermiScale " << (G4CascadeParameters::fermiScale()/G4CascadeParameters::radiusScale())
+                          << "*radiusScale(" << G4CascadeParameters::radiusScale() << ") = " << G4CascadeParameters::fermiScale() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/crossSectionScale " << G4CascadeParameters::xsecScale() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/gammaQuasiDeutScale " << G4CascadeParameters::gammaQDScale() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/cluster2DPmax " << G4CascadeParameters::dpMaxDoublet() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/cluster3DPmax " << G4CascadeParameters::dpMaxTriplet() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/cluster4DPmax " << G4CascadeParameters::dpMaxAlpha() << G4endl;
+   
+   G4cout << fBaseCommand << "cascade/usePreCompound " << G4CascadeParameters::usePreCompound() << G4endl; // false/0 by default
+
+// --> !!!   (itr2->second).insert( std::pair<std::string,std::string>("/useBestNuclearModel","false") ); // no corresponding access method; unclear D !!!
+                                                                                                // From G4CascadeParameters.cc: BEST_PAR = (0!=G4NUCMODEL_USE_BEST);
+				                                                                // probably means that if env.var. is NOT set, this option isn't in use
+// --> !!!   (itr2->second).insert( std::pair<std::string,std::string>("/useBestNuclearModel","0") ); // no corresponding access method; unclear D !!!
+
+   G4cout << " =========================================================== " << G4endl;
+   
+   return;
+
+}
+
+void ModelConfigMapper::PrintINCLXXSettings()
+{
 
    return;
 

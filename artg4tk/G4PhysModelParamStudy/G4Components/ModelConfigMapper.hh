@@ -21,13 +21,15 @@ class ModelConfigMapper
       // member functions
       //
       void PrintDefaults( const std::string& ); 
+      void PrintCurrentSettings();
       void RestoreDefaults( const std::string& );
+      void RestoreAllDefaults();
       //
       void SetVerbosity( const std::string&, const bool& );
       //
       void ChangeParameter( const std::string&, const std::string&, const double&, bool verb=false );
       void ChangeParameter( const std::string&, const std::string&, const float&,  bool verb=false );
-      void ChangeParameter( const std::string&, const std::string&, const int& ); // empty now
+      void ChangeParameter( const std::string&, const std::string&, const int&,    bool verb=false ); // empty now
       //
       void ChangeParameterByRatio( const std::string&, const std::string&, const double&, bool verb=false );
       void ChangeParameterByRatio( const std::string&, const std::string&, const float&,  bool verb=false );
@@ -44,6 +46,8 @@ class ModelConfigMapper
       void FillINCLXXDefaults();
       // etc. in the future...
       void FillConfigParamMapBertini();
+      void PrintBertiniSettings();
+      void PrintINCLXXSettings();
             
       
       // data members

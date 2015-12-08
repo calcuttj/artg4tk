@@ -39,6 +39,14 @@ artg4tk::PhysModelConfigService::~PhysModelConfigService()
  
 } 
 
+void artg4tk::PhysModelConfigService::PrintDefaultSettings()
+{
+
+   fConfigMapper->PrintDefaults("bertini");
+   return;
+
+}
+
 void artg4tk::PhysModelConfigService::ConfigureModel( const std::string& mname, 
                                                       const fhicl::ParameterSet& mpset )
 {
@@ -63,13 +71,32 @@ void artg4tk::PhysModelConfigService::ConfigureModel( const std::string& mname,
       {
           std::string thekey = keys[i];
 	  thekey = fConfigMapper->ToLower(thekey);
+/*
 	  if ( thekey.find("use") != std::string::npos ) continue; // those are int or bool !
 	                                                           // will add/treat them later
+*/
+	  // NOTE(JVY): there's a difference between "general" verbosity and
+	  //            specific Bertini verbosity (which is "too verbose");
+	  //            hence, the 2 different keys...
+	  //
 	  if ( thekey == "verbosity" )
 	  {
 	     fConfigMapper->SetVerbosity( "bertini", mpset.get<bool>(keys[i],false) );
 	     continue;
-	  }	  
+	  }	
+	  //
+	  // Bertini itself treats parameters that contain "use" as integers (not bools);
+	  // they can be changed only "by value"
+	  //	  
+	  if ( thekey.find("use") != std::string::npos )
+	  {
+	     int value = mpset.get<int>(keys[i],0) ;
+	     fConfigMapper->ChangeParameter( "bertini", thekey, value, fVerbosity );
+	  }
+	  // 
+	  // Parameters that do NOT contain "use" can treated as doubles (doesn't matter
+	  // what Bertini "thinks" internally),cand can be changed "by value" or "by ratio"
+	  //
 	  double value = mpset.get<double>(keys[i]);
 	  if ( thekey.find("byratio") != std::string::npos )
 	  {
@@ -88,10 +115,18 @@ void artg4tk::PhysModelConfigService::ConfigureModel( const std::string& mname,
 
 }
 
-void artg4tk::PhysModelConfigService::RestoreDefaults( const std::string& model )
+void artg4tk::PhysModelConfigService::Reset()
 {
 
-   fConfigMapper->RestoreDefaults( model );
+   fConfigMapper->RestoreAllDefaults();
+   return;
+
+}
+
+void artg4tk::PhysModelConfigService::PrintCurrentSettings()
+{
+
+   fConfigMapper->PrintCurrentSettings();
    return;
 
 }

@@ -149,9 +149,16 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
    // CRITICAL !!!
    // Model(s) (or at least Bertini) config/params should be in BEFORE
    // the model's ctor is invoked !!!
-   //   
+   //  
+   // But first of all, clear away whatever custom settings maybe left over 
+   // from another (previous) module's config:
+   // 
+   art::ServiceHandle<PhysModelConfigService> physcfgservice;      
+   physcfgservice->Reset();
+   
    //
-   // TRACKED PSet(s) - outputs with different settings will NOT mix
+   // Now get the config parameters
+   // It's a TRACKED PSet(s) - outputs with different settings will NOT mix
    //
    fhicl::ParameterSet physicscfg = p.get<fhicl::ParameterSet>("HadronicModel");
       
@@ -164,15 +171,18 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
       fhicl::ParameterSet tmp;
       tmp.put( fModelName, modelcfg );
       fModelConfig->Fill( tmp );
-      art::ServiceHandle<PhysModelConfigService> physcfgservice;
       if ( !modelcfg.is_empty() ) physcfgservice->ConfigureModel(fModelName,modelcfg);
    }
-   
+
+// TMP stuff - just for cross-checks at the dev stage !!!
 //
-// TMP stuff - just for cross-checks at the dev stage !!! 
+// NOTE(JVY): One can also use PhysModelConfigService::PrintCurrentSettings() method.
+// 
 //
-// !!!      G4cout << " Cross-check RadiusScale = " << G4CascadeParameters::radiusScale() << G4endl;
-// !!!      G4cout << " Cross-check XSecScale = " << G4CascadeParameters::xsecScale() << G4endl;
+// !!!      G4cout << " Now in ProcLevelMPVaryProducer ctor " << G4endl;
+// !!!      G4cout << " Cross-check  usePreCompound = " << G4CascadeParameters::usePreCompound() << G4endl;
+// !!!      G4cout << " Cross-check radiusScale = " << G4CascadeParameters::radiusScale() << G4endl;
+// !!!      G4cout << " Cross-check xsecScale = = " << G4CascadeParameters::xsecScale() << G4endl;
    
    fProcWrapper = 0;
    fProcManager = 0;
@@ -187,6 +197,18 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
    if(!G4StateManager::GetStateManager()->SetNewState(G4State_Idle))
       fLogInfo << "G4StateManager PROBLEM! "; //  << G4endl;
    
+   // NOTE(JV): This is IMPORTANT to init model/process in the ctor !!!
+   //           ...and not in beginRun or beginJob because there maybe 
+   //           several modules of this type, the next one may change
+   //           parameters of one or several model(s);
+   //           by the time the flow gets to even beginJob, the ** laatest **
+   //           model(s) configuration will be sitting in the guts of Geant4,
+   //           so any attempt to initProcess anywhere past the ctor will make
+   //           result in picking up a single, latest model config, no matter
+   //           what one says in the module configuration.
+   //           Alternative solution would be to mode BOTH model (central) config
+   //           AND model/process init (instantiation) into begin<whatever> 
+   //
    initProcess();
       
    fVerbosity       = p.get<int>("Verbosity",0);

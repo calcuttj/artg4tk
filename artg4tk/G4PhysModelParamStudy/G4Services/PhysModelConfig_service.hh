@@ -30,8 +30,10 @@ class PhysModelConfigService
       PhysModelConfigService( const fhicl::ParameterSet&, art::ActivityRegistry& );
       ~PhysModelConfigService();
       
+      void PrintDefaultSettings();
       void ConfigureModel( const std::string&, const fhicl::ParameterSet& );
-      void RestoreDefaults( const std::string& );
+      void Reset();
+      void PrintCurrentSettings();
                      
    private:
    
