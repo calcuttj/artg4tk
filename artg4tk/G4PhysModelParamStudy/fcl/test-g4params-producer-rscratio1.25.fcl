@@ -4,7 +4,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:  10
+  maxEvents:  1000
 }
 
 services: 
@@ -65,7 +65,7 @@ outputs:
    out1: 
    {
       module_type: RootOutput   
-      fileName: "EvtBertiniRScaleByRatio1.25.root"
+      fileName: "Evt-G4-BertiniRScaleByRatio1.25.root"
    }
 }
 

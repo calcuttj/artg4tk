@@ -4,7 +4,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:  10
+  maxEvents:  1000
 }
 
 services: 
@@ -38,6 +38,10 @@ services:
 
      RandomNumberGenerator: {}
 
+//
+// GDML-based geometry configuration will be released shortly
+// At present we are double checking several technicalities of GDML
+//
 //     DetectorHolder: {}
 //     GDMLDetector:
 //     {
@@ -65,7 +69,7 @@ outputs:
    out1: 
    {
       module_type: RootOutput   
-      fileName: "EvtBertiniDefault.root"
+      fileName: "Evt-G4-Default.root"
    }
 }
 
@@ -85,7 +89,11 @@ physics: {
      {
         module_type: ModelParamStudyProducer
 	//
-        RNDMSeed: 54321
+        RNDMSeed: 12345
+//
+// This is temporary use of (semi-)hard-coded geometry
+// Will be replaced by GDML-based, run-time configurable component shortly
+//
         TargetGeom:
         {
            targetSize: [ 0., 3.15, 160. ]
@@ -93,13 +101,11 @@ physics: {
 	   targetMaterial: "Pb"
 	   targetShape: "G4Tubs"
         }
+	
 	Verbosity: 0
 	HadronicModelParameters:
 	{
 	   DefaultPhysics: true
-//	   Bertini:
-//	   {
-//	   }
 	}
      }
 
@@ -126,6 +132,8 @@ physics: {
   //       Otherwise, they will NOT be included in the exec.
   //       If you don't have an end_path, things will magically work though... 
   //        
-  end_paths:     [ path2, stream1 ]
+//  end_paths:     [ path2, stream1 ]
+  end_paths:     [ stream1 ]
+
 
 }
