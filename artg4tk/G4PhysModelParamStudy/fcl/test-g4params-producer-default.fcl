@@ -132,8 +132,8 @@ physics: {
   //       Otherwise, they will NOT be included in the exec.
   //       If you don't have an end_path, things will magically work though... 
   //        
-//  end_paths:     [ path2, stream1 ]
-  end_paths:     [ stream1 ]
+  end_paths:     [ path2, stream1 ]
+//  end_paths:     [ stream1 ]
 
 
 }

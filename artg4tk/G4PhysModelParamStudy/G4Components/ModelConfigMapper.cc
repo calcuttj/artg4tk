@@ -455,7 +455,8 @@ void ModelConfigMapper::FillBertiniDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("/alphaRadiusScale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-   cmd << G4CascadeParameters::radiusTrailing(); 
+//   cmd << G4CascadeParameters::radiusTrailing(); 
+   cmd << (G4CascadeParameters::radiusTrailing()/G4CascadeParameters::radiusScale()); 
    (itr2->second).insert( std::pair<std::string,std::string>("/shadowningRadius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
@@ -512,7 +513,13 @@ void ModelConfigMapper::FillConfigParamMapBertini()
    
    (itr->second).insert( std::pair<std::string,std::string>("radiusscale","/nuclearRadiusScale") );
    (itr->second).insert( std::pair<std::string,std::string>("xsecscale","/crossSectionScale") );
+   (itr->second).insert( std::pair<std::string,std::string>("fermiscale","/fermiScale") );
+   (itr->second).insert( std::pair<std::string,std::string>("trailingradius","/shadowningRadius") );
+   (itr->second).insert( std::pair<std::string,std::string>("gammaqdscale","/gammaQuasiDeutScale") );
    (itr->second).insert( std::pair<std::string,std::string>("useprecompound", "/usePreCompound") );
+   (itr->second).insert( std::pair<std::string,std::string>("docoalescence", "/doCoalescence") );
+
+
    (itr->second).insert( std::pair<std::string,std::string>("verbosity","/verbose") );  
 
    return;
@@ -553,7 +560,8 @@ void ModelConfigMapper::PrintBertiniSettings()
    
    G4cout << fBaseCommand << "cascade/alphaRadiusScale " << G4CascadeParameters::radiusAlpha() << G4endl;
    
-   G4cout << fBaseCommand << "cascade/shadowingRadius " << G4CascadeParameters::radiusTrailing() << G4endl; 
+   G4cout << fBaseCommand << "cascade/shadowingRadius " << (G4CascadeParameters::radiusTrailing()/G4CascadeParameters::radiusScale()) 
+                          << "*radiusScale(" << G4CascadeParameters::radiusScale() << ") = " << G4CascadeParameters::radiusTrailing() << G4endl; 
    
    G4cout << fBaseCommand << "cascade/fermiScale " << (G4CascadeParameters::fermiScale()/G4CascadeParameters::radiusScale())
                           << "*radiusScale(" << G4CascadeParameters::radiusScale() << ") = " << G4CascadeParameters::fermiScale() << G4endl;

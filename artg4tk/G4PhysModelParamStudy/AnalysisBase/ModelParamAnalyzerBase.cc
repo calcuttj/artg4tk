@@ -35,10 +35,12 @@ artg4tk::ModelParamAnalyzerBase::ModelParamAnalyzerBase( const fhicl::ParameterS
 
    fProdLabel = p.get<std::string>("ProductLabel");
    
+/*
    if ( !(G4ParticleTable::GetParticleTable()->GetReadiness()) )
    {
       prepareG4PTable();
    }
+*/
    
 }
 
@@ -51,6 +53,14 @@ artg4tk::ModelParamAnalyzerBase::~ModelParamAnalyzerBase()
 
 void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
 {
+
+// move particletable prep (if needed) to begin run in order to avoid conflicts
+// with standard Geant4 app initialization (due to internal details of core Geant4)
+//
+   if ( !(G4ParticleTable::GetParticleTable()->GetReadiness()) )
+   {
+      prepareG4PTable();
+   }
 
    art::Handle<ArtG4tkModelConfig> physcfg;
    r.getByLabel( fProdLabel, physcfg );
