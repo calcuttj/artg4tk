@@ -307,7 +307,7 @@ void artg4tk::ProcLevelMPVaryProducer::produce( art::Event& e )
     
    GenParticleCollection::const_iterator i=primgenparts->begin();
       
-   if ( !fTrack  || ! fStep )
+   if ( !fTrack  || !fStep )
    {
       setProjectile( *i );
    }
@@ -379,9 +379,7 @@ void artg4tk::ProcLevelMPVaryProducer::produce( art::Event& e )
    //       otherwise event processor will sagfault 
    //
    e.put(std::move(firstint)); 
-   
-   thechange->Clear();   
-   
+      
    return;
     
 }
@@ -497,7 +495,7 @@ void artg4tk::ProcLevelMPVaryProducer::initProcess()
 
 void artg4tk::ProcLevelMPVaryProducer::setProjectile( const GenParticle& genpart )
 {
-
+   
    if ( fTrack ) delete fTrack;
    if ( fStep )  delete fStep;
 

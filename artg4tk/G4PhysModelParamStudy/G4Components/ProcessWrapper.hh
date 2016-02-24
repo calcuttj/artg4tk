@@ -71,6 +71,8 @@ class ProcessWrapper : public G4HadronicProcess
                                                         {return DBL_MAX;};
 
    protected:
+   
+      void CleanUp();
       
       // in principle, I can make it directly G4TheoFSGenerator*
       // because it's the same among FTF(p), QGS(P), and QGS(B)...
@@ -82,7 +84,14 @@ class ProcessWrapper : public G4HadronicProcess
       G4ExcitedStringDecay*            fStringDecay;
       bool                             fUseLundStrFragm;
       
-      G4VParticleChange                fPartChange;
+      // NO NEED for this since G4VProcess has a data member 
+      // G4VParticleChange* pParticleChange
+      // (which actually points at the (almsot obsolete)
+      // G4VParticleChange aParticleChange
+      // It can be used and is (presumeable) taken care of
+      // in terms of memory management, etc.
+      // 
+      // G4VParticleChange                fPartChange;
                                                  
 };
 
