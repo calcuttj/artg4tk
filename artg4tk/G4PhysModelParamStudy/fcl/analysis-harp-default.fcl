@@ -5,7 +5,7 @@ source:
 {
   module_type: RootInput
   maxEvents:  -1 // default - will take all events in the input file(s)
-  fileNames: [ "Evt-G4-Default.root" ]
+  fileNames: [ "Evt-G4-Default-test1.root" ]
 }
 
 services: 

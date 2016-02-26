@@ -1,72 +1,64 @@
-// #include "detectorDefaults.fcl"
 process_name:processA
 
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:  1000
+  maxEvents:   10000
 }
 
 services: 
 {
 
-  message : 
-  {
-     debugModules : ["*"]
-     suppressInfo : []    
-     destinations : 
-     {
-       LogToConsole : 
-       {
-         type : "cout"
-         threshold : "DEBUG"
-         categories : 
-	 {
-           default : { limit : 50 }
+   message : 
+   {
+      debugModules : ["*"]
+      suppressInfo : []    
+      destinations : 
+      {
+         LogToConsole : 
+         {
+            type : "cout"
+            threshold : "DEBUG"
+            categories : 
+	    {
+               default : { limit : 50 }
+            }
          }
-       }
-     }
-  }
+      }
+   }
 
-  TFileService :
-  {
-    fileName: "HARPBertiniDefault.root"
-  }
+   TFileService :
+   {
+      fileName: "HARPBertiniDefault.root"
+   }
 
-  user: 
-  {
+   RandomNumberGenerator: {}
 
-     RandomNumberGenerator: {}
-
+// GDML-based geometry 
 //
-// GDML-based geometry configuration will be released shortly
-// At present we are double checking several technicalities of GDML
-//
-//     DetectorHolder: {}
-//     GDMLDetector:
-//     {
-//        category: "world"
-//	gdmlFileName_: "./gdml/be_target.gdml"
-//     }
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world"
+	gdmlFileName_: "./pb_target.gdml"
+   }
 
-     PhysicsListHolder: {}
-     PhysicsList: 
-     {
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
         PhysicsListName: "QGSP_FTFP_BERT"
-     }
+   }
      
-     PhysModelConfig: 
-     {
+   PhysModelConfig: 
+   {
 //        Verbosity: true
-     }
-         
-  }
+   }      
 
 }
 
 outputs: 
 {
-   out1: 
+   outA: 
    {
       module_type: RootOutput   
       fileName: "Evt-G4-Default.root"
@@ -90,19 +82,9 @@ physics: {
         module_type: ModelParamStudyProducer
 	//
         RNDMSeed: 12345
-//
-// This is temporary use of (semi-)hard-coded geometry
-// Will be replaced by GDML-based, run-time configurable component shortly
-//
-        TargetGeom:
-        {
-           targetSize: [ 0., 3.15, 160. ]
-	   targetPosition: [ 0, 0, 0 ]
-	   targetMaterial: "Pb"
-	   targetShape: "G4Tubs"
-        }
-	
+	//	
 	Verbosity: 0
+	//
 	HadronicModelParameters:
 	{
 	   DefaultPhysics: true
@@ -124,7 +106,7 @@ physics: {
   
   path1:   [ PrimaryGenerator, G4BertiniDefault ] 
   path2:   [ HARPTest  ]
-  stream1: [ out1 ]
+  stream1: [ outA ]
 
   trigger_paths: [ path1 ]
   //

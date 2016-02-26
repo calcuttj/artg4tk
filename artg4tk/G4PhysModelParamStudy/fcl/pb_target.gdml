@@ -2,9 +2,9 @@
 <gdml_simple_extension xmlns:gdml_simple_extension="http://www.example.org"
 		       xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"          
 		       xs:noNamespaceSchemaLocation="SimpleExtension.xsd"> 
-
-<!-- NOTE-1: 
-     picking up schema directly from G4/GDML location will also work 
+<!-- NOTE-2: 
+     If you wish to use G4Nist-like materials naming, do NOT put in any specs of materials;
+     better stick to one approach... 
 -->
 
 <!--
@@ -24,7 +24,7 @@
 
     <structure>
         <volume name="TargetVolume">
-            <materialref ref="G4_Be"/>
+            <materialref ref="G4_Pb"/>
             <solidref ref="TargetSolid"/>
             <auxiliary auxtype="SensDet" auxvalue="HadInteraction"/>
         </volume>
