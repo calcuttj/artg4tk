@@ -51,6 +51,9 @@ JobID=${1}
 G4ParamTest=${WORKDIR_TOP}/srcs/artg4tk/artg4tk/G4PhysModelParamStudy
 cd ${G4ParamTest}/ProdScripts/PBS
 
+# FIXME !!! 
+# This can be molded after ${App}, by just stripping `.sh` extention 
+#
 rundirname=ex1_run_g4app
 if [ ! "x" == "x$JobID" ]; then
 rundirname=ex1_run_g4app_${JobID}
@@ -115,6 +118,15 @@ if [ ! "x" == "x$ts_filename" ]; then
 fi
 
 /usr/bin/printf "   RandomNumberGenerator: {} \n"
+
+/usr/bin/printf "// GDML-based geometry \n"
+/usr/bin/printf "// \n"
+/usr/bin/printf "   DetectorHolder: {} \n"
+/usr/bin/printf "   GDMLDetector: { \n"
+/usr/bin/printf "      category: \"world\" \n"
+/usr/bin/printf "      gdmlFileName_: \"${gdmlfile}\" } \n"   
+
+
 if [ ! "x" == "x$physlist" ]; then 
 /usr/bin/printf "   PhysicsListHolder: {} \n"
 /usr/bin/printf "   PhysicsList: { PhysicsListName: \"${physlist}\" } \n"
@@ -155,12 +167,14 @@ cfg_g4producer () {
 /usr/bin/printf "      G4${g4label}: { \n"
 /usr/bin/printf "         module_type: ModelParamStudyProducer \n"
 /usr/bin/printf "         RNDMSeed: ${seed} \n"
-/usr/bin/printf "         TargetGeom: { \n"
-/usr/bin/printf "            targetSize: [ 0., 3.15, 160. ] \n"
-/usr/bin/printf " 	     targetPosition: [ 0, 0, 0 ] \n"
-/usr/bin/printf "	     targetMaterial: \"Pb\" \n"
-/usr/bin/printf "	     targetShape: \"G4Tubs\" \n"
-/usr/bin/printf "         } \n"
+# --> no longer needed since we are using GDML
+# /usr/bin/printf "         TargetGeom: { \n"
+# /usr/bin/printf "            targetSize: [ 0., 3.15, 160. ] \n"
+# /usr/bin/printf " 	     targetPosition: [ 0, 0, 0 ] \n"
+# /usr/bin/printf "	     targetMaterial: \"Pb\" \n"
+# /usr/bin/printf "	     targetShape: \"G4Tubs\" \n"
+# /usr/bin/printf "         } \n"
+# -->
 /usr/bin/printf "  	  Verbosity: 0 \n"
 /usr/bin/printf "	  HadronicModelParameters: { \n"
 /usr/bin/printf "	     DefaultPhysics: ${defaults} \n"

@@ -38,11 +38,11 @@
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
 #include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
-/* testing/debugging perposes
+/* testing/debugging purposes */
 
 #include "Geant4/G4GDMLParser.hh"
 #include "Geant4/G4PhysicalVolumeStore.hh"
-*/
+/* */
 
 namespace artg4tk {
 
@@ -216,7 +216,7 @@ void artg4tk::ModelParamStudyProducer::beginRun( art::Run& run )
    //
    art::ServiceHandle<PhysicsListHolderService> physicsListHolder;
    fRM->SetUserInitialization( physicsListHolder->makePhysicsList() );
-
+   
    // Declare the detector construction to Geant
    //
    fRM->SetUserInitialization( new ArtG4DetectorConstruction() ); // this GDML-related - will retrieve from detholder, etc.
@@ -296,14 +296,38 @@ void artg4tk::ModelParamStudyProducer::produce( art::Event& e )
       G4ParticleDefinition* g4pd = ptable->FindParticle( pdgcode );
       if ( !g4pd ) continue;
       //
-      // G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( i->position()*mm, 0. ); // 4th arg is time(ns)
+      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( i->position()*CLHEP::cm, 0. ); // 4th arg is time(ns)
       //
-      // FIXME !!!
-      // This needs to be configurable !!!
-      //
-      CLHEP::Hep3Vector pos(0.,0.,-1300.); // in mm !!!
-      G4PrimaryVertex*   g4vtx = new G4PrimaryVertex( pos*CLHEP::mm, 0. ); // 4th arg is time(ns)
       const CLHEP::HepLorentzVector& mom = i->momentum();
+    
+/*
+      //
+      // FIXME !!! --> DONE !!!
+      // This needs to be configurable via cfg/fcl !!!
+      // For now, start the particle just inside the "subvolume"
+      //
+      G4LogicalVolume*     world = G4TransportationManager::GetTransportationManager()
+                                 ->GetNavigatorForTracking()->GetWorldVolume()->GetLogicalVolume();
+      G4VPhysicalVolume*   pdaughter = world->GetDaughter(0); // "first daughter" which is subworld
+      G4VSolid*            solid = pdaughter->GetLogicalVolume()->GetSolid();    
+      double z = solid->DistanceToOut( G4ThreeVector(0.,0.,0.), G4ThreeVector(0.,0.,-1.) ); // NOTE that dist is always positive
+      //
+      if ( mom.z() > 0. ) // if the z-momentum is positive (left-to-right), then start at the left edge
+      {
+         z *= -1.;
+      }
+      //
+      CLHEP::Hep3Vector pos( 237.5, 0., (pdaughter->GetTranslation().z()+z*0.999) ); // z is in mm !!! and shift it by 0.1% inward !!!
+                  
+      //
+      G4PrimaryVertex*  g4vtx = new G4PrimaryVertex( pos*CLHEP::mm, 0. ); // 4th arg is time(ns)
+      //
+      // specifically to LArIAT study !!!
+      //
+      // G4PrimaryVertex* g4vtx = new G4PrimaryVertex( CLHEP::Hep3Vector(23.75,0.,-40.54646)*CLHEP::cm, 0. );
+      //
+*/
+
       G4PrimaryParticle* g4prim = new G4PrimaryParticle( g4pd, 
                                                          mom.x()*CLHEP::GeV, mom.y()*CLHEP::GeV, mom.z()*CLHEP::GeV, 
 							 mom.e()*CLHEP::GeV );        

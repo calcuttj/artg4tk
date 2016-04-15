@@ -112,7 +112,17 @@ void artg4tk::ModelParamAnalyzerBase::initXSecOnTarget( const std::string& mname
 // NOTE/FIXME (JV): probably it's better to take the beam particle 
 //                  directly from the generator record, via the event !!!
 
-   G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial( mname );
+   
+   std::string tmp = mname;
+   
+//   if ( mname.find("G4_") == std::string::npos )
+   if ( mname == "LAr" )
+   {
+      std::cout << " initXSecOnTarget: mat.name = " << mname << std::endl; 
+      tmp = "G4_Ar";
+   }
+   
+   G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial( tmp );
    assert(mat);
    
    const G4Element* elm = mat->GetElement(0);  

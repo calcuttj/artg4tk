@@ -53,6 +53,7 @@
 //       but just in case, they're artg4tk/DataProducts/G4DetectorHits/ArtG4tk*
 //
 #include "artg4tk/pluginDetectors/gdml/HadInteractionSD.hh"
+#include "artg4tk/pluginDetectors/gdml/HadIntAndEdepTrkSD.hh"
 //
 //#include "artg4tk/services/DetectorHolder_service.hh"
 // Geant 4 includes:
@@ -85,13 +86,37 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p, art::ActivityRegistry &)
-: artg4tk::DetectorBase(p,
-p.get<string>("name", "GDMLDetectorService"),
-p.get<string>("category", "World"),
-p.get<string>("mother_category", "")),
-gdmlFileName_(p.get<std::string>("gdmlFileName_")),
-// Initialize our message logger
-logInfo_("GDMLDetectorService") {
+  : artg4tk::DetectorBase(p,
+    p.get<string>("name", "GDMLDetectorService"),
+    p.get<string>("category", "World"),
+    p.get<string>("mother_category", "")),
+    // Initialize our message logger
+    logInfo_("GDMLDetectorService") 
+{
+
+   std::string fntmp = p.get<std::string>("gdmlFileName_");
+      
+   if ( fntmp.substr(0,1) == "$" )
+   {
+      // path to GDML geom file is given by by env.var. !
+      //   
+      std::vector<std::string> selm = split( fntmp, '/' ); 
+      assert ( !selm.empty() );
+      std::string envvar = selm[0].substr(1);
+      std::string path = std::string( getenv( envvar.c_str() ) );
+      gdmlFileName_ = path;
+      for ( size_t i=1; i<selm.size(); ++i )
+      {
+         gdmlFileName_ += ( "/" + selm[i] );
+      }   
+   } 
+   else
+   {
+      // absolute path to GDML geom file
+      //
+      gdmlFileName_ = fntmp;
+   }
+
 }
 
 // Destructor
@@ -179,7 +204,17 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
                     std::cout << "Attaching sensitive Detector: " << (*vit).value
                             << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
                     DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
-                }
+                } else if ( (*vit).value == "HadIntAndEdepTrk" ) {
+                    G4String name = ((*iter).first)->GetName() + "_HadIntAndEdepTrk";
+                    HadIntAndEdepTrkSD* aHadIntAndEdepTrkSD = new HadIntAndEdepTrkSD(name);
+                    // NOTE: This will be done in the HadIntAndEdepTrkSD ctor
+		    // SDman->AddNewDetector(aHadIntAndEdepTrkSD);
+                    ((*iter).first)->SetSensitiveDetector(aHadIntAndEdepTrkSD);
+                    std::cout << "Attaching sensitive Detector: " << (*vit).value
+                            << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
+                    DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
+		   
+		}
             }
         }
     }
@@ -233,7 +268,12 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer)
         } else if ( (*cii).second == "HadInteraction") {
             // std::string identifier = myName() + (*cii).first;
             producer -> produces<ArtG4tkVtx>(); // do NOT use product instance name (for now)
-        } 
+        }
+	else if ( (*cii).second == "HadIntAndEdepTrk" )
+	{
+	   producer->produces<ArtG4tkVtx>();
+	   producer->produces<myTrackerArtHitDataCollection>();
+	} 
     }
 }
 
@@ -271,6 +311,31 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
 					    // which is NOT used in this specific case
 	     } 	     
 	     hisd->clear(); // clear out after movind info to EDM; no need to clea out in the producer !
+	  }
+       }
+       else if ( (*cii).second == "HadIntAndEdepTrk" )
+       {
+	  G4SDManager* sdman = G4SDManager::GetSDMpointer();
+	  HadIntAndEdepTrkSD* sd = dynamic_cast<HadIntAndEdepTrkSD*>(sdman->FindSensitiveDetector(sdname));
+	  if ( sd )
+	  {
+             art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
+             art::Event & e = detectorHolder -> getCurrArtEvent();
+             const ArtG4tkVtx& inter = sd->Get1stInteraction();
+	     if ( inter.GetNumOutcoming() > 0 )
+	     {
+	        std::unique_ptr<ArtG4tkVtx> firstint(new ArtG4tkVtx(inter));
+                e.put(std::move(firstint)); // note that there's NO product instance name (for now, at least)
+		                            // (part of) the is that the name is encoded into the "collection"
+					    // which is NOT used in this specific case
+	     }
+	     const myTrackerArtHitDataCollection& trkhits = sd->GetEdepTrkHits();
+	     if ( !trkhits.empty() )
+	     {
+	        std::unique_ptr<myTrackerArtHitDataCollection> hits(new myTrackerArtHitDataCollection(trkhits)); 
+		e.put(std::move(hits));
+	     } 	     
+	     sd->clear(); // clear out after movind info to EDM; no need to clea out in the producer !
 	  }
        }
     }    

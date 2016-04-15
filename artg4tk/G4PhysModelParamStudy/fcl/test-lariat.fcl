@@ -3,7 +3,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:   10
+  maxEvents:   100000
 }
 
 services: 
@@ -27,11 +27,6 @@ services:
       }
    }
 
-   TFileService :
-   {
-      fileName: "HARPBertiniDefault.root"
-   }
-
    RandomNumberGenerator: {}
 
 // GDML-based geometry 
@@ -40,7 +35,8 @@ services:
    GDMLDetector:
    {
         category: "world"
-	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/pb_target.gdml"
+	// geom file can be given by absolute path or via env.var
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/lariat.gdml"
    }
 
    PhysicsListHolder: {}
@@ -61,7 +57,7 @@ outputs:
    outA: 
    {
       module_type: RootOutput   
-      fileName: "Evt-G4-Default.root"
+      fileName: "Evt-G4-Default-piplus-2GeV.root"
    }
 }
 
@@ -74,10 +70,14 @@ physics: {
      {
         module_type: EventGenerator
 	nparticles : 1
-	momentum: [ 0., 0., 5. ] // in GeV 
+	pdgcode: 211
+	mass: 0.1395679
+	momentum: [ 0., 0., 2.0 ] // in GeV
+	// momentum_sigma: [ 0., 0., 0.3 ]
+	vertex: [ 23.75, 0., -40.54646 ] // in cm
      }
 
-     G4BertiniDefault:
+     G4Default:
      {
         module_type: ModelParamStudyProducer
 	//
@@ -92,20 +92,13 @@ physics: {
      }
 
   }
-  
-  analyzers:
+
+  analyzers: 
   {
-  
-     HARPTest:
-     {
-        module_type: AnalyzerHARP
-	ProductLabel: "G4BertiniDefault"
-     }
-  
+     // None
   }
-  
-  path1:   [ PrimaryGenerator, G4BertiniDefault ] 
-  path2:   [ HARPTest  ]
+    
+  path1:   [ PrimaryGenerator, G4Default ] 
   stream1: [ outA ]
 
   trigger_paths: [ path1 ]
@@ -114,8 +107,7 @@ physics: {
   //       Otherwise, they will NOT be included in the exec.
   //       If you don't have an end_path, things will magically work though... 
   //        
-  end_paths:     [ path2, stream1 ]
-//  end_paths:     [ stream1 ]
+  end_paths:     [ stream1 ]
 
 
 }

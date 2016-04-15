@@ -20,6 +20,8 @@
 #include "Geant4/G4ios.hh"
 #include "Geant4/G4VVisManager.hh"
 
+#include "Geant4/G4VSolid.hh"
+
 //#include "RootIO.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -55,9 +57,26 @@ void  artg4tk::TrackerSD::Initialize(G4HCofThisEvent* HCE) {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool  artg4tk::TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
+
+
+/*
+   G4Track*           trk = aStep->GetTrack();
+   std::cout << "TrackerSD: particle = " << trk->GetParticleDefinition()->GetPDGEncoding() << std::endl;
+   std::cout << "TrackerSD: parent of the particle (ID) = " << trk->GetParentID() << std::endl;
+	 std::cout << "TrackerSD: position = " << aStep->GetTrack()->GetPosition().x() << " "
+	                                       << aStep->GetTrack()->GetPosition().y() << " "
+					       << aStep->GetTrack()->GetPosition().z() << std::endl;
+
+    std::cout << "TrackerSD: momentum = " << trk->GetMomentum().x() << " "
+                                          << trk->GetMomentum().y() << " "
+					  << trk->GetMomentum().z() << std::endl;
+    
+    std::cout << "TrackerSD: edep = " << aStep->GetTotalEnergyDeposit() << std::endl;
+*/
+    
     G4double edep = aStep->GetTotalEnergyDeposit();
     if (edep == 0.) return false;
-
+   
     TrackerHit* newHit = new TrackerHit();
     newHit->SetEdep(edep);
     newHit->SetPos(aStep->GetPostStepPoint()->GetPosition());

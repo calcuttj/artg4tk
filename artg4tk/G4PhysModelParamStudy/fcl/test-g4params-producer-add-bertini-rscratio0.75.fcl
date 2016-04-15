@@ -36,7 +36,7 @@ services:
   GDMLDetector:
   {
         category: "world"
-	gdmlFileName_: "./pb_target.gdml"
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/pb_target.gdml"
   }
 
   PhysicsListHolder: {}

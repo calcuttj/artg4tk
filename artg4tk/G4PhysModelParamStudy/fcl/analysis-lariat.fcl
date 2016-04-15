@@ -1,0 +1,134 @@
+// #include "detectorDefaults.fcl"
+process_name:processA
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1 // default - will take all events in the input file(s)
+  fileNames: [ "Evt-G4-Default-BertRsc1-BertXsc01-piplus-2GeV.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "LArIAT.root"
+  }
+
+  user: 
+  {
+     // None
+  }
+
+}
+
+physics: {
+
+  producers: 
+  {
+     // None
+  }
+
+  analyzers: 
+  {
+     
+     EdepTrkG4Default:
+     {
+        module_type: AnalyzerEdepTrk
+	ProductLabel: "G4Default"
+	NSecHistoLimits: [ 0., 50. ]
+	HadIntRateHistoLimits: [ 0., 2.5 ] // in GeV
+	NEdepHitsHistoLimits: [ 0., 1000. ]
+	EdepHistoLimits: [ 0., 2.5 ] // in GeV
+	EdepRHistoLimits: [ 0., 50. ] // in cm
+	EdepZHistoLimits: [ 0., 100. ]	// in cm
+     }
+
+     EdepTrkBertRsc1:
+     {
+        module_type: AnalyzerEdepTrk
+	ProductLabel: "G4BertiniRsc1"
+	NSecHistoLimits: [ 0., 50. ]
+	HadIntRateHistoLimits: [ 0., 2.5 ] // in GeV
+	NEdepHitsHistoLimits: [ 0., 1000. ]
+	EdepHistoLimits: [ 0., 2.5 ] // in GeV
+	EdepRHistoLimits: [ 0., 50. ] // in cm
+	EdepZHistoLimits: [ 0., 100. ]	// in cm
+     }
+
+     EdepTrkBertXsc01:
+     {
+        module_type: AnalyzerEdepTrk
+	ProductLabel: "G4BertiniXsc01"
+	NSecHistoLimits: [ 0., 50. ]
+	HadIntRateHistoLimits: [ 0., 2.5 ] // in GeV
+	NEdepHitsHistoLimits: [ 0., 1000. ]
+	EdepHistoLimits: [ 0., 2.5 ] // in GeV
+	EdepRHistoLimits: [ 0., 50. ] // in cm
+	EdepZHistoLimits: [ 0., 100. ]	// in cm
+     }
+
+     HARPG4Default:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4Default"
+     }
+
+     HARPBertRsc1:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc1"
+     }
+
+     HARPBertXsc01:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXsc01"
+     }
+
+     ITEPG4Default:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4Default"
+     }
+
+     ITEPBertRsc1:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniRsc1"
+     }
+
+     ITEPBertXsc01:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniXsc01"
+     }
+
+  }
+       
+  path:   [ EdepTrkG4Default, EdepTrkBertRsc1, EdepTrkBertXsc01, 
+            HARPG4Default, HARPBertRsc1, HARPBertXsc01,
+	    ITEPG4Default, ITEPBertRsc1, ITEPBertXsc01 ]
+
+  trigger_paths: [ path ]
+
+}
