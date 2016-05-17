@@ -15,6 +15,7 @@
 
 // Root-specific headers
 #include "TH1D.h"
+#include "TGraphErrors.h"
 
 #include "CLHEP/Units/SystemOfUnits.h"
 
@@ -52,6 +53,9 @@ namespace artg4tk {
       TH1D*              fHShowerEdepR;
       TH1D*              fEdepZ;
       TH1D*              fHShowerEdepZ;
+      
+      TH1D*              fExpDataH;
+      TGraphErrors*      fExpDataG;
             
       // diagnostics output
       //
@@ -137,6 +141,7 @@ artg4tk::AnalyzerEdepTrk::AnalyzerEdepTrk( const fhicl::ParameterSet& p )
                              nbins, limits[0], limits[1] );
    fHShowerEdepZ->GetXaxis()->SetTitle( "Global Z-position [cm]" );
    fHShowerEdepZ->GetYaxis()->SetTitle( "Average Energy Deposit [GeV/cm]" );  
+
 		     
 }
 
@@ -224,11 +229,7 @@ void artg4tk::AnalyzerEdepTrk::analyze( const art::Event& e )
 //      return;
    }
    else
-   {
-// -->   if ( !fXSecInit ) initXSecOnTarget( firstint->GetMaterialName(), firstint->GetIncoming() );
-   
-      // const std::vector<ArtG4tkParticle>& secs = firstint->GetAllOutcoming();
-      // int nsec = secs.size();
+   {   
       int nsec = firstint->GetNumOutcoming();
       if ( nsec > 0 )
       {   

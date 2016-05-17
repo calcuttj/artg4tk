@@ -85,12 +85,16 @@ void artg4tk::AnalyzerHARP::beginJob()
    std::string theta_bin_fw;
    std::string theta_bin_la;
 
-   std::string htitle = ""; // FIXME !!!
    std::string hname  = "";
 
    double parbins_fw[] = { 0.5, 1.0, 1.5, 2., 2.5, 3., 3.5, 4., 5., 6.5, 8. };
    int    nparbins_fw = sizeof(parbins_fw) / sizeof(double) - 1;
       
+   // NOTE: use of std::to_string(double) results in something like this: 0.1 --> "0.100000" (too much...)
+   //       for this reason, use ostringstream to convert float/double to std::string
+   //       although using std::to_string(int) looks just fine 
+   //
+   
    for ( int i=0; i<fNThetaBinsFW; i++ )
    {
       thetaMin = fThetaMinFW + fDeltaThetaFW*i;
@@ -98,27 +102,24 @@ void artg4tk::AnalyzerHARP::beginJob()
       
       std::ostringstream osTitle1;
       std::ostringstream osTitle2;
-      std::ostringstream osTitle3;
       
       osTitle1.clear();
       osTitle1 << thetaMin;
-      theta_bin_fw = osTitle1.str() + " < theta < ";
+      theta_bin_fw = osTitle1.str() + "<theta<";
       osTitle2.clear();
       osTitle2 << thetaMax;
       theta_bin_fw += osTitle2.str();
-      theta_bin_fw += "(rad)";
-   
-      osTitle3.clear();
-      osTitle3 << i;
-      
-      hname = "piminus_FW_" + osTitle3.str();         
-      fHistoSecPiMinusFW.push_back( tfs->make<TH1D>( hname.c_str(), htitle.c_str(), nparbins_fw, parbins_fw ) );
+      theta_bin_fw += " [rad]";
+//      theta_bin_fw = std::to_string(thetaMin) + "<theta<" + std::to_string(thetaMax) + "[rad]";
+            
+      hname = "piminus_FW_" + std::to_string(i);       
+      fHistoSecPiMinusFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(), nparbins_fw, parbins_fw ) );
 
-      hname = "piplus_FW_" + osTitle3.str();
-      fHistoSecPiPlusFW.push_back( tfs->make<TH1D>( hname.c_str(), htitle.c_str(), nparbins_fw, parbins_fw ) );
+      hname = "piplus_FW_" + std::to_string(i);
+      fHistoSecPiPlusFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(), nparbins_fw, parbins_fw ) );
 
-      hname = "proton_FW_" + osTitle3.str();
-      fHistoSecProtonFW.push_back( tfs->make<TH1D>( hname.c_str(), htitle.c_str(),nparbins_fw, parbins_fw ) ); 
+      hname = "proton_FW_" + std::to_string(i);
+      fHistoSecProtonFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(),nparbins_fw, parbins_fw ) ); 
    
    }
 
@@ -133,27 +134,23 @@ void artg4tk::AnalyzerHARP::beginJob()
      
       std::ostringstream osTitle1;
       std::ostringstream osTitle2;
-      std::ostringstream osTitle3;
 
       osTitle1.clear();
       osTitle1 << thetaMin;
-      theta_bin_la = osTitle1.str() + " < theta < ";
+      theta_bin_la = osTitle1.str() + "<theta<";
       osTitle2.clear();
       osTitle2 << thetaMax;
       theta_bin_la += osTitle2.str();
-      theta_bin_la += "(rad)";
+      theta_bin_la += " [rad]";
       
-      osTitle3.clear();
-      osTitle3 << i;
-      
-      hname = "piminus_LA_" + osTitle3.str();         
-      fHistoSecPiMinusLA.push_back( tfs->make<TH1D>( hname.c_str(), htitle.c_str(), nparbins_la, parbins_la ) );
+      hname = "piminus_LA_" + std::to_string(i);         
+      fHistoSecPiMinusLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
 
-      hname = "piplus_LA_" + osTitle3.str();
-      fHistoSecPiPlusLA.push_back( tfs->make<TH1D>( hname.c_str(), htitle.c_str(), nparbins_la, parbins_la ) );
+      hname = "piplus_LA_" + std::to_string(i);
+      fHistoSecPiPlusLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
 
-      hname = "proton_LA_" + osTitle3.str();
-      fHistoSecProtonLA.push_back( tfs->make<TH1D>( hname.c_str(), htitle.c_str(), nparbins_la, parbins_la ) );
+      hname = "proton_LA_" + std::to_string(i);
+      fHistoSecProtonLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
 
    }
 
@@ -168,6 +165,8 @@ void artg4tk::AnalyzerHARP::beginJob()
 
 void artg4tk::AnalyzerHARP::endJob()
 {
+   
+   ModelParamAnalyzerBase::endJob();
    
    if ( !fXSecInit ) return;
    

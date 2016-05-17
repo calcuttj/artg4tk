@@ -20,6 +20,9 @@
 #include "TObjArray.h"
 // --> --> #include "TObjString.h" // will be included with the source code
 
+#include "artg4tk/ExpDataAccess/VDBConnect.hh"
+#include "artg4tk/ExpDataAccess/JSON2Data.hh"
+
 namespace artg4tk {
 
    class ModelParamAnalyzerBase : public art::EDAnalyzer {
@@ -30,6 +33,8 @@ namespace artg4tk {
       virtual ~ModelParamAnalyzerBase();
       
       virtual void beginRun( const art::Run&  )       override;
+
+      virtual void endJob()                           override;
          
    protected:
    
@@ -46,6 +51,11 @@ namespace artg4tk {
       //
       double fXSecOnTarget; 
       bool   fXSecInit;
+            
+      bool             fIncludeExpData;
+      std::vector<int> fVDBRecordID;
+      VDBConnect*      fVDBConnect;
+      JSON2Data*       fJSON2Data;
       
       // diagnostics output
       //

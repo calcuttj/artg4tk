@@ -34,20 +34,32 @@ artg4tk::ModelParamAnalyzerBase::ModelParamAnalyzerBase( const fhicl::ParameterS
 {
 
    fProdLabel = p.get<std::string>("ProductLabel");
-   
-/*
-   if ( !(G4ParticleTable::GetParticleTable()->GetReadiness()) )
-   {
-      prepareG4PTable();
+   // fIncludeExpData = p.get<bool>("IncludeExpData",false);
+   fIncludeExpData = false;
+   fVDBConnect = 0;
+   fJSON2Data = 0;
+   if ( p.has_key("IncludeExpData") )
+   {   
+      fIncludeExpData = true;
+      fVDBRecordID = (p.get<fhicl::ParameterSet>("IncludeExpData")).get<std::vector<int> >("DBRecords");
+      fVDBConnect = new VDBConnect();
+      bool status = fVDBConnect->Init();
+      if ( !status )
+      {
+         fLogInfo << " Exp.data are requested but connection to VDB fails"; // << std::endl;
+      }
+      fJSON2Data = new JSON2Data();
    }
-*/
    
 }
 
 artg4tk::ModelParamAnalyzerBase::~ModelParamAnalyzerBase()
 {
-   // do I need any delete's here ?!
+   // do I need any of G4 and/or Root delete's here ?!
    // or will TFileService take care of that ?!?!
+   
+   if ( fVDBConnect ) delete fVDBConnect;
+   if ( fJSON2Data )  delete fJSON2Data;
 }
 
 
@@ -68,8 +80,8 @@ void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
    {
       fLogInfo << " handle to run product (model/physics config) is NOT valid"; // << std::endl;
       return;
-   }   
- 
+   }    
+
    art::ServiceHandle<art::TFileService> tfs;
 
    // NOTE-1(JVY): The TObjArray (of TObjString's) will be created in the right directory of the TFile.
@@ -100,7 +112,29 @@ void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
    fModelConfig->Write("Geant4ModelConfig",1); // NOTE(JVY): 2nd arg tells TObjArray to be written 
                                                //            with the use of a "singke key", i.e. as an TObjArray,
 					       //            not a sequence of TObjects (TObjString's)
-        
+   return;
+
+}
+
+void artg4tk::ModelParamAnalyzerBase::endJob()
+{
+
+   // Just an example (proof of principle)...
+   //
+   if ( fIncludeExpData )
+   {
+      if ( fVDBConnect->IsInitialized() )
+      {
+	 art::ServiceHandle<art::TFileService> tfs;
+         for ( size_t ir=0; ir<fVDBRecordID.size(); ++ir )
+	 {
+	    std::string rjson = fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] );
+	    std::string hname = "ExpDataR" + std::to_string(fVDBRecordID[ir]);
+	    tfs->make<TH1D>( *(fJSON2Data->Convert2Histo(rjson,hname.c_str())) );
+	 }
+      }
+   }
+
    return;
 
 }
@@ -118,8 +152,12 @@ void artg4tk::ModelParamAnalyzerBase::initXSecOnTarget( const std::string& mname
 //   if ( mname.find("G4_") == std::string::npos )
    if ( mname == "LAr" )
    {
-      std::cout << " initXSecOnTarget: mat.name = " << mname << std::endl; 
       tmp = "G4_Ar";
+   }
+   
+   if ( tmp.find("G4_") == std::string::npos )
+   {
+      tmp = "G4_" + mname;
    }
    
    G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial( tmp );

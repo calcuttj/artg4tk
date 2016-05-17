@@ -1,16 +1,10 @@
 #
-# add_subdirectory( world )
+# Do NOT use WERROR, or all warnings will be treated as errors !!!
 #
-# obsolete!!! add_subdirectory( DataProd )
+cet_set_compiler_flags( DIAGS CAUTIOUS EXTRA_FLAGS -pedantic )
 #
 add_subdirectory( G4Components )
 add_subdirectory( G4Services )
-#
-# obsolete !!! add_subdirectory( ApplicationBase )
-#
-add_subdirectory( ApplicationModules )
-#
-# obsolete !!! add_subdirectory( Toys )
 #
 add_subdirectory( RooMUTools )
 add_subdirectory( AnalysisBase )

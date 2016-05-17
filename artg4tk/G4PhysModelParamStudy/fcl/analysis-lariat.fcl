@@ -4,7 +4,8 @@ process_name:processA
 source: 
 {
   module_type: RootInput
-  maxEvents:  -1 // default - will take all events in the input file(s)
+//  maxEvents:  -1 // default - will take all events in the input file(s)
+   maxEvents:  5 
   fileNames: [ "Evt-G4-Default-BertRsc1-BertXsc01-piplus-2GeV.root" ]
 }
 
@@ -91,6 +92,10 @@ physics: {
      {
         module_type: AnalyzerHARP
 	ProductLabel: "G4Default"
+	IncludeExpData: 
+	{
+	   DBRecords: [246, 247, 248 ]
+	}
      }
 
      HARPBertRsc1:
