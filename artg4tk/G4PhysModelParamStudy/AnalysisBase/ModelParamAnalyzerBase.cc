@@ -1,13 +1,6 @@
 
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/ModelParamAnalyzerBase.hh"
 
-// Run/Eevent data products
-// NOTE(JVY): NO NEED to include since they all come via header
-//
-// --> -->  #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        // Event data product
-// --> --> #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkParticle.hh"        // Event data product// --> --> 
-// --> --> #include "artg4tk/DataProducts/G4ModelConfig/ArtG4tkModelConfig.hh" // Run data product
-
 // G4-specific headers
 #include "Geant4/G4Material.hh"
 #include "Geant4/G4NistManager.hh"
@@ -20,7 +13,15 @@
 
 #include "CLHEP/Units/SystemOfUnits.h"
 
+#include "art/Framework/Principal/Event.h"
+//
 #include "art/Framework/Services/Optional/TFileService.h"
+//
+// Run/Eevent data products
+#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        // Event data product
+// Incoming Event data products
+#include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
+#include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
 
 #include <vector>
 #include <iostream>
@@ -28,38 +29,20 @@
 #include <memory>
 
 artg4tk::ModelParamAnalyzerBase::ModelParamAnalyzerBase( const fhicl::ParameterSet& p )
-  : art::EDAnalyzer(p),
-    fXSecInit(false),
-    fLogInfo("ModelParamAnalyzer")
+  : artg4tk::AnalyzerWithExpDataBase(p), // art::EDAnalyzer(p),
+    fXSecInit(false) 
 {
 
    fProdLabel = p.get<std::string>("ProductLabel");
-   // fIncludeExpData = p.get<bool>("IncludeExpData",false);
-   fIncludeExpData = false;
-   fVDBConnect = 0;
-   fJSON2Data = 0;
-   if ( p.has_key("IncludeExpData") )
-   {   
-      fIncludeExpData = true;
-      fVDBRecordID = (p.get<fhicl::ParameterSet>("IncludeExpData")).get<std::vector<int> >("DBRecords");
-      fVDBConnect = new VDBConnect();
-      bool status = fVDBConnect->Init();
-      if ( !status )
-      {
-         fLogInfo << " Exp.data are requested but connection to VDB fails"; // << std::endl;
-      }
-      fJSON2Data = new JSON2Data();
-   }
-   
+
+   fConsistentRunConditions = true;
+      
 }
 
 artg4tk::ModelParamAnalyzerBase::~ModelParamAnalyzerBase()
 {
    // do I need any of G4 and/or Root delete's here ?!
    // or will TFileService take care of that ?!?!
-   
-   if ( fVDBConnect ) delete fVDBConnect;
-   if ( fJSON2Data )  delete fJSON2Data;
 }
 
 
@@ -87,6 +70,9 @@ void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
    // NOTE-1(JVY): The TObjArray (of TObjString's) will be created in the right directory of the TFile.
    //              However, giving it an explicit name here will NOT help the I/O - see another note later.
    //
+   // NOTE-2(JVY): Can NOT call makeAndRegister<TObjArray> because 
+   //              TObjArray does NOT have a SetTitle(...) method
+   //
    fModelConfig = tfs->make<TObjArray>();
 
    std::vector<std::string> cfgmodels = physcfg->GetConfiguredModels();
@@ -110,8 +96,9 @@ void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
    //              in the array, using the same name for each one, so accessing them will be a headache.
    //
    fModelConfig->Write("Geant4ModelConfig",1); // NOTE(JVY): 2nd arg tells TObjArray to be written 
-                                               //            with the use of a "singke key", i.e. as an TObjArray,
+                                               //            with the use of a "single key", i.e. as an TObjArray,
 					       //            not a sequence of TObjects (TObjString's)
+   
    return;
 
 }
@@ -119,22 +106,22 @@ void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
 void artg4tk::ModelParamAnalyzerBase::endJob()
 {
 
-   // Just an example (proof of principle)...
-   //
-   if ( fIncludeExpData )
+   if ( !fConsistentRunConditions ) 
    {
-      if ( fVDBConnect->IsInitialized() )
-      {
-	 art::ServiceHandle<art::TFileService> tfs;
-         for ( size_t ir=0; ir<fVDBRecordID.size(); ++ir )
-	 {
-	    std::string rjson = fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] );
-	    std::string hname = "ExpDataR" + std::to_string(fVDBRecordID[ir]);
-	    tfs->make<TH1D>( *(fJSON2Data->Convert2Histo(rjson,hname.c_str())) );
-	 }
-      }
+      fLogInfo << " Run Conditions (beam id and/or momentum) are NOT consistent; no information will be written out " ;
+      return;
    }
-
+   
+   AnalyzerWithExpDataBase::endJob();
+   
+   art::ServiceHandle<art::TFileService> tfs;
+   
+//   BeamThinTargetConfig* tconf =
+   tfs->makeAndRegister<BeamThinTargetConfig>( "Beam_ThinTarget_Config", "Beam-Momentum-TargetNucleus",
+                                               fBTConf );
+//   std::cout << " tconf : " << std::endl;
+//   tconf->Print();   
+        
    return;
 
 }
@@ -183,6 +170,66 @@ void artg4tk::ModelParamAnalyzerBase::initXSecOnTarget( const std::string& mname
    fXSecInit = true;
       
    return;
+
+}
+
+bool artg4tk::ModelParamAnalyzerBase::ensureBeamTgtConfig( const art::Event& e )
+{
+
+   if ( !fConsistentRunConditions ) 
+   {
+      fLogInfo << " Run Conditions (beam id and/or momentum) are NOT consistent " ;
+      return false;
+   }
+   
+      
+   art::Handle<GenParticleCollection> primgenparts;
+   e.getByLabel( "PrimaryGenerator", primgenparts );
+   if ( !primgenparts.isValid() )
+   {
+       fLogInfo << " Handle to Generator Particle(s) is NOT valid "; //  << std::endl;
+       return false;;
+   }
+   
+   if ( primgenparts->empty() )
+   {
+      fLogInfo << " Generator Particle(s) empty "; // << std::endl;
+      return false;
+   }  
+   
+   if ( primgenparts->size() > 1 )
+   {
+      fLogInfo << " Multiple Generator Particles - only 1 (one) is allowed "; // << std::endl;
+      return false;
+   }
+
+   GenParticleCollection::const_iterator i=primgenparts->begin();
+   if ( fBTConf.GetBeamPartID() == 0 ) fBTConf.SetBeamPartID( i->pdgId() );
+   if ( fBTConf.GetBeamPartID() != i->pdgId() ) fConsistentRunConditions = false;
+   if ( fBTConf.GetBeamMomentum() < 0. ) fBTConf.SetBeamMomentum( i->momentum().vect().mag() );
+   if ( fabs( fBTConf.GetBeamMomentum() - i->momentum().vect().mag() ) > 1.e-10 ) fConsistentRunConditions = false;
+   
+   art::Handle<ArtG4tkVtx> firstint;
+   e.getByLabel( fProdLabel, firstint );
+   if ( !firstint.isValid() )
+   {
+      fLogInfo << " handle to 1st hadronic interaction is NOT valid"; // << std::endl;
+      return false;
+   }
+
+   std::string tgtmatname = firstint->GetMaterialName();
+   G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial(tgtmatname.c_str());
+   
+   if ( fBTConf.GetTargetID() == 0 ) fBTConf.SetTargetID( (int)(mat->GetZ()+0.5) );
+   if ( fBTConf.GetTargetID() != (int)(mat->GetZ()+0.5) ) fConsistentRunConditions = false;
+
+   if ( !fConsistentRunConditions ) 
+   {
+      fLogInfo << " Run Conditions (beam id and/or momentum) are NOT consistent " ;
+      return false;
+   }
+   
+   return fConsistentRunConditions;
 
 }
 

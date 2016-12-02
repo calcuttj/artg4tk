@@ -2,6 +2,4 @@
 # this whole directory. 
 
 art_make( LIB_LIBRARIES )
-
-# Install header files into the products area
 install_headers() 

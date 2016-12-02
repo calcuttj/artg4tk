@@ -9,11 +9,229 @@
 
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
+MetaData::MetaData()
+   : /* fBeamPID(0), fBeamMomentum(0.), */ fBeamLink(-1), fTargetNucleus(0), fSecondaryPID(0),
+                                           fTitle(""), 
+					   fRefLink(-1)
+{
+}
+
+MetaData::MetaData( const MetaData& rhs )
+   : // fBeamPID(rhs.fBeamPID),
+     // fBeamMomentum(rhs.fBeamMomentum),
+     fBeamLink(rhs.fBeamLink),
+     fTargetNucleus(rhs.fTargetNucleus),
+     fSecondaryPID(rhs.fSecondaryPID),
+     fTitle(rhs.fTitle),
+     fRefLink(rhs.fRefLink),
+     fParameters(rhs.fParameters)
+{
+}
+
+MetaData::~MetaData()
+{
+}
+
+bool MetaData::operator==( const MetaData& rhs ) const
+{
+   
+   if ( /* fBeamPID==rhs.fBeamPID && (fBeamMomentum-rhs.fBeamMomentum)<=1.e-10 && */
+        fBeamLink==rhs.fBeamLink &&
+        fTargetNucleus==rhs.fTargetNucleus && fSecondaryPID==rhs.fSecondaryPID )
+   {
+      return true;
+   }
+
+   return false;
+   
+}
+
+bool MetaData::IsMatch( const int& beamid, const double& mom,
+                        const int& tgt,    const int& secid ) const
+{
+
+   if ( IsBeamTargetMatch( beamid, mom, tgt ) &&
+	secid == fSecondaryPID )
+   {
+      return true;
+   }
+   
+   return false;
+
+}
+
+bool MetaData::IsBeamTargetMatch( const int& beamid, const double& mom, 
+                                  const int& tgt ) const
+{
+
+   if ( EmulateBeamLink( beamid, mom ) == fBeamLink &&
+        tgt == fTargetNucleus )
+   {
+      return true;
+   }
+   
+   return false;
+
+}
+
+int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
+{
+
+   int blnk = -1;
+   
+   // HARP-like beam defs 
+   // (some overlaps with ITEP771, e.g. 5GeV/c pions) 
+   //
+   if ( pid == 2212 )
+   {
+      if ( fabs(mom-158.) <= 1.e-10 )
+      {
+         blnk = 7;
+      }
+      else if ( fabs(mom-3.) <= 1.e-10 )
+      {
+         blnk = 37;
+      }
+      else if ( fabs(mom-5.) <= 1.e-10 )
+      {
+         if ( fRefLink == 17 )
+	 {
+	    blnk = 70;
+	 }
+	 else
+	 {
+	    blnk = 38;
+	 }
+      }
+      else if ( fabs(mom-8.) <= 1.e-10 )
+      {
+         blnk = 39;
+      }
+      else if ( fabs(mom-8.9) <= 1.e-10 )
+      {
+         blnk = 40;
+      }
+      else if ( fabs(mom-12.) <= 1.e-10 )
+      {
+         blnk = 41;
+      }
+   }
+   else if (pid == 211 )
+   {
+      if ( fabs(mom-3.) <= 1.e-10 )
+      {
+         if ( fRefLink == 17 )
+	 {
+	    blnk = 71;
+	 }
+	 else
+	 {
+	    blnk = 42;
+	 }
+      }
+      else if ( fabs(mom-5.) <= 1.e-10 )
+      {
+         if ( fRefLink == 17 )
+	 {
+	    blnk = 72;
+	 }
+	 else
+	 {
+            blnk = 43;
+	 }
+      }
+      else if ( fabs(mom-8.) <= 1.e-10 )
+      {
+         blnk = 44;
+      }
+      else if ( fabs(mom-12.) <= 1.e-10 )
+      {
+         blnk = 45;
+      }
+   }
+   else if ( pid == -211 )
+   {
+      if ( fabs(mom-3.) <= 1.e-10 )
+      {
+         blnk = 46;
+      }
+      else if ( fabs(mom-5.) <= 1.e-10 )
+      {
+         if ( fRefLink == 17 )
+	 {
+	    blnk = 73;
+	 }
+	 else
+	 {
+            blnk = 47;
+	 }
+      }
+      else if ( fabs(mom-8.) <= 1.e-10 )
+      {
+         blnk = 48;
+      }
+      else if( fabs(mom-12.) <= 1.e-10 )
+      {
+         blnk = 49;
+      }
+   }
+   
+//   std::cout << " beam = " << pid << " momentum = " << mom << " beamlink = " << blnk << std::endl;
+   
+   return blnk;
+
+}
+
+
 using namespace boost;
 using namespace boost::property_tree;
 
 // #include "rapidjson/document.h"
 // #include "rapidjson/error/en.h"
+
+void JSON2Data::ClearMetaData()
+{
+
+   fMetaData.fBeamLink = -1;
+   fMetaData.fTargetNucleus = 0;
+   fMetaData.fSecondaryPID = 0;
+   fMetaData.fTitle.clear();
+   fMetaData.fTitle = "";
+   fMetaData.fRefLink = -1;
+   fMetaData.fParameters.clear();
+
+   return;
+
+}
+
+void JSON2Data::ParseMetaData( const std::string& jstr )
+{
+
+   ClearMetaData();
+   
+   std::stringstream ss(jstr.c_str()); 
+
+   ptree pt;
+   read_json( ss, pt );
+   
+   fMetaData.fBeamLink      = pt.get<int>("beamlnk");
+   fMetaData.fTargetNucleus = pt.get<int>("targetlnk");
+   fMetaData.fSecondaryPID  = pt.get<int>("secondarylnk");
+   
+   fMetaData.fTitle         = pt.get<std::string>("datatable.title");
+   
+   fMetaData.fRefLink = pt.get<int>("referencelnk");
+   
+/*
+   BOOST_FOREACH( ptree::value_type &v, pt.get_child("parnames") )
+   {
+      //std::cout << " parnames: " << v.second.data() << std::endl;
+      fParameters.push_back( v.second.data() );
+   }
+*/
+   return;
+
+}
 
 TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
 {
@@ -23,6 +241,8 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
       delete fHisto;
       fHisto = 0;
    }
+   
+   ParseMetaData( jstr );
    
    std::stringstream ss(jstr.c_str()); 
 
@@ -197,6 +417,8 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
       std::cout << " Can NOT parse input " << jstr << std::endl;
    }
 */
+
+   ParseMetaData( jstr );
 
    std::stringstream ss(jstr.c_str()); 
 

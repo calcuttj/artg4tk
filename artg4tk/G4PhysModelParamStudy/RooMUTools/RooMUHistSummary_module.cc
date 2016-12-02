@@ -7,19 +7,19 @@
 #include <vector>
 #include <map>
 
+// Base class
+//
+#include "artg4tk/G4PhysModelParamStudy/AnalysisBase/AnalyzerWithExpDataBase.hh"
+
 // Art includes
 //
-#include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Run.h"
 
 // Services
 //
-#include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "art/Framework/Services/Optional/TFileService.h"
-#
-#include "messagefacility/MessageLogger/MessageLogger.h" 
 
 // Root 
 //
@@ -27,6 +27,9 @@
 #include "TDirectory.h"
 #include "TH1D.h"
 #include "TClass.h"
+
+// #include "artg4tk/DataProducts/ThinTargetAnalysis/BeamTargetConfig.hh"
+#include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/BeamThinTargetConfig.hh"
 
 // RooMUHistos 
 //
@@ -37,39 +40,39 @@
 
 namespace artg4tk {
 
-  class RooMUHistSummary : public art::EDAnalyzer 
+  class RooMUHistSummary : public artg4tk::AnalyzerWithExpDataBase 
   {
   
-  public:
+   public:
 
-    // Constructor
-    explicit RooMUHistSummary( fhicl::ParameterSet const& );
+      // Constructor
+      explicit RooMUHistSummary( fhicl::ParameterSet const& );
 
-    // Destructor
-    virtual ~RooMUHistSummary();
+      // Destructor
+      virtual ~RooMUHistSummary();
 
-    virtual void analyze( art::Event const& ) override;
-    virtual void beginJob()                   override;
-    virtual void beginRun( art::Run const& )  override;
-    virtual void endRun( art::Run const& )    override;
-    virtual void endJob()                     override;
-
-  private:
+      virtual void analyze( art::Event const& ) override;
+      virtual void endJob()                     override;
+   
+   protected:
+   
+      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>& );
+         
+   private:
   
-    std::string                                       fG4DefaultDir;    
-    std::map< std::string, std::vector<std::string> > fBand2Dirs;
+      std::string                                       fG4DefaultDir;    
+      std::map< std::string, std::vector<std::string> > fBand2Dirs;
     
-    // Diagnostics 
-    //
-    int                      fVerbosity;
-    mf::LogInfo              fLogInfo;
+      // Diagnostics 
+      //
+      int                      fVerbosity;
+// --> comes via base class AnalyzerWithExpDataBase      mf::LogInfo              fLogInfo;
     
   };
 }
 
 artg4tk::RooMUHistSummary::RooMUHistSummary(fhicl::ParameterSet const& p )
-  : art::EDAnalyzer(p),
-    fLogInfo("RooMUHistSummary")
+  : artg4tk::AnalyzerWithExpDataBase(p)
 {
       
    fG4DefaultDir  = p.get<std::string>("G4DefaultDirectory"); 
@@ -92,15 +95,6 @@ artg4tk::RooMUHistSummary::RooMUHistSummary(fhicl::ParameterSet const& p )
 
 artg4tk::RooMUHistSummary::~RooMUHistSummary()
 {
-
-}
-
-// At begin job
-//
-void artg4tk::RooMUHistSummary::beginJob()
-{
-   
-   return;
 
 }
 
@@ -138,11 +132,54 @@ void artg4tk::RooMUHistSummary::endJob()
          }
       }
    }
-         
-   // NOTE(JVY): at this point, it'll point at the directory that corresponds
-   //            to the label of the last module that called TFileService
-   // const TString oldDir = gDirectory->GetPath();
+             
+   std::string btcname = fG4DefaultDir + "/Beam_ThinTarget_Config";
+   BeamThinTargetConfig* btconf = (BeamThinTargetConfig*)hfile.Get( btcname.c_str() );
+//   std::cout << " Re-testing Beam-ThinTarget Configuration from RooMUSummary " << std::endl;
+//   btconf->Print();
+   
+   //
+   // Need to assert btconfig !!!
+   //
+   
+// maybe later...
+//   std::string g4mcname = fG4DefaultDir + "/Geant4ModelConfig";
+//   TObjArray* g4mconfig = (TObjArray*)hfile.Get( g4mcname.c_str() );
+
+   // Now we need to loop over all subdirs and make sure if beam-mom-tgt configs
+   // are consistent among them, so results can be "combined"; if not, bail out
+   //
+   itr = fBand2Dirs.begin();
+   for ( ; itr!=fBand2Dirs.end(); ++itr )
+   {
+      for ( unsigned int i=0; i<(itr->second.size()); ++i )
+      {
+         std::string tmpname = (itr->second)[i] + "/Beam_ThinTarget_Config";
+	 BeamThinTargetConfig* tmpconf = (BeamThinTargetConfig*)hfile.Get( tmpname.c_str() );
+	 // 
+	 // Need to assert tmpconf !!!
+	 //
+	 // Now cross-loop over configs and make sure they match !!!
+	 // If not, bail out 
+	 //
+	 if ( !( *btconf == *tmpconf ) )
+	 {
+	    fLogInfo << "Imcompatible beam-momentum-target configuration in directory " << (itr->second)[i];
+	    return;
+	 }	 
+      }           
+   }
       
+
+   // OK, everything is compatible, and can be merged/combined 
+   
+   AnalyzerWithExpDataBase::endJob();
+   
+   BeamThinTargetConfig* outconf =
+   tfs->makeAndRegister<BeamThinTargetConfig>( "Beam_ThinTarget_Config", "Beam-Momentum-TargetNucleus", *btconf );
+   std::cout << " B-T Conf to be written out by RooMUSummary " << std::endl;
+   outconf->Print();
+         
    // NOTE(JVY): While in memory, those are TObject(s) (OBJ), not TKey(s) (KEY) !!!
    //
    TIter  next( hfile.GetDirectory( fG4DefaultDir.c_str() )->GetList() );
@@ -203,16 +240,10 @@ void artg4tk::RooMUHistSummary::endJob()
       obj = next();
 
    }
-      
-   return;
-
-}
-
-// At begin run
-//
-void artg4tk::RooMUHistSummary::beginRun( art::Run const& r )
-{  
-      
+   
+//   TList* plist = gDirectory->GetList();
+//   plist->Print();
+       
    return;
 
 }
@@ -227,12 +258,44 @@ void artg4tk::RooMUHistSummary::analyze( art::Event const& e )
 
 }
 
-// At end run
-//
-void artg4tk::RooMUHistSummary::endRun( art::Run const& r)
+
+TH1* artg4tk::RooMUHistSummary::matchExpSpectrum2MC( const int& secid, const std::vector<std::string>& cond )
 {
 
-   return;
+//   TList* list = gDirectory->GetList();
+//   list->Print();
+     
+   TIter  next( gDirectory->GetList() );
+
+   TObject* obj = next();
+   PlotUtils::MUH1D*     h = 0;
+
+   while ( obj )
+   {
+
+      if ( !(TClass::GetClass(obj->ClassName())->InheritsFrom(TH1::Class())) ) 
+      {
+	 obj = next();
+	 continue;
+      }
+      h = (PlotUtils::MUH1D*)obj;
+      const char* hname = h->GetName();
+      if ( secid == 211 )
+      {
+      }
+      else if ( secid == -211 )
+      {
+      }
+      else if ( secid == 2212 )
+      {
+      }
+      // there maybe be more options
+      
+      std::string htitle = h->GetTitle();
+                  
+   }
+
+   return NULL;
 
 }
 

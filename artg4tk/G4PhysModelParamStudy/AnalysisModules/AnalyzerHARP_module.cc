@@ -8,6 +8,9 @@
 // Run/Eevent data products
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        // Event data product
 
+#include "artg4tk/G4PhysModelParamStudy/StatAnalysisTools/Chi2Calc.hh"
+#include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/RecordChi2.hh"
+
 // Root-specific headers
 #include "TH1D.h"
 
@@ -33,7 +36,18 @@ namespace artg4tk {
       virtual void beginJob()                         override;
       virtual void endJob()                           override;
          
+   protected:
+   
+      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>& ); 
+   
    private:
+   
+      // FIXME !!! 
+      // This will be replaced by the use of parnames/parvalues !!!
+      //
+      std::vector<std::string> extractThetaBinFromTitle( const std::string& );
+      
+      void calculateChi2();
          
       TH1D*              fNSec;
       std::vector<TH1D*> fHistoSecPiMinusFW; 
@@ -48,8 +62,10 @@ namespace artg4tk {
       double             fDeltaThetaFW;   
       int                fNThetaBinsLA;
       double             fThetaMinLA;
-      double             fDeltaThetaLA;  
-            
+      double             fDeltaThetaLA; 
+      
+      Chi2Calc*          fChi2Calc; 
+                  
       // diagnostics output
       //
 // -->      mf::LogInfo fLogInfo; // now in Base... do I nead a separate one for each analyzer ???
@@ -61,15 +77,22 @@ namespace artg4tk {
 artg4tk::AnalyzerHARP::AnalyzerHARP( const fhicl::ParameterSet& p )
   : artg4tk::ModelParamAnalyzerBase(p), 
     fNThetaBinsFW(4), fThetaMinFW(0.05), fDeltaThetaFW(0.05),
-    fNThetaBinsLA(9), fThetaMinLA(0.35), fDeltaThetaLA(0.2) 
+    fNThetaBinsLA(9), fThetaMinLA(0.35), fDeltaThetaLA(0.2),
+    fChi2Calc(0)
     // fLogInfo("AnalyzerHARP") // well, maybe each module does need its's own logger ???
 {
+
+   if ( fIncludeExpData ) fChi2Calc = new Chi2Calc();
+
 }
 
 artg4tk::AnalyzerHARP::~AnalyzerHARP()
 {
-   // do I need any delete's here ?!
+   // do I need any histos delete's here ?!
    // or will TFileService take care of that ?!?!
+   
+   if ( fChi2Calc ) delete fChi2Calc;
+   
 }
 
 void artg4tk::AnalyzerHARP::beginJob()
@@ -224,13 +247,52 @@ void artg4tk::AnalyzerHARP::endJob()
       fHistoSecProtonLA[i]->Scale( scale, "width" );
    }
 
+   if ( fIncludeExpData )
+   {
+      
+      // NOTE: Maybe this fragment can move to the base class.
+      //       We may re-scale MC histograms, etc., but the matching
+      //       operates on pointers, and those don't change...
+      
+      bool ok = matchVDBRec2MC( fBTConf.GetBeamPartID(),
+                                fBTConf.GetBeamMomentum(),
+				fBTConf.GetTargetID() );
+      if ( !ok )
+      {
+         fLogInfo << " ExpData do NOT match any of the MC; NO bechmarking; bail out" ;
+	 return;
+      }
+
+/*
+      else
+      {
+         fLogInfo << " ExpData do match (some of) the MC ";
+	 for ( size_t i=0; i<fVDBRecID2MC.size(); ++i )
+	 {
+	    std::cout << " i = " << i << " recid = " << fVDBRecID2MC[i].first;
+	    if ( fVDBRecID2MC[i].second != NULL ) 
+	    {
+	       std::cout << " " << fVDBRecID2MC[i].second->GetName();
+	    }
+	    else
+	    {
+	       std::cout << " NULL";
+	    }
+	    std::cout << std::endl;
+	 }
+      }
+*/
+      calculateChi2();
+      overlayDataMC();
+   }
+   
    return;
 
 }
 
 void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
 {
-      
+
    art::Handle<ArtG4tkVtx> firstint;
    e.getByLabel( fProdLabel, firstint );
    if ( !firstint.isValid() )
@@ -238,9 +300,11 @@ void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
       fLogInfo << " handle to 1st hadronic interaction is NOT valid"; // << std::endl;
       return;
    }
-   
+      
    if ( !fXSecInit ) initXSecOnTarget( firstint->GetMaterialName(), firstint->GetIncoming() );
    
+   if ( !ensureBeamTgtConfig( e ) ) return;
+
    // const std::vector<ArtG4tkParticle>& secs = firstint->GetAllOutcoming();
    // int nsec = secs.size();
    int nsec = firstint->GetNumOutcoming();
@@ -298,6 +362,233 @@ void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
    
    return;
    
+}
+
+TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::vector<std::string>& input )
+{
+   
+   // FIXME !!!
+   // This will be redone once parnames/parvalues are finished !
+   //
+   std::vector<std::string> cond = extractThetaBinFromTitle( input[0] );
+   
+   if ( secid == 211 )
+   {
+      for ( size_t i=0; i<fHistoSecPiPlusFW.size(); ++i )
+      {
+	 std::string htitle = fHistoSecPiPlusFW[i]->GetTitle();
+	 bool match = true;
+	 for ( size_t j=0; j<cond.size(); ++j )
+	 {
+	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    {
+	       match = false;
+	       break;
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecPiPlusFW[i];
+	 }	 
+      }
+      for ( size_t i=0; i<fHistoSecPiPlusLA.size(); ++i )
+      {
+	 std::string htitle = fHistoSecPiPlusLA[i]->GetTitle();
+	 bool match = true;
+	 for ( size_t j=0; j<cond.size(); ++j )
+	 {
+	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    {
+	       match = false;
+	       break;
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecPiPlusLA[i];
+	 }	 
+      }
+   }
+   else if ( secid == -211 )
+   {
+      for ( size_t i=0; i<fHistoSecPiMinusFW.size(); ++i )
+      {
+	 std::string htitle = fHistoSecPiMinusFW[i]->GetTitle();
+	 bool match = true;
+	 for ( size_t j=0; j<cond.size(); ++j )
+	 {
+	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    {
+	       match = false;
+	       break;
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecPiMinusFW[i];
+	 }	 
+      }
+      for ( size_t i=0; i<fHistoSecPiMinusLA.size(); ++i )
+      {
+	 std::string htitle = fHistoSecPiMinusLA[i]->GetTitle();
+	 bool match = true;
+	 for ( size_t j=0; j<cond.size(); ++j )
+	 {
+	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    {
+	       match = false;
+	       break;
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecPiMinusLA[i];
+	 }	 
+      }
+   }
+   else if ( secid == 2212 )
+   {
+      for ( size_t i=0; i<fHistoSecProtonFW.size(); ++i )
+      {
+	 std::string htitle = fHistoSecProtonFW[i]->GetTitle();
+	 bool match = true;
+	 for ( size_t j=0; j<cond.size(); ++j )
+	 {
+	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    {
+	       match = false;
+	       break;
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecProtonFW[i];
+	 }	 
+      }
+      for ( size_t i=0; i<fHistoSecProtonLA.size(); ++i )
+      {
+	 std::string htitle = fHistoSecProtonLA[i]->GetTitle();
+	 bool match = true;
+	 for ( size_t j=0; j<cond.size(); ++j )
+	 {
+	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    {
+	       match = false;
+	       break;
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecProtonLA[i];
+	 }	 
+      }
+   }
+   
+   return NULL;
+
+}
+
+std::vector<std::string> artg4tk::AnalyzerHARP::extractThetaBinFromTitle( const std::string& title )
+{
+
+   size_t pos1 = title.find("<theta<");
+   size_t pos2 = title.find_last_of( " ", pos1 );
+   std::string th1 = title.substr( pos2+1, pos1-pos2-1 );
+
+   pos2 = title.find_first_of( " ", pos1 );
+   std::string tmp = title.substr( pos1, pos2-pos1 );
+   pos2 = tmp.find_last_of("<");
+   std::string th2 = tmp.substr(pos2+1);
+   
+   std::vector<std::string> ret;
+   ret.push_back( th1 );
+   ret.push_back( th2 );
+   
+   return ret;
+
+}
+
+void artg4tk::AnalyzerHARP::calculateChi2()
+{
+
+   art::ServiceHandle<art::TFileService> tfs;  
+   std::vector<RecordChi2*> vrchi2;
+
+   std::vector< std::pair<int,TH1*> >::iterator itr = fVDBRecID2MC.begin();
+   
+   std::string hname = itr->second->GetName();
+   std::string secondary = hname.substr( 0, hname.find_first_of("_") );
+   
+   std::string tmpname = secondary + "_RecordChi2";
+   std::string tmptitle = secondary + "-RecordChi2";
+   // vrchi2.push_back( tfs->makeAndRegister<RecordChi2>( tmpname, tmptitle, RecordChi2() ) );
+   vrchi2.push_back( tfs->make<RecordChi2>() );
+   vrchi2.back()->SetName( tmpname.c_str() );
+   vrchi2.back()->SetTitle( tmptitle.c_str() );
+   gDirectory->Append( vrchi2.back() );
+
+   std::map<int,double> chi2ind;
+   std::vector< std::pair<std::string,double> >chi2integral;
+   
+   double chi2sum = 0.;
+   int ndfsum = 0;
+   
+   for ( ; itr!=fVDBRecID2MC.end(); ++itr )
+   {
+
+      hname = itr->second->GetName();
+      if ( hname.find( secondary ) == std::string::npos ) // change of histo name
+      {
+         chi2integral.push_back( std::pair<std::string,double>( secondary, chi2sum/ndfsum ) );
+	 chi2sum = 0.;
+	 ndfsum = 0;
+	 secondary = hname.substr( 0, hname.find_first_of("_") );
+	 tmpname = secondary + "_RecordChi2";
+         tmptitle = secondary + "-RecordChi2";
+         // vrchi2.push_back( tfs->makeAndRegister<RecordChi2>( tmpname, tmptitle, RecordChi2() ) );
+         vrchi2.push_back( tfs->make<RecordChi2>() );
+         vrchi2.back()->SetName( tmpname.c_str() );
+         vrchi2.back()->SetTitle( tmptitle.c_str() );
+         gDirectory->Append( vrchi2.back() );
+      }
+      
+      std::map<int,std::string>::iterator itrda = fJSONRecords.find( itr->first );
+      TH1D* hda = 0;
+      if ( itrda != fJSONRecords.end() ) 
+      {
+         hda = fJSON2Data->Convert2Histo(itrda->second,"tmpdata");
+      }
+      if ( !hda ) continue;
+      int ndf = 0;
+      double chi2 = fChi2Calc->Chi2DataMC( itr->second, hda, ndf );
+      chi2ind.insert( std::pair<int,double>( itr->first, chi2/ndf ) );
+      vrchi2.back()->InsertRecord( itr->first, chi2, (double)ndf );
+      chi2sum += chi2;
+      ndfsum += ndf; 
+
+   }
+
+   // last one
+   //
+   chi2integral.push_back( std::pair<std::string,double>( secondary, chi2sum/ndfsum ) );
+   
+   std::cout << " In directory: " << gDirectory->GetName() << std::endl;
+   
+   std::cout << " ===== chi2/ndf for individial distributions: " << std::endl; 
+   std::map<int,double>::iterator i = chi2ind.begin();
+   for ( ; i!=chi2ind.end(); ++i )
+   {
+      std::cout << " DoSSiER ID = " << i->first << " --> chi2/ndf = " << i->second << std::endl;
+   }
+   std::cout << " ===== Integral chi2/ndf: " << std::endl;
+   for ( size_t ii=0; ii<chi2integral.size(); ++ii )
+   {
+      std::cout << " secondary = " << chi2integral[ii].first << 
+                   " --> integral chi2/ndf = " << chi2integral[ii].second << std::endl;
+   }
+   
+   return;
+
 }
 
 using artg4tk::AnalyzerHARP;

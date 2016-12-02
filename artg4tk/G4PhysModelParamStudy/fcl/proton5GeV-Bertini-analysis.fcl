@@ -1,0 +1,664 @@
+// #include "detectorDefaults.fcl"
+process_name:processA
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1 // default - will take all events in the input file(s)
+//
+//  fileNames: [ "Evt-proton5GeV-Pb-Bertini-Rsc-Xsc-Variants.root" ]
+//
+//  fileNames: [ "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-1.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-2.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-3.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-4.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-5.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-6.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-7.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-8.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-9.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-10.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-11.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-12.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-13.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-14.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-15.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-16.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-17.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-18.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-19.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-20.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-21.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-22.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-23.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-24.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-25.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-26.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-27.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-28.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-29.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-30.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-31.root",
+//               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_Pb/Evt-G4-proton5.0GeV-Pb-32.root"
+//	     ]
+  fileNames: [ "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-1.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-2.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-3.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-4.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-5.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-6.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-7.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-8.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-9.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-10.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-11.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-12.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-13.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-14.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-15.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-16.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-17.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-18.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-19.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-20.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-21.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-22.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-23.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-24.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-25.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-26.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-27.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-28.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-29.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-30.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-31.root",
+               "/g4/yarba_j/art-g4-apps-work/artg4tk_feb24_2016/srcs/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/bertini_all_params_proton5.0GeV_C/Evt-G4-proton5.0GeV-C-32.root"
+	     ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+//    fileName: "proton5GeV-Pb-Bertini-AllParams.root"
+    fileName: "proton5GeV-C-Bertini-AllParams.root"
+  }
+
+  user: 
+  {
+     // None
+  }
+
+}
+
+physics: {
+
+  producers: 
+  {
+     // None
+  }
+
+  analyzers: 
+  {
+     
+     BertiniDefaultHARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniDefault"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+
+     BertiniDefaultITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniDefault"
+	IncludeExpData:
+	{
+
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+     
+     // Analyze RadiusScale Variants
+
+     // 125% RadScale
+
+     BertiniRsc125HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc125"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniRsc125ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniRsc125"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // 75% RadScale 
+
+     BertiniRsc075HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc075"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniRsc075ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniRsc075"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // 50% RadScale
+     
+     BertiniRsc05HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc05"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniRsc05ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniRsc05"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // 35% RadScale (this is RadScale~1. which would be "most physical")
+     
+     BertiniRsc035HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc035"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniRsc035ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniRsc035"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+     
+     // Analyze XSecScale Variants
+
+     // 200% XSecScale (2.0)
+
+     BertiniXSsc2HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXSsc2"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniXSsc2ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniXSsc2"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // 150% XSecScale (1.5)
+
+     BertiniXSsc15HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXSsc15"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniXSsc15ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniXSsc15"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // 125% XSecScale (1.25)
+
+     BertiniXSsc125HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXSsc125"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniXSsc125ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniXSsc125"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // 75% XSecScale (0.75)
+
+     BertiniXSsc075HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXSsc075"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniXSsc075ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniXSsc075"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     
+     // 50% XSecScale (0.5)
+
+     BertiniXSsc05HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXSsc05"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniXSsc05ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniXSsc05"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // 10% XSecScale (0.1)
+
+     BertiniXSsc01HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniXSsc01"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniXSsc01ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniXSsc01"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // FermiScale=0.5 (multiplied by RadScale, hardcoded !)
+
+     BertiniFsc05HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniFsc05"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniFsc05ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniFsc05"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // FermiScale=1.0 (multiplied by RadScale, hardcoded !)
+
+     BertiniFsc1HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniFsc1"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniFsc1ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniFsc1"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // Gamma-QuasiDeuteron Scale=0.5 (multiplied by RadScale, hardcoded !)
+     // NOTE: the label should have been "GQDsc"... ^_^
+
+     BertiniGDQsc05HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniGDQsc05"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniGDQsc05ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniGDQsc05"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // Gamma-QuasiDeuteron Scale=2.0 (multiplied by RadScale, hardcoded !)
+     // NOTE: the label should have been "GQDsc"... ^_^
+
+     BertiniGDQsc2HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniGDQsc2"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniGDQsc2ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniGDQsc2"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // TrailingRadius=0.7 (multiplied by RadScale, hardcoded !)
+     // NOTE: aka shadowing radius (trailing effect)
+
+     BertiniTrR07HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniTrR07"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniTrR07ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniTrR07"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+
+     // TrailingRadius=1.0 (multiplied by RadScale, hardcoded !)
+     // NOTE: aka shadowing radius (trailing effect)
+
+     BertiniTrR1HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniTrR1"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624,
+//	                4664, 4665, 4666, 4667, 4668, 4669, 4670, 4671, 4672, 4673, 4674, 4675, 4676 ]
+// ... and on C
+	   DBRecords: [ 4404, 4405, 4406, 4407, 4408, 4409, 4410, 4411, 4412, 4413, 4414, 4415, 4416,
+	                4456, 4457, 4458, 4459, 4460, 4461, 4462, 4463, 4464, 4465, 4466, 4467, 4468 ]
+	}
+     }
+     
+     BertiniTrR1ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniTrR1"
+	IncludeExpData:
+	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 2573 ]
+// ... and on C
+	   DBRecords: [ 2339, 2340, 2341, 2342, 2401 ]
+	}
+     }
+     
+  }
+  
+  path:   [ BertiniDefaultHARP,      BertiniDefaultITEP, 
+            BertiniRsc125HARP,       BertiniRsc125ITEP,  
+            BertiniRsc075HARP,       BertiniRsc075ITEP,  
+	    BertiniRsc05HARP,        BertiniRsc05ITEP, 
+	    BertiniRsc035HARP,       BertiniRsc035ITEP, 
+	    BertiniXSsc2HARP,        BertiniXSsc2ITEP, 
+	    BertiniXSsc15HARP,       BertiniXSsc15ITEP, 
+	    BertiniXSsc125HARP,      BertiniXSsc125ITEP, 
+	    BertiniXSsc075HARP,      BertiniXSsc075ITEP, 
+	    BertiniXSsc05HARP,       BertiniXSsc05ITEP, 
+	    BertiniXSsc01HARP,       BertiniXSsc01ITEP, 
+	    BertiniFsc05HARP,        BertiniFsc05ITEP, 
+	    BertiniFsc1HARP,         BertiniFsc1ITEP, 
+	    BertiniGDQsc05HARP,      BertiniGDQsc05ITEP, 
+	    BertiniGDQsc2HARP,       BertiniGDQsc2ITEP, 
+	    BertiniTrR07HARP,        BertiniTrR07ITEP, 
+	    BertiniTrR1HARP,         BertiniTrR1ITEP 
+	  ]
+
+  trigger_paths: [ path ]
+
+}

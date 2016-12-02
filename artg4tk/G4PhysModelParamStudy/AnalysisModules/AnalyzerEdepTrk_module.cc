@@ -6,9 +6,13 @@
 #include "art/Framework/Principal/Event.h"
 
 // Run/Eevent data products
-#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        // Event data product
+//
+// (1st) HAD interaction product
+#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        
+//
 // "Trk" Hits (actually, it's edep along the track in the designeted volume)
 #include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
+//
 // Event Generator products
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
 #include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
@@ -75,11 +79,13 @@ artg4tk::AnalyzerEdepTrk::AnalyzerEdepTrk( const fhicl::ParameterSet& p )
 
    art::ServiceHandle<art::TFileService> tfs;
 
-   std::vector<double> limits = p.get<std::vector<double> >( "NSecHistoLimits" );
+   std::vector<double> limits; 
+
+   limits = p.get<std::vector<double> >( "NSecHistoLimits" );
       
    int nbins = (int)(limits[1]-limits[0]);   
    fNSec1stInt = tfs->make<TH1D>( "NSec1stInt", "Number of secondary per inelastic interaction", 
-                            nbins, limits[0], limits[1] );
+                                  nbins, limits[0], limits[1] );
    fNSec1stInt->GetXaxis()->SetTitle( "Interaction\'s  Multiplicity (num. of sec.)" );
    fNSec1stInt->GetYaxis()->SetTitle( "Event Rate" ); 
 
@@ -166,6 +172,9 @@ void artg4tk::AnalyzerEdepTrk::beginJob()
 void artg4tk::AnalyzerEdepTrk::endJob()
 {
    
+   // AnalyzerWithExpDataBase::endJob();
+   ModelParamAnalyzerBase::endJob();
+
 // -->   if ( !fXSecInit ) return;
    
    if ( fNSec1stInt->GetEntries() <= 0 ) return;

@@ -8,6 +8,8 @@ include_directories($ENV{ROOMU_SYS})
 #            it was NOT the case in the v1_12-series, and I do NOT know why the hell this change !...
 #            need to talk to M.P. when he's back from "art school"
 # 
-art_make( MODULE_LIBRARIES art_Framework_Services_Optional_TFileService_service "${ROOMULIB}" )
+art_make( MODULE_LIBRARIES art_Framework_Services_Optional_TFileService_service 
+	  "artg4tk_G4PhysModelParamStudy_AnalysisBase"
+	  "${ROOMULIB}" )
 
 # install_headers()

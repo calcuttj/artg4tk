@@ -4,7 +4,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:  25000
+  maxEvents:   50
 }
 
 services: 
@@ -36,7 +36,7 @@ services:
   user: 
   {
 
-//     RandomNumberGenerator: {}
+     RandomNumberGenerator: {}
          
      PhysModelConfig: 
      {
@@ -99,6 +99,10 @@ physics: {
      {
         module_type: AnalyzerHARP
 	ProductLabel: "G4BertiniDefault"
+	IncludeExpData: 
+	{
+	   DBRecords: [246, 247, 248]
+	}
      }
      
      BertiniDefaultITEP:

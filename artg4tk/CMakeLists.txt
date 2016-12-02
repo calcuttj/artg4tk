@@ -12,6 +12,6 @@ add_subdirectory( util )
 #
 add_subdirectory( ExpDataAccess )
 #
-# ---> add_subdirectory( G4PhysModelParamStudy )
+# --> add_subdirectory( G4PhysModelParamStudy )
 
 

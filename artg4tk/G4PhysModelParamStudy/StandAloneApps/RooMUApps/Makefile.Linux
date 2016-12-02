@@ -2,8 +2,16 @@ CXX = g++
 CXXFLAGS = `$(ROOMU_SYS)/bin/roomu-config --cflags`
 LDLIBS = `$(ROOMU_SYS)/bin/roomu-config --libs`
 
-BINARIES = ComposeRooMUSummary ReadRooMUSummary
-TARGETS = ComposeRooMUSummary.o ReadRooMUSummary.o
+LDLIBS += -lCintex -lReflex
+LDLIBS += $(MRB_BUILDDIR)/artg4tk/lib/libartg4tk_G4PhysModelParamStudy_AnalysisProducts_dict.so
+# LDLIBS += $(MRB_BUILDDIR)/artg4tk/lib/libartg4tk_G4PhysModelParamStudy_AnalysisProducts_map.so
+LDLIBS += $(MRB_BUILDDIR)/artg4tk/lib/libartg4tk_G4PhysModelParamStudy_AnalysisProducts.so
+
+ROOTFLAGS = `$(ROOTSYS)/bin/root-config --cflags --glibs`
+
+
+BINARIES = ComposeRooMUSummary ReadRooMUSummary PlotBertiniVariants
+TARGETS = ComposeRooMUSummary.o ReadRooMUSummary.o PlotBertiniVariants.o
 
 #--- if using 'make all' ---#
 all : $(TARGETS)
@@ -17,6 +25,10 @@ ComposeRooMUSummary.o : ComposeRooMUSummary.cxx
 ReadRooMUSummary.o : ReadRooMUSummary.cxx
 	$(CXX) $(CXXFLAGS) -I$(ROOMU_SYS) -o $*.o -c $*.cxx #compile
 	$(CXX) -o $* $*.o $(LDLIBS)        #link
+
+PlotBertiniVariants.o : PlotBertiniVariants.cxx
+	$(CXX) $(CXXFLAGS) -I$(MRB_SOURCE)/artg4tk -o $*.o -c $*.cxx #compile
+	$(CXX) -o $* $*.o $(LDLIBS) $(ROOTFLAGS)       #link
 
 clean:
 	rm -f $(BINARIES) $(TARGETS)

@@ -7,7 +7,8 @@
 # NOTE-2(JVY): I don't think I need "${XERCESCLIB}" at this point; but if so, just include it...
 #
 art_make( LIB_LIBRARIES  
-          art_Framework_Services_Optional_TFileService_service 
+          art_Framework_Services_Optional_TFileService_service
+	  "artg4tk_G4PhysModelParamStudy_AnalysisProducts" 
 	  "artg4tk_ExpDataAccess"
 	  "${G4_LIB_LIST}" )
 

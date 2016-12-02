@@ -23,7 +23,8 @@ bool VDBConnect::Init()
       return fInitialized;
    }
    
-   fHTTP = "http://g4devel.fnal.gov:8080/ValidationWebAPI/webresources/validationWebapi/json/result/";
+//   fHTTP = "http://g4devel.fnal.gov:8080/ValidationWebAPI/webresources/validationWebapi/json/result/";
+   fHTTP = "http://g4devel.fnal.gov:8080/DoSSiER_WS/json/result/";
    
    curl_easy_setopt( fCurl, CURLOPT_WRITEFUNCTION, &Write2String );
 //   curl_easy_setopt( fCurl, CURLOPT_WRITEFUNCTION, Write2String ); // By address or by value ???

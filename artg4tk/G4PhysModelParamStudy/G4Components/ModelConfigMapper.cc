@@ -209,7 +209,13 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
   }
 
    G4UImanager* uim = G4UImanager::GetUIpointer();   
-   uim->ApplyCommand( command.c_str() );   
+   uim->ApplyCommand( command.c_str() );
+   
+   if ( verb )
+   {
+      G4cout << " Current Settings: " << std::endl;
+      PrintCurrentSettings();
+   }   
 
 //      G4cout << " Cross-check  usePreCompound = " << G4CascadeParameters::usePreCompound() << G4endl;
 //      G4cout << " Cross-check radiusScale = " << G4CascadeParameters::radiusScale() << G4endl;
