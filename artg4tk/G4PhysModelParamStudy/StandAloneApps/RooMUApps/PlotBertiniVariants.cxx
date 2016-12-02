@@ -875,7 +875,7 @@ int main( int argc, char** argv )
 	 h[1]->GetYaxis()->SetRangeUser( 0., max2*1.1 );
 	 h1[j][1]->SetLineColor(colrsc[j]);
          pad_rsc_harp_piminus_la->cd(i+1);
-         h1[j][0]->Draw("histE1same");
+         h1[j][1]->Draw("histE1same");
 	 gPad->Update();
 	 pad_rsc_harp_piminus_la->Update();
 	 cnv_rsc_harp_piminus->Update();
@@ -1324,9 +1324,9 @@ int main( int argc, char** argv )
 	 if ( !h1[j][0] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h1[j1][0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	    h1[j1][0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 }
-	 h[0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	 h[0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 h1[j][0]->SetLineColor(colrsc[j]);
          pad_rsc_itep_proton->cd(i+1);
          h1[j][0]->Draw("histE1same");
@@ -1340,9 +1340,9 @@ int main( int argc, char** argv )
 	 if ( !h1[j][1] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h1[j1][1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	    h1[j1][1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 }
-	 h[1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	 h[1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 h1[j][1]->SetLineColor(colrsc[j]);
          pad_rsc_itep_neutron->cd(i+1);
          h1[j][1]->Draw("histE1same");
@@ -1389,9 +1389,9 @@ int main( int argc, char** argv )
 	 if ( !h2[j][0] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h2[j1][0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	    h2[j1][0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 }
-	 h[0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	 h[0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 h2[j][0]->SetLineColor(colxssc[j]);
          pad_xssc_itep_proton->cd(i+1);
          h2[j][0]->Draw("histE1same");
@@ -1405,9 +1405,9 @@ int main( int argc, char** argv )
 	 if ( !h2[j][1] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h2[j1][1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	    h2[j1][1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 }
-	 h[1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	 h[1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 h2[j][1]->SetLineColor(colxssc[j]);
          pad_xssc_itep_neutron->cd(i+1);
          h2[j][1]->Draw("histE1same");
@@ -1454,9 +1454,9 @@ int main( int argc, char** argv )
 	 if ( !h3[j][0] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h3[j1][0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	    h3[j1][0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 }
-	 h[0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	 h[0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 h3[j][0]->SetLineColor(colfsc[j]);
          pad_fsc_itep_proton->cd(i+1);
          h3[j][0]->Draw("histE1same");
@@ -1470,9 +1470,9 @@ int main( int argc, char** argv )
 	 if ( !h3[j][1] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h3[j1][1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	    h3[j1][1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 }
-	 h[1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	 h[1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 h3[j][1]->SetLineColor(colfsc[j]);
          pad_fsc_itep_neutron->cd(i+1);
          h3[j][1]->Draw("histE1same");
@@ -1519,9 +1519,9 @@ int main( int argc, char** argv )
 	 if ( !h4[j][0] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h4[j1][0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	    h4[j1][0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 }
-	 h[0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	 h[0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 h4[j][0]->SetLineColor(colgqdsc[j]);
          pad_gqdsc_itep_proton->cd(i+1);
          h4[j][0]->Draw("histE1same");
@@ -1535,9 +1535,9 @@ int main( int argc, char** argv )
 	 if ( !h4[j][1] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h4[j1][1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	    h4[j1][1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 }
-	 h[1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	 h[1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 h4[j][1]->SetLineColor(colgqdsc[j]);
          pad_gqdsc_itep_neutron->cd(i+1);
          h4[j][1]->Draw("histE1same");
@@ -1584,9 +1584,9 @@ int main( int argc, char** argv )
 	 if ( !h5[j][0] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h5[j1][0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	    h5[j1][0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 }
-	 h[0]->GetYaxis()->SetRangeUser( 1., max1*1.1 );
+	 h[0]->GetYaxis()->SetRangeUser( 10., max1*1.1 );
 	 h5[j][0]->SetLineColor(coltrr[j]);
          pad_trr_itep_proton->cd(i+1);
          h5[j][0]->Draw("histE1same");
@@ -1600,9 +1600,9 @@ int main( int argc, char** argv )
 	 if ( !h5[j][1] ) continue;
          for ( int j1=0; j1<=j; ++j1 )
 	 {
-	    h5[j1][1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	    h5[j1][1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 }
-	 h[1]->GetYaxis()->SetRangeUser( 1., max2*1.1 );
+	 h[1]->GetYaxis()->SetRangeUser( 10., max2*1.1 );
 	 h5[j][1]->SetLineColor(coltrr[j]);
          pad_trr_itep_neutron->cd(i+1);
          h5[j][1]->Draw("histE1same");
