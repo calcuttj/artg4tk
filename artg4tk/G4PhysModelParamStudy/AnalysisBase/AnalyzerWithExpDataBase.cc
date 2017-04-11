@@ -43,12 +43,12 @@ artg4tk::AnalyzerWithExpDataBase::~AnalyzerWithExpDataBase()
 
 void artg4tk::AnalyzerWithExpDataBase::endJob()
 {
-
+   
    // In case exp.data are involved/requested
    //
    if ( fIncludeExpData )
    {
-            
+                  
       if ( fVDBConnect->IsInitialized() )
       {
 	  
@@ -80,7 +80,7 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
    ok = findExpDataByBeamTarget( bid, bmom, tgt );
    if ( !ok ) 
    {
-      fLogInfo << " No exp.data to match beam partible = " << bid
+      fLogInfo << " No exp.data to match beam particle = " << bid
                << " of momentum = " << bmom 
 	       << " and target id = " << tgt ; 
       return ok;

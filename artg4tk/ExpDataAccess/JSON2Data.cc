@@ -245,7 +245,7 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
    ParseMetaData( jstr );
    
    std::stringstream ss(jstr.c_str()); 
-
+   
    ptree pt;
    read_json( ss, pt );
    
@@ -292,7 +292,7 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
    int cnt = 0;
    BOOST_FOREACH( ptree::value_type &v, pt.get_child("datatable.val") )
    {
-       //std::cout << " datatable.val: " << v.second.data() << std::endl;
+       // std::cout << " datatable.val: " << v.second.data() << std::endl;
        //cv.push_back( atof( v.second.data().c_str() ) );
       cv[cnt] = atof( v.second.data().c_str() );
       cnt++;

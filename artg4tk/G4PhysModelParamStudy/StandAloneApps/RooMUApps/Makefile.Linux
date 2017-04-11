@@ -10,8 +10,8 @@ LDLIBS += $(MRB_BUILDDIR)/artg4tk/lib/libartg4tk_G4PhysModelParamStudy_AnalysisP
 ROOTFLAGS = `$(ROOTSYS)/bin/root-config --cflags --glibs`
 
 
-BINARIES = ComposeRooMUSummary ReadRooMUSummary PlotBertiniVariants
-TARGETS = ComposeRooMUSummary.o ReadRooMUSummary.o PlotBertiniVariants.o
+BINARIES = ComposeRooMUSummary ReadRooMUSummary PlotBertiniVariants WeightParams CreateCovMtx 
+TARGETS = ComposeRooMUSummary.o ReadRooMUSummary.o PlotBertiniVariants.o WeightParams.o CreateCovMtx.o 
 
 #--- if using 'make all' ---#
 all : $(TARGETS)
@@ -27,6 +27,14 @@ ReadRooMUSummary.o : ReadRooMUSummary.cxx
 	$(CXX) -o $* $*.o $(LDLIBS)        #link
 
 PlotBertiniVariants.o : PlotBertiniVariants.cxx
+	$(CXX) $(CXXFLAGS) -I$(MRB_SOURCE)/artg4tk -o $*.o -c $*.cxx #compile
+	$(CXX) -o $* $*.o $(LDLIBS) $(ROOTFLAGS)       #link
+
+WeightParams.o : WeightParams.cxx
+	$(CXX) $(CXXFLAGS) -I$(MRB_SOURCE)/artg4tk -o $*.o -c $*.cxx #compile
+	$(CXX) -o $* $*.o $(LDLIBS) $(ROOTFLAGS)       #link
+
+CreateCovMtx.o : CreateCovMtx.cxx
 	$(CXX) $(CXXFLAGS) -I$(MRB_SOURCE)/artg4tk -o $*.o -c $*.cxx #compile
 	$(CXX) -o $* $*.o $(LDLIBS) $(ROOTFLAGS)       #link
 

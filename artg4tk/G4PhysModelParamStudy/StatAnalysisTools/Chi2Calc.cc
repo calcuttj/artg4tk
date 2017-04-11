@@ -1,6 +1,7 @@
 
 #include "artg4tk/G4PhysModelParamStudy/StatAnalysisTools/Chi2Calc.hh"
 // #include <sstream>
+#include <iostream>
 
 #include "TH1D.h"
 #include "TGraphErrors.h"
@@ -13,6 +14,7 @@ double Chi2Calc::Chi2DataMC( const TH1* data,
 
    fChi2 = 0.;
    ndf   = 0;
+   fChi2MCBin.clear();
 
 // NOTE: Clone() creates a **new** copy, 
 //       so it'll need to be deleted afterwards
@@ -41,13 +43,14 @@ double Chi2Calc::Chi2DataMC( const TH1* data,
 //       can differ... but we'll face similar issue with the data graph !...
 //       So let's assume that the data are properly normalized, and so is the MC 
 
-   for( int imc=x1MC; imc<=x2MC; ++imc )
+   // for( int imc=x1MC; imc<=x2MC; ++imc )
+   for( int id=x1Data; id<=x2Data; ++id )
    {
-      double xmc  = tmpMC->GetBinLowEdge(imc);
-      double dxmc = tmpMC->GetBinWidth(imc);      
-      for ( int id=x1Data; id<=x2Data; ++id )
+      double xdc = tmpData->GetBinCenter(id);
+      for ( int imc=x1MC; imc<=x2MC; ++imc )
       {
-         double xdc  = tmpData->GetBinCenter(id);	 
+         double xmc  = tmpMC->GetBinLowEdge(imc);
+         double dxmc = tmpMC->GetBinWidth(imc);      
 	 if ( xdc > xmc && xdc < (xmc+dxmc) )
 	 { 
             double yd   = tmpData->GetBinContent(id);
@@ -57,7 +60,9 @@ double Chi2Calc::Chi2DataMC( const TH1* data,
 	    double dd   = eyd*eyd + eymc*eymc;
 	    if ( dd > 0. )
 	    { 
-	       fChi2 += ( (yd-ymc)*(yd-ymc) ) / dd ;
+	       double dchi2 = ( (yd-ymc)*(yd-ymc) ) / dd ;
+	       fChi2 += dchi2;
+	       fChi2MCBin.push_back( std::make_pair( imc, dchi2 ) );
 	       ++ndf;
             }
             break;
@@ -72,6 +77,46 @@ double Chi2Calc::Chi2DataMC( const TH1* data,
 
 }
 
+
+double Chi2Calc::Chi2DataMC( const TH1* data, 
+                             const TH1* mc, 
+			     int& ndf, 
+			     TMatrixD& covmtxdata,
+			     const double mcscale /* = 1. */ )
+{
+
+   int nbins = data->GetNbinsX();
+      
+   int nvalid = 0;
+   for ( int i=0; i<nbins; ++i )
+   {
+      if ( fabs(data->GetBinError(i+1)) < 1.e-10 ) break;
+      nvalid++;   
+   }
+   
+   covmtxdata.ResizeTo( nvalid, nvalid );
+   
+   for ( int i=0; i<nvalid; ++i )
+   {
+      double err = data->GetBinError(i+1);
+      for ( int j=i; j<nvalid; ++j )
+      {
+         if ( i == j )
+	 {
+	    covmtxdata[i][j] = err*err;
+	 }
+	 else
+	 {
+	    covmtxdata[i][j] = 0.;
+	    covmtxdata[j][i] = covmtxdata[i][j];
+	 }
+      }
+   }
+   
+   return Chi2DataMC( data, mc, ndf, mcscale );
+   
+}
+
 double Chi2Calc::Chi2DataMC( const TGraphErrors* data, 
                              const TH1* mc, 
 			     int& ndf, 
@@ -80,6 +125,7 @@ double Chi2Calc::Chi2DataMC( const TGraphErrors* data,
 
    fChi2 = 0.;
    ndf   = 0;
+   fChi2MCBin.clear();
 
 // NOTE: Clone() creates a **new** copy,
 //       so it'll need to be deleted afterwards
@@ -97,12 +143,12 @@ double Chi2Calc::Chi2DataMC( const TGraphErrors* data,
    const int x1MC   = tmpMC->GetXaxis()->GetFirst();
    const int x2MC   = tmpMC->GetXaxis()->GetLast();
    
-   for ( int imc=x1MC; imc<=x2MC; ++imc )
+   for ( int id=x1MC; id<=x2MC; ++id )
    {
-      double xmc  = tmpMC->GetBinLowEdge(imc);
-      double dxmc = tmpMC->GetBinWidth(imc);
-      for ( int id=0; id<nxd; ++id )
+      for ( int imc=0; imc<nxd; ++imc )
       {
+         double xmc  = tmpMC->GetBinLowEdge(imc);
+         double dxmc = tmpMC->GetBinWidth(imc);
          if ( xd[id] > xmc && xd[id] < xmc+dxmc )
 	 {
 	    double ymc  = tmpMC->GetBinContent(imc);
@@ -110,7 +156,9 @@ double Chi2Calc::Chi2DataMC( const TGraphErrors* data,
 	    double dd   = eymc*eymc + eyd[id]*eyd[id];
             if ( dd > 0. )
 	    {
-	       fChi2 += ( (yd[id]-ymc)*(yd[id]-ymc) ) / dd ;
+	       double dchi2 = ( (yd[id]-ymc)*(yd[id]-ymc) ) / dd ;
+	       fChi2 += dchi2;
+	       fChi2MCBin.push_back( std::make_pair( imc, dchi2 ) );
 	       ++ndf;
 	    }	    
 	    break;
@@ -123,3 +171,44 @@ double Chi2Calc::Chi2DataMC( const TGraphErrors* data,
    return fChi2;
 
 }
+
+double Chi2Calc::Chi2DataMC( const TGraphErrors* data, 
+                             const TH1* mc, 
+			     int& ndf, 
+			     TMatrixD& covmtxdata,
+			     const double mcscale /* = 1. */ )
+{
+
+   const int nxd = data->GetN();
+   double*   eyd = data->GetEY();
+   
+   int nvalid = 0;
+   for ( int i=0; i<nxd; ++i )
+   {
+      if ( fabs(eyd[i]) < 1.e-10 ) break;
+      nvalid++;
+   }
+   
+   covmtxdata.ResizeTo( nvalid, nvalid );
+   
+   for ( int i=0; i<nvalid; ++i )
+   {
+      double err = eyd[i];
+      for ( int j=i; j<nvalid; ++j )
+      {
+         if ( i == j )
+	 {
+	    covmtxdata[i][j] = err*err;
+	 }
+	 else
+	 {
+	    covmtxdata[i][j] = 0.;
+	    covmtxdata[j][i] = covmtxdata[i][j];
+	 }
+      }
+   }
+
+   return Chi2DataMC( data, mc, ndf, mcscale );
+
+}
+

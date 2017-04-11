@@ -82,7 +82,10 @@ artg4tk::AnalyzerHARP::AnalyzerHARP( const fhicl::ParameterSet& p )
     // fLogInfo("AnalyzerHARP") // well, maybe each module does need its's own logger ???
 {
 
-   if ( fIncludeExpData ) fChi2Calc = new Chi2Calc();
+   if ( fIncludeExpData ) 
+   {
+      fChi2Calc = new Chi2Calc();
+   }
 
 }
 
@@ -92,7 +95,7 @@ artg4tk::AnalyzerHARP::~AnalyzerHARP()
    // or will TFileService take care of that ?!?!
    
    if ( fChi2Calc ) delete fChi2Calc;
-   
+      
 }
 
 void artg4tk::AnalyzerHARP::beginJob()
@@ -188,7 +191,7 @@ void artg4tk::AnalyzerHARP::beginJob()
 
 void artg4tk::AnalyzerHARP::endJob()
 {
-   
+      
    ModelParamAnalyzerBase::endJob();
    
    if ( !fXSecInit ) return;
@@ -281,7 +284,7 @@ void artg4tk::AnalyzerHARP::endJob()
 	    std::cout << std::endl;
 	 }
       }
-*/
+*/      
       calculateChi2();
       overlayDataMC();
    }
@@ -510,13 +513,15 @@ std::vector<std::string> artg4tk::AnalyzerHARP::extractThetaBinFromTitle( const 
 
 void artg4tk::AnalyzerHARP::calculateChi2()
 {
-
+   
    art::ServiceHandle<art::TFileService> tfs;  
    std::vector<RecordChi2*> vrchi2;
+   // ---> std::vector<RecordChi2*> vrchi2total;
 
    std::vector< std::pair<int,TH1*> >::iterator itr = fVDBRecID2MC.begin();
    
    std::string hname = itr->second->GetName();
+   
    std::string secondary = hname.substr( 0, hname.find_first_of("_") );
    
    std::string tmpname = secondary + "_RecordChi2";
@@ -545,7 +550,6 @@ void artg4tk::AnalyzerHARP::calculateChi2()
 	 secondary = hname.substr( 0, hname.find_first_of("_") );
 	 tmpname = secondary + "_RecordChi2";
          tmptitle = secondary + "-RecordChi2";
-         // vrchi2.push_back( tfs->makeAndRegister<RecordChi2>( tmpname, tmptitle, RecordChi2() ) );
          vrchi2.push_back( tfs->make<RecordChi2>() );
          vrchi2.back()->SetName( tmpname.c_str() );
          vrchi2.back()->SetTitle( tmptitle.c_str() );
@@ -560,18 +564,23 @@ void artg4tk::AnalyzerHARP::calculateChi2()
       }
       if ( !hda ) continue;
       int ndf = 0;
-      double chi2 = fChi2Calc->Chi2DataMC( itr->second, hda, ndf );
+      double chi2 = fChi2Calc->Chi2DataMC( hda, itr->second, ndf );
       chi2ind.insert( std::pair<int,double>( itr->first, chi2/ndf ) );
-      vrchi2.back()->InsertRecord( itr->first, chi2, (double)ndf );
+      vrchi2.back()->InsertRecord( itr->first, chi2, (double)ndf, 1. );
+      std::vector< std::pair<int,double> > chi2mcbin = fChi2Calc->GetChi2MCBin();
+      int nrec = vrchi2.back()->GetNRecords();
+      for ( size_t ib=0; ib<chi2mcbin.size(); ++ib )
+      {
+         vrchi2.back()->AddMCBin2Record( nrec-1, chi2mcbin[ib].first, chi2mcbin[ib].second );
+      }
       chi2sum += chi2;
       ndfsum += ndf; 
-
    }
 
    // last one
    //
    chi2integral.push_back( std::pair<std::string,double>( secondary, chi2sum/ndfsum ) );
-   
+
    std::cout << " In directory: " << gDirectory->GetName() << std::endl;
    
    std::cout << " ===== chi2/ndf for individial distributions: " << std::endl; 
@@ -580,6 +589,12 @@ void artg4tk::AnalyzerHARP::calculateChi2()
    {
       std::cout << " DoSSiER ID = " << i->first << " --> chi2/ndf = " << i->second << std::endl;
    }
+/*
+   for ( unsigned int ir=0; ir<vrchi2.size(); ++ir )
+   {
+      vrchi2[ir]->Print();
+   }
+*/
    std::cout << " ===== Integral chi2/ndf: " << std::endl;
    for ( size_t ii=0; ii<chi2integral.size(); ++ii )
    {

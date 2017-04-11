@@ -478,7 +478,7 @@ void artg4tk::AnalyzerITEP::calculateChi2()
    // I need to see how to consoludate (move to base class, etc.)
    // So far the only "flaky" thing is that the implementation
    // explicitly assumes that the name of a secondary is hardcoded
-   // in the name of a histogram, followd by an underscore, 
+   // in the name of a histogram, followed by an underscore, 
    // e.g. piplus_ or proton_
 
    art::ServiceHandle<art::TFileService> tfs;  
@@ -533,6 +533,12 @@ void artg4tk::AnalyzerITEP::calculateChi2()
       double chi2 = fChi2Calc->Chi2DataMC( itr->second, hda, ndf );
       chi2ind.insert( std::pair<int,double>( itr->first, chi2/ndf ) );
       vrchi2.back()->InsertRecord( itr->first, chi2, (double)ndf );
+      std::vector< std::pair<int,double> > chi2mcbin = fChi2Calc->GetChi2MCBin();
+      int nrec = vrchi2.back()->GetNRecords();
+      for ( size_t ib=0; ib<chi2mcbin.size(); ++ib )
+      {
+         vrchi2.back()->AddMCBin2Record( nrec-1, chi2mcbin[ib].first, chi2mcbin[ib].second );
+      }
       chi2sum += chi2;
       ndfsum += ndf; 
    }
