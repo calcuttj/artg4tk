@@ -324,6 +324,7 @@ void artg4tk::AnalyzerITEP::endJob()
       }
       
       calculateChi2();
+      overlayDataMC();
       
    }
 

@@ -34,7 +34,11 @@ ProcessWrapper::~ProcessWrapper()
    
    // NOTE: no need to call CleanUp() because all those 
    //       "particle changes" should be taken care of by base dtor(s) 
-   //        and the dtor of G4VParticleChange cleans up properly
+   //       and the dtor of G4VParticleChange cleans up properly;
+   //       however, a warning will be given that 
+   //       "theListOfSecondaries is not empty"...
+   //      ... and we should probably redirect it to the MessageLogger
+   //       NOTE: the code itself is under geant4/source/track/src 
 }
 
 
