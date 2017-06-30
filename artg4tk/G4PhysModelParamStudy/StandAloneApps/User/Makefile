@@ -2,12 +2,12 @@ CXX = g++
 CXXFLAGS = `$(ROOTSYS)/bin/root-config --cflags --glibs`
 LDLIBS = `$(ROOTSYS)/bin/root-config --libs`
 
-LDLIBS += -lCintex -lReflex
+# --> NOT in Root6 LDLIBS += -lCintex -lReflex
 LDLIBS += $(MRB_BUILDDIR)/artg4tk/lib/libartg4tk_G4PhysModelParamStudy_AnalysisProducts_dict.so
 LDLIBS += $(MRB_BUILDDIR)/artg4tk/lib/libartg4tk_G4PhysModelParamStudy_AnalysisProducts.so
 
-BINARIES = PlotBertiniVariants WeightParams CreateCovMtx 
-TARGETS = PlotBertiniVariants.o WeightParams.o CreateCovMtx.o 
+BINARIES = PlotBertiniVariants WeightParams CreateCovMtx test
+TARGETS = PlotBertiniVariants.o WeightParams.o CreateCovMtx.o test.o 
 
 #--- if using 'make all' ---#
 all : $(TARGETS)
@@ -24,6 +24,10 @@ WeightParams.o : WeightParams.cxx
 
 CreateCovMtx.o : CreateCovMtx.cxx
 	$(CXX) $(CXXFLAGS) -I$(MRB_SOURCE)/artg4tk -o $*.o -c $*.cxx #compile
+	$(CXX) -o $* $*.o $(LDLIBS) $(CXXFLAGS)       #link
+
+test.o : test.cxx
+	$(CXX) $(CXXFLAGS)  -o $*.o -c $*.cxx #compile
 	$(CXX) -o $* $*.o $(LDLIBS) $(CXXFLAGS)       #link
 
 clean:

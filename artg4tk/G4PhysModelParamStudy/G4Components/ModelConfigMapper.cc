@@ -4,7 +4,12 @@
 #include "Geant4/G4PhysicalConstants.hh"
 #include "Geant4/G4SystemOfUnits.hh"
 //
+// Bertini
 #include "Geant4/G4CascadeParameters.hh"
+// INCLXX Parameters ???
+// Preco
+#include "Geant4/G4NuclearLevelData.hh"
+#include "Geant4/G4DeexPrecoParameters.hh"
 //
 #include "Geant4/G4RunManager.hh"
 #include "Geant4/G4UImanager.hh"
@@ -14,15 +19,45 @@
 #include <iostream>
 #include <cctype>
 
+// Bertini NOTES: coming later...
+
+// INCLXX NOTE: coming later...
+
+// PreCompound NOTES:
+//
+// Source code:
+// /geant4/source/processes/hadronic/models/de_excitation/management
+// /geant4/source/processes/hadronic/models/pre_equilibrium/exciton_model
+//
+// G4DeexPrecoParameters - is NOT a singleton but...
+//                         ...it's a part of G4NuclearLevelData which IS a singleton
+//
+// Vladimir I. said at the G4 Wrkshop-2016 that "the Set methods are only active
+// if the master thread is in the G4State_PreInit state", although I have't noticed
+//
+// Environment variable G4LEVELGAMMADATA must be set 
+//
+// All PreCo parameters must be in BEFORE BuildPhysicsTable() is called
+// Technically, this happens later than the ctor is invoked (e.g. via physics list) 
+// but it is still part of run initialization
+//
+
 ModelConfigMapper::ModelConfigMapper()
 {
 
-   fNameConvention.insert( std::pair<std::string,std::string>("bertini","cascade") );
-   fNameConvention.insert( std::pair<std::string,std::string>("inclxx", "inclxx" ) );
+   // models that have G4UI as of geant4.10.3-series
+   //
+   fNameConvention.insert( std::pair<std::string,std::string>("bertini",    "cascade") );
+   fNameConvention.insert( std::pair<std::string,std::string>("inclxx",     "inclxx" ) );
    fBaseCommand = "/process/had/";
+   //
+   // model(s) that do not have G4UI but a C++ interface instead
+   //
+   fNameConvention.insert( std::pair<std::string,std::string>("precompound","precompound" ) );
    
    FillBertiniDefaults();
    FillINCLXXDefaults();
+   FillPreCompoundDefaults();
    
    FillConfigParamMapBertini();
 
@@ -51,6 +86,10 @@ void ModelConfigMapper::PrintDefaults( const std::string& model ) // const
 
    std::map<std::string,std::string>::iterator itr1;
    
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr2=fConfigParameters.find(mod);
+   std::map<std::string,std::string>::iterator itr3; 
+   
+   
    itr1 = fNameConvention.find(mod);
    if ( itr1 == fNameConvention.end() )
    {
@@ -58,14 +97,28 @@ void ModelConfigMapper::PrintDefaults( const std::string& model ) // const
       return;   
    }
    
-   std::string command = fBaseCommand + itr1->second;
+   std::string command = "";
+   if ( model == "bertini" || model == "inclxx" )
+   {
+      command += fBaseCommand; 
+   }
+   command += itr1->second;
    
    G4cout << " ***** Default settings for Geant4 model " << model << G4endl;
    
    itr1 = (itr->second).begin();
    for ( ; itr1!=(itr->second).end(); ++itr1 )
    {
-      G4cout << " * " << command << itr1->first << " " << itr1->second << G4endl; 
+      // --> G4cout << " * " << command << itr1->first << " " << itr1->second << G4endl; 
+      itr3 = (itr2->second).find(itr1->first);
+      if ( itr3 == (itr2->second).end() )
+      {
+         G4cout << " Can NOT find command for parameter " << itr1->first << G4endl;
+      }
+      else
+      {
+         G4cout << " * " << command << itr3->second << " " << itr1->second << G4endl; 
+      }
    }
    
    G4cout << " ***** End of default settings for Geant4 model " << model << G4endl;
@@ -79,6 +132,7 @@ void ModelConfigMapper::PrintCurrentSettings()
 
    PrintBertiniSettings();
    PrintINCLXXSettings();
+   PrintPreCompoundSettings();
    
    // etc. in the future...
    
@@ -88,45 +142,11 @@ void ModelConfigMapper::PrintCurrentSettings()
 
 void ModelConfigMapper::SetVerbosity( const std::string& model, const bool& verb )
 {
-
-   std::string mod = model;
-   mod = ToLower(mod);
+         
+   double value = 0;
+   if ( verb ) value = 1;
+   ChangeParameter( model, "verbosity", value, verb ); 
    
-   if ( fNameConvention.find(mod) == fNameConvention.end() )
-   {
-      G4cout << " Can NOT find internal name for model " << mod << G4endl;
-      return;
-   }
-   
-   std::map<std::string,std::string>::iterator itr=((fConfigParameters.find(mod))->second).find("verbosity");
-   
-   std::string command = fBaseCommand + (fNameConvention.find(mod))->second;
-   command += itr->second;
-   command += " ";
-   std::ostringstream cmd;
-   cmd << verb;
-   if ( verb )
-   {
-      G4cout << " Turning ON verbosity for model " << model << G4endl;
-   }
-   else
-   {
-      G4cout << " Turning OFF verbosity for model " << model << G4endl;
-   }
-   
-   command += cmd.str(); 
-   
-   G4ApplicationState currentstate = G4StateManager::GetStateManager()->GetCurrentState();
-   bool ok = G4StateManager::GetStateManager()->SetNewState(G4State_Idle);
-   if ( !ok )
-   {
-     G4cout << " G4StateManager PROBLEM: can NOT change state to G4State_Idle !" << G4endl;
-     return;
-   } 
-   G4UImanager* uim = G4UImanager::GetUIpointer();   
-   uim->ApplyCommand( command.c_str() );   
-   ok = G4StateManager::GetStateManager()->SetNewState(currentstate);
-      
    return;
 
 }
@@ -157,74 +177,22 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
    // NOT propagate to the guts of the model
    // Although we might want to check if it's the physics list ctor or its init...
    
+
    std::string mod = model;
    mod = ToLower(mod);
-   
-   std::map< std::string, std::map<std::string,std::string> >::iterator itr = fConfigParameters.find(mod);
-   if ( itr == fConfigParameters.end() )
-   {
-      // bail out with a warning
-      G4cout << " Can NOT find model " << model << " (" << mod << ")" << G4endl;
-      return;
-   }
 
-   std::string par = param;
-   par = ToLower(par);
-   
-   std::map<std::string,std::string>::iterator itr1 = (itr->second).find(par);
-   
-   if ( itr1 == (itr->second).end() )
+   if ( mod == "bertini" || mod == "inclcxx" )
    {
-      // bail out with a warning
-      G4cout << " Can NOT find parameter " << param << " (" << par << ")" << G4endl;
-      return;
+      ChangeParameterViaG4UI( model, param, value, verb );
+   }
+   else if ( mod == "precompound" )
+   {
+      ChangeParameterPreCo( param, value, verb );
+   }
+   else if ( mod.find( "ftf" ) != std::string::npos )
+   {
    }
    
-   G4ApplicationState currentstate = G4StateManager::GetStateManager()->GetCurrentState();
-   
-   // changes propagate through G4UI only if the system is in certain states
-   // (Idle or PreInit)
-   //
-   bool ok = G4StateManager::GetStateManager()->SetNewState(G4State_Idle);
-   if ( !ok )
-   {
-     G4cout << " G4StateManager PROBLEM: can NOT change state to G4State_Idle !" << G4endl;
-     return;
-   }            
-   
-   // compose command to apply change
-   //
-   std::string command = fBaseCommand + (fNameConvention.find(mod))->second;
-   command += ( itr1->second + " " );
-   std::ostringstream cmd;
-   cmd << value;   
-   command += cmd.str();
-   cmd.str("");
-   cmd.clear();
-   
-   if ( verb )
-   {
-      G4cout << " New value of parameter " << param << "=" << value << G4endl;
-      G4cout << " Applying G4UI command: " << command << G4endl;
-  }
-
-   G4UImanager* uim = G4UImanager::GetUIpointer();   
-   uim->ApplyCommand( command.c_str() );
-   
-   if ( verb )
-   {
-      G4cout << " Current Settings: " << std::endl;
-      PrintCurrentSettings();
-   }   
-
-//      G4cout << " Cross-check  usePreCompound = " << G4CascadeParameters::usePreCompound() << G4endl;
-//      G4cout << " Cross-check radiusScale = " << G4CascadeParameters::radiusScale() << G4endl;
-//      G4cout << " Cross-check xsecScale = = " << G4CascadeParameters::xsecScale() << G4endl;
-
-   // restore previous state
-   //  
-   ok = G4StateManager::GetStateManager()->SetNewState(currentstate);
-
    return;
 
 }
@@ -265,8 +233,16 @@ void ModelConfigMapper::ChangeParameterByRatio( const std::string& model, const 
 
    std::string par = param;
    par = ToLower(par);
+   size_t found = par.find("use");
+   
+   if ( found != std::string::npos )
+   {
+      G4cout << " Parameter " << param << " is a switch, it can NOT be changed by ratio" << G4endl;
+      return;
+   }
+   
 
-   size_t found = par.find("byratio");
+   found = par.find("byratio");
    if ( found != std::string::npos )
    {
       // remove "byratio" part from the parameter's name/key
@@ -291,8 +267,13 @@ void ModelConfigMapper::ChangeParameterByRatio( const std::string& model, const 
    }
    
    
-   std::map<std::string,std::string>::iterator itr3=(itr2->second).find(itr1->second);
+   std::map<std::string,std::string>::iterator itr3=(itr2->second).find(itr1->first);
    
+   if ( itr3 == (itr2->second).end() )
+   {
+      std::cout << " can NOT find parameter " << itr1->second << " in the list of defaults" << std::endl;
+   }
+      
    double dvalue = std::atof( (itr3->second).c_str() ); 
    double newvalue = dvalue*ratio;
    
@@ -343,54 +324,13 @@ void ModelConfigMapper::RestoreDefaults( const std::string& model )
       G4cout << " Model " << model << "(" << mod <<") NOT found " << G4endl;
       return;   
    }
-
-   // Change G4State to Idle
-   // G4UImanager will only apply modifications if
-   // 1. G4State_Idle
-   // 2. G4State_PreInit
-   // 
-   // Once run is initialized and prepared to start, the state is set to GeomClosed;
-   // for this reason, G4UIcommand::IsAvailable will return false, and G4UImanager will NOT apply it
-   //
    
-   // save current state (for future restore)
-   // 
-   G4ApplicationState currentstate = G4StateManager::GetStateManager()->GetCurrentState();
-
-   if(!G4StateManager::GetStateManager()->SetNewState(G4State_Idle))
-   {            
-      G4cout << "G4StateManager PROBLEM: can NOT change state to G4State_Idle ! " << G4endl; 
-      return;
-   }   
-
-   std::map<std::string,std::string>::iterator itr1;
-   
-   itr1 = fNameConvention.find(mod);
-   if ( itr1 == fNameConvention.end() )
-   {
-      G4cout << " Can NOT find Geant4 internal name for model " << model << "(" << mod <<") " << G4endl;
-      return;   
-   }
-   
-   std::string command = fBaseCommand + itr1->second;
-
-   G4UImanager* uim = G4UImanager::GetUIpointer();
-      
-   itr1 = (itr->second).begin();
+   std::map<std::string,std::string>::iterator itr1 = (itr->second).begin();
    for ( ; itr1!=(itr->second).end(); ++itr1 )
    {
-      std::string cmd2apply = command + itr1->first + " " + itr1->second;
-      uim->ApplyCommand( cmd2apply.c_str() );   
+      ChangeParameter( itr->first, itr1->first, std::stod((itr1->second).c_str()), false );
    }
-      
-//   if(!G4StateManager::GetStateManager()->SetNewState(G4State_GeomClosed))
-   if( !G4StateManager::GetStateManager()->SetNewState(currentstate) )
-   {            
-      // fLogInfo << "G4StateManager PROBLEM! "; // << std::endl;
-      G4cout << " G4StateManager PROBLEM: can not restore " << currentstate << G4endl; 
-      return;
-   }
-
+   
    return;
 
 }
@@ -418,80 +358,97 @@ void ModelConfigMapper::FillBertiniDefaults()
    // but is useful for some debugging purposes
    //
    cmd << G4CascadeParameters::verbose();
-   (itr2->second).insert( std::pair<std::string,std::string>("/verbose",cmd.str()) ); 
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/verbose",cmd.str()) ); 
+   (itr2->second).insert( std::pair<std::string,std::string>("verbosity",cmd.str()) ); 
    cmd.str( "" );
    cmd.clear();
    
    cmd << G4CascadeParameters::doCoalescence();
-   (itr2->second).insert( std::pair<std::string,std::string>("/doCoalescence",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/doCoalescence",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("docoalescence",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
 // these params/methods are NOT available in G4.9.6-series, but only starting 10.1-ref03
 //   
    cmd << G4CascadeParameters::piNAbsorption();
-   (itr2->second).insert( std::pair<std::string,std::string>("/piNAbsorption",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/piNAbsorption",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("pinabsorption",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::use3BodyMom();
-   (itr2->second).insert( std::pair<std::string,std::string>("/use3BodyMom",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/use3BodyMom",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("use3bodymom",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::usePhaseSpace();
-   (itr2->second).insert( std::pair<std::string,std::string>("/usePhaseSpace",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/usePhaseSpace",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("usephasespace",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
 // technically speaking, these parameters are available in 9.6-series, together with their G4UI,  
-// but in practice they can only be changed via env.variables, due to some implementation details 
+// but in practice in 9.6 they can only be changed via env.variables, due to some implementation details 
 //
    cmd << G4CascadeParameters::useTwoParam();
-   (itr2->second).insert( std::pair<std::string,std::string>("/useTwoParamNuclearRadius",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/useTwoParamNuclearRadius",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("use2paramnucradius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::radiusScale();
-   (itr2->second).insert( std::pair<std::string,std::string>("/nuclearRadiusScale",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/nuclearRadiusScale",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("radiusscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << (G4CascadeParameters::radiusSmall()/G4CascadeParameters::radiusScale()); // due to specifics of Bertini implementation
-   (itr2->second).insert( std::pair<std::string,std::string>("/smallNucleusRadius",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/smallNucleusRadius",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("smallnucradius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::radiusAlpha();
-   (itr2->second).insert( std::pair<std::string,std::string>("/alphaRadiusScale",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/alphaRadiusScale",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("alpharadiusscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 //   cmd << G4CascadeParameters::radiusTrailing(); 
    cmd << (G4CascadeParameters::radiusTrailing()/G4CascadeParameters::radiusScale()); 
-   (itr2->second).insert( std::pair<std::string,std::string>("/shadowningRadius",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/shadowningRadius",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("trailingradius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << (G4CascadeParameters::fermiScale()/G4CascadeParameters::radiusScale()); // due to specifics of Bertini implementation
-   (itr2->second).insert( std::pair<std::string,std::string>("/fermiScale",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/fermiScale",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("fermiscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::xsecScale();
-   (itr2->second).insert( std::pair<std::string,std::string>("/crossSectionScale",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/crossSectionScale",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("xsecscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::gammaQDScale();
-   (itr2->second).insert( std::pair<std::string,std::string>("/gammaQuasiDeutScale",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/gammaQuasiDeutScale",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("gammaqdscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::dpMaxDoublet();
-   (itr2->second).insert( std::pair<std::string,std::string>("/cluster2DPmax",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/cluster2DPmax",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("cluster2dpmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::dpMaxTriplet();
-   (itr2->second).insert( std::pair<std::string,std::string>("/cluster3DPmax",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/cluster3DPmax",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("cluster3dpmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::dpMaxAlpha();
-   (itr2->second).insert( std::pair<std::string,std::string>("/cluster4DPmax",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/cluster4DPmax",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("cluster4dpmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    cmd << G4CascadeParameters::usePreCompound() ; // false/0 by default
-   (itr2->second).insert( std::pair<std::string,std::string>("/usePreCompound",cmd.str()) );
+   // --> (itr2->second).insert( std::pair<std::string,std::string>("/usePreCompound",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("useprecompound",cmd.str()) );
    cmd.str("");
    cmd.clear();
 
@@ -505,6 +462,153 @@ void ModelConfigMapper::FillBertiniDefaults()
 
 void ModelConfigMapper::FillINCLXXDefaults()
 {
+
+   return;
+
+}
+
+void ModelConfigMapper::FillPreCompoundDefaults()
+{
+ 
+   G4DeexPrecoParameters* precoparams = G4NuclearLevelData::GetInstance()->GetParameters();
+   precoparams->SetDefaults();
+
+   fDEFAULTS.insert( std::pair< std::string, std::map<std::string,std::string> >( "precompound", 
+                                                                                  std::map<std::string,std::string>() ) );
+
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr2=fDEFAULTS.find("precompound");
+   
+   std::ostringstream cmd;
+
+   cmd << precoparams->GetLevelDensity()*CLHEP::MeV; 
+   (itr2->second).insert( std::pair<std::string,std::string>("LevelDensity",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetR0()/CLHEP::fermi;
+   (itr2->second).insert( std::pair<std::string,std::string>("R0",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetTransitionsR0()/CLHEP::fermi;
+   (itr2->second).insert( std::pair<std::string,std::string>("TransitionsR0",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   cmd << precoparams->GetFermiEnergy()/CLHEP::MeV;
+   (itr2->second).insert( std::pair<std::string,std::string>("FermiEnergy",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   cmd << precoparams->GetPrecoLowEnergy()/CLHEP::MeV;
+   (itr2->second).insert( std::pair<std::string,std::string>("PrecoLowEnergy",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetPhenoFactor();
+   (itr2->second).insert( std::pair<std::string,std::string>("PhenoFactor",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetMinExcitation()/CLHEP::eV;
+   (itr2->second).insert( std::pair<std::string,std::string>("MinExcitation",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetMaxLifeTime()/CLHEP::microsecond;
+   (itr2->second).insert( std::pair<std::string,std::string>("MaxLifeTime",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   // cmd << precoparams->GetMinExPerNucleonForMF()/CLHEP::GeV;
+   cmd << precoparams->GetMinExPerNucleounForMF()/CLHEP::GeV;
+   (itr2->second).insert( std::pair<std::string,std::string>("MinExPerNucleonForMF",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetMinZForPreco();
+   (itr2->second).insert( std::pair<std::string,std::string>("MinZForPreco",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetMinAForPreco();
+   (itr2->second).insert( std::pair<std::string,std::string>("MinAForPreco",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetPrecoModelType();
+   (itr2->second).insert( std::pair<std::string,std::string>("PrecoModelType",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->GetDeexModelType();
+   (itr2->second).insert( std::pair<std::string,std::string>("DeexModelType",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->NeverGoBack();
+   (itr2->second).insert( std::pair<std::string,std::string>("NeverGoBack",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->UseSoftCutoff();
+   (itr2->second).insert( std::pair<std::string,std::string>("UseSoftCutoff",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->UseCEM();
+   (itr2->second).insert( std::pair<std::string,std::string>("UseCEM",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->UseGNASH();
+   (itr2->second).insert( std::pair<std::string,std::string>("UseGNASH",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->UseHETC();
+   (itr2->second).insert( std::pair<std::string,std::string>("UseHETC",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << precoparams->UseAngularGen();
+   (itr2->second).insert( std::pair<std::string,std::string>("UseAngularGen",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+// FIXME (JVY) !!! What is this ???
+//
+//   cmd << precoparams->UsrFilesNEW();
+//   (itr2->second).insert( std::pair<std::string,std::string>("UseFilesNEW",cmd.str()) );
+//   cmd.str( "" );
+//   cmd.clear();
+
+   cmd << precoparams->CorrelatedGamma();
+   (itr2->second).insert( std::pair<std::string,std::string>("CorrelatedGamma",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+// FIXME (JVY) !!! What is this ???
+//
+//   cmd << precoparams->StoreAllLevels();
+//   (itr2->second).insert( std::pair<std::string,std::string>("StoreAllLevels",cmd.str()) );
+//   cmd.str( "" );
+//   cmd.clear();
+
+// FIXME/NOTE (JVY) !!!
+// Need to see how to (better) handle this case...
+//
+// There's also a method G4DeexChannelType GetDeexChannelsType() const
+// The G4DeexChannelType is enum:
+// enum G4DeexChannelType
+// {
+//   fEvaporation = 0,
+//   fGEM,
+//   fCombined
+// };
+//
+// The current setting is "fEvaporation" 
+// 
 
    return;
 
@@ -525,6 +629,15 @@ void ModelConfigMapper::FillConfigParamMapBertini()
    (itr->second).insert( std::pair<std::string,std::string>("useprecompound", "/usePreCompound") );
    (itr->second).insert( std::pair<std::string,std::string>("docoalescence", "/doCoalescence") );
 
+   (itr->second).insert( std::pair<std::string,std::string>("pinabsorption","/piNAbsorption") );  
+   (itr->second).insert( std::pair<std::string,std::string>("use3bodymom","/use3BodyMom") );  
+   (itr->second).insert( std::pair<std::string,std::string>("usephasespace","/usePhaseSpace") );  
+   (itr->second).insert( std::pair<std::string,std::string>("use2paramnucradius","/useTwoParamNuclearRadius") );  
+   (itr->second).insert( std::pair<std::string,std::string>("smallnucradius","/smallNucleusRadius") );  
+   (itr->second).insert( std::pair<std::string,std::string>("alpharadiusscale","/alphaRadiusScale") );  
+   (itr->second).insert( std::pair<std::string,std::string>("cluster2dpmax","/cluster2DPmax") );  
+   (itr->second).insert( std::pair<std::string,std::string>("cluster3dpmax","/cluster3DPmax") );  
+   (itr->second).insert( std::pair<std::string,std::string>("cluster4dpmax","/cluster4DPmax") );  
 
    (itr->second).insert( std::pair<std::string,std::string>("verbosity","/verbose") );  
 
@@ -532,6 +645,36 @@ void ModelConfigMapper::FillConfigParamMapBertini()
 
 }
 
+void ModelConfigMapper::FillConfigParamMapPreCo()
+{
+
+   fConfigParameters.insert( std::pair< std::string, std::map<std::string,std::string> >( "precompound", std::map<std::string,std::string>() ) );
+   
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr=fConfigParameters.find("precompound");
+
+   (itr->second).insert( std::pair<std::string,std::string>("leveldensity","LevelDensity") );
+   (itr->second).insert( std::pair<std::string,std::string>("r0","R0") );
+   (itr->second).insert( std::pair<std::string,std::string>("transitionsr0","TransitionsR0") );
+   (itr->second).insert( std::pair<std::string,std::string>("precolowenergy","PrecoLowEnergy") );
+   (itr->second).insert( std::pair<std::string,std::string>("phenofactor","PhenoFactor") );
+   (itr->second).insert( std::pair<std::string,std::string>("minexcitation","MinExcitation") );
+   (itr->second).insert( std::pair<std::string,std::string>("maxlifetime","MaxLifeTime") );
+   (itr->second).insert( std::pair<std::string,std::string>("minexpernucleonformf","MinExPerNucleonForMF") );
+   (itr->second).insert( std::pair<std::string,std::string>("minzforpreco","MinZForPreco") );
+   (itr->second).insert( std::pair<std::string,std::string>("minaforpreco","MinAForPreco") );
+   (itr->second).insert( std::pair<std::string,std::string>("precomodeltype","PrecoModelType") );
+   (itr->second).insert( std::pair<std::string,std::string>("deexmodeltype","DeexModelType") );
+   (itr->second).insert( std::pair<std::string,std::string>("nevergoback","NeverGoBack") );
+   (itr->second).insert( std::pair<std::string,std::string>("usesoftcutoff","UseSoftCutoff") );
+   (itr->second).insert( std::pair<std::string,std::string>("usecem","UseCEM") );
+   (itr->second).insert( std::pair<std::string,std::string>("usegnash","UseGNASH") );
+   (itr->second).insert( std::pair<std::string,std::string>("usehetc","UseHETC") );
+   (itr->second).insert( std::pair<std::string,std::string>("useangulargen","UseAngularGen") );
+   (itr->second).insert( std::pair<std::string,std::string>("correlatedgamma","CorrelatedGamma") );
+
+   return;
+
+}
 void ModelConfigMapper::PrintBertiniSettings()
 {
 
@@ -597,6 +740,220 @@ void ModelConfigMapper::PrintBertiniSettings()
 
 void ModelConfigMapper::PrintINCLXXSettings()
 {
+
+   return;
+
+}
+
+void ModelConfigMapper::PrintPreCompoundSettings()
+{
+
+   G4cout << " *** PRECOMPOUND *** CURRENT SETTINGS ARE THE FOLLOWING: " << G4endl; 
+   G4cout << " =========================================================== " << G4endl;
+   
+   G4DeexPrecoParameters* precoparams = G4NuclearLevelData::GetInstance()->GetParameters();
+
+   G4cout << "LevelDensity " <<  precoparams->GetLevelDensity() << " (in MeV)" << G4endl;
+   G4cout << "R0 " << precoparams->GetR0() << " (in fermi)" << G4endl;
+   G4cout << "TransitionsR0 " << precoparams->GetTransitionsR0() << " (in fermi)" << G4endl;
+   G4cout << "FermiEnergy " << precoparams->GetFermiEnergy() << " (inMeV)" << G4endl;
+   G4cout << "PrecoLowEnergy " << precoparams->GetPrecoLowEnergy() << " (in MeV)" << G4endl;
+   G4cout << "PhenoFactor " << precoparams->GetPhenoFactor() << G4endl;
+   G4cout << "MinExcitation " << precoparams->GetMinExcitation() << " (in eV)" << G4endl;
+   G4cout << "MaxLifeTime " << precoparams->GetMaxLifeTime() << " (in microseconds)" << G4endl;
+   G4cout << "MinExPerNucleounForMF " << precoparams->GetMinExPerNucleounForMF() << " (in GeV)" << G4endl;
+   G4cout << "MinZForPreco " << precoparams->GetMinZForPreco() << G4endl;
+   G4cout << "MinAForPreco " << precoparams->GetMinAForPreco() << G4endl;
+   G4cout << "PrecoModelType " << precoparams->GetPrecoModelType() << G4endl;
+   G4cout << "GetDeexModelType " << precoparams->GetDeexModelType() << G4endl;
+   G4cout << "NeverGoBack " << precoparams->NeverGoBack() << G4endl;
+   G4cout << "UseSoftCutoff " << precoparams->UseSoftCutoff() << G4endl;
+   G4cout << "UseCEM " << precoparams->UseCEM() << G4endl;
+   G4cout << "UseGNASH " << precoparams->UseGNASH() << G4endl;
+   G4cout << "UseHETC " << precoparams->UseHETC() << G4endl;
+   G4cout << "UseAngularGen " << precoparams->UseAngularGen() << G4endl; 
+   // --> FIXME !! What is this ?? --> G4cout << "UseFilesNEW " << precoparams->UseFilesNEW() << G4endl;
+   G4cout << "CorrelatedGamma " << precoparams->CorrelatedGamma() << G4endl;
+   // --> FIXME !! What is this ?? --> G4cout << "StoreAllLevels " << precoparams->StoreAllLevels() << G4endl;
+   // Figure out how to handle --> G4cout << "DedxChannelsType " << precoparams->GetDeexChannelsType() << G4endl;
+
+   return;
+
+}
+
+void ModelConfigMapper::ChangeParameterViaG4UI( const std::string& model, const std::string& param, const double& value, bool verb )
+{
+
+   std::string mod = model;
+   mod = ToLower(mod);
+   
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr = fConfigParameters.find(mod);
+   if ( itr == fConfigParameters.end() )
+   {
+      // bail out with a warning
+      G4cout << " Can NOT find model " << model << " (" << mod << ")" << G4endl;
+      return;
+   }
+
+   std::string par = param;
+   par = ToLower(par);
+   
+   std::map<std::string,std::string>::iterator itr1 = (itr->second).find(par);
+   
+   if ( itr1 == (itr->second).end() )
+   {
+      // bail out with a warning
+      G4cout << " Can NOT find parameter " << param << " (" << par << ")" << G4endl;
+      return;
+   }
+   
+   G4ApplicationState currentstate = G4StateManager::GetStateManager()->GetCurrentState();
+   
+   // changes propagate through G4UI only if the system is in certain states
+   // (Idle or PreInit)
+   //
+   // bool ok = G4StateManager::GetStateManager()->SetNewState(G4State_Idle);
+   bool ok = G4StateManager::GetStateManager()->SetNewState(G4State_PreInit);
+   if ( !ok )
+   {
+     // G4cout << " G4StateManager PROBLEM: can NOT change state to G4State_Idle !" << G4endl;
+     G4cout << " G4StateManager PROBLEM: can NOT change state to G4State_PreInit !" << G4endl;
+     return;
+   }            
+   
+   // compose command to apply change
+   //
+   std::string command = fBaseCommand + (fNameConvention.find(mod))->second;
+   command += ( itr1->second + " " );
+   std::ostringstream cmd;
+   cmd << value;   
+   command += cmd.str();
+   cmd.str("");
+   cmd.clear();
+   
+   if ( verb )
+   {
+      G4cout << " New value of parameter " << param << "=" << value << G4endl;
+      G4cout << " Applying G4UI command: " << command << G4endl;
+  }
+
+   G4UImanager* uim = G4UImanager::GetUIpointer();   
+   uim->ApplyCommand( command.c_str() );
+   
+   if ( verb )
+   {
+      G4cout << " Current Settings: " << std::endl;
+      PrintCurrentSettings();
+   }   
+
+//      G4cout << " Cross-check  usePreCompound = " << G4CascadeParameters::usePreCompound() << G4endl;
+//      G4cout << " Cross-check radiusScale = " << G4CascadeParameters::radiusScale() << G4endl;
+//      G4cout << " Cross-check xsecScale = = " << G4CascadeParameters::xsecScale() << G4endl;
+
+   // restore previous state
+   //  
+   ok = G4StateManager::GetStateManager()->SetNewState(currentstate);
+
+   return;
+
+}
+
+void ModelConfigMapper::ChangeParameterPreCo( const std::string& param, const double& value, bool verb )
+{
+
+   std::string par = param;
+   par = ToLower(par);
+   
+   G4DeexPrecoParameters* precoparams = G4NuclearLevelData::GetInstance()->GetParameters();
+   
+   bool value_asbool = false;
+   if ( value > 0. ) value_asbool = true;
+
+   if ( par == "leveldensity" )
+   {
+      precoparams->SetLevelDensity( value );
+   }
+   else if ( par == "r0" )
+   {
+      precoparams->SetR0( value );
+   }
+   else if ( par == "transitionsr0" )
+   {
+      precoparams->SetTransitionsR0( value );
+   }
+   else if ( par == "fermienergy" )
+   {
+      precoparams->SetFermiEnergy( value );
+   }
+   else if ( par == "precolowenergy" )
+   {
+      precoparams->SetPrecoLowEnergy( value );
+   }
+   else if ( par == "phenofactor" )
+   {
+      precoparams->SetPhenoFactor( value );
+   }
+   else if ( par == "minexcitation" )
+   {
+      precoparams->SetMinExcitation( value );
+   }
+   else if (  par == "maxlifetime" )
+   {
+      precoparams->SetMaxLifeTime( value );
+   }
+   else if ( par == "minexpernucleonformf" )
+   {
+      precoparams->SetMinExPerNucleounForMF( value );
+   }
+   else if ( par == "minzforpreco" )
+   {
+      precoparams->SetMinZForPreco( (int)value );
+   }
+   else if ( par == "minaforpreco" )
+   {
+      precoparams->SetMinAForPreco( (int)value );
+   }
+   else if ( par == "precomodeltype" )
+   {
+      precoparams->SetPrecoModelType( (int)value );
+   }
+   else if ( par == "deexmodeltype" )
+   {
+      precoparams->SetDeexModelType( (int)value );
+   }
+   else if ( par == "nevergoback" )
+   {
+      precoparams->SetNeverGoBack( value_asbool );
+   }
+   else if ( par == "usesoftcutoff" )
+   {
+      precoparams->SetUseSoftCutoff( value_asbool );
+   }
+   else if ( par == "usecem" )
+   {
+      precoparams->SetUseCEM( value_asbool );
+   }
+   else if ( par == "usegnash" )
+   {
+      precoparams->SetUseGNASH( value_asbool );
+   }
+   else if ( par == "usehetc" )
+   {
+      precoparams->SetUseHETC( value_asbool );
+   }
+   else if ( par == "useangulargen" )
+   {
+      precoparams->SetUseAngularGen( value_asbool );
+   }
+   else if ( par == "CorrelatedGamma" )
+   {
+      precoparams->SetCorrelatedGamma( value_asbool );
+   }
+   
+   if ( verb )
+   {
+      G4cout << " PreCompound: new value of parameter " << param << "=" << value << G4endl;
+   }
 
    return;
 

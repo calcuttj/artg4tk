@@ -44,11 +44,17 @@ class ModelConfigMapper
       //
       void FillBertiniDefaults();
       void FillINCLXXDefaults();
+      void FillPreCompoundDefaults();     
       // etc. in the future...
       void FillConfigParamMapBertini();
+      void FillConfigParamMapPreCo();
+      //
       void PrintBertiniSettings();
       void PrintINCLXXSettings();
-            
+      void PrintPreCompoundSettings();
+      //
+      void ChangeParameterViaG4UI( const std::string&, const std::string&, const double&, bool verb=false );
+      void ChangeParameterPreCo( const std::string&, const double&, bool verb=false );   
       
       // data members
       //

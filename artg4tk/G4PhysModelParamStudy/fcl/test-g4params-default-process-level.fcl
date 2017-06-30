@@ -4,7 +4,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:   100000
+  maxEvents:   10000
 }
 
 services: 
@@ -33,23 +33,18 @@ services:
     fileName: "HARP-ITEP-ProcL-Default.root"
   }
 
-  user: 
-  {
-
-     RandomNumberGenerator: {}
+  RandomNumberGenerator: {}
          
-     PhysModelConfig: 
-     {
-//        Verbosity: true
-     }
+  PhysModelConfig: 
+  {
+        Verbosity: true
+  }
      
-     ProcLevelSimSetup:
-     {
+  ProcLevelSimSetup:
+  {
         HadronicModelName: "Bertini"
 	TargetNucleus: "Pb"
 	RNDMSeed: 12345
-     }
-
   }
 
 }
@@ -89,6 +84,21 @@ physics: {
 	   }
 	}
      }
+
+//     G4BertiniRsc05:
+//     {
+//        module_type: ProcLevelMPVaryProducer
+//	//
+//	Verbosity: 0
+//	HadronicModel:
+//	{
+//	   DefaultPhysics: false
+//	   ModelParameters:
+//	   {
+//	      RadiusScaleByRatio: 0.5
+//	   }
+//	}
+//     }
      
   }
   
@@ -106,6 +116,18 @@ physics: {
 	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
 	}
      }
+
+//     BertiniRsc05HARP:
+//     {
+//        module_type: AnalyzerHARP
+//	ProductLabel: "G4BertiniRsc05"
+//	IncludeExpData: 
+//	{
+// // new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+//	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+//	}
+//     }
      
      BertiniDefaultITEP:
      {
@@ -118,7 +140,19 @@ physics: {
 	                2573 ]
 	}
      }
-       
+
+//     BertiniRsc05ITEP:
+//     {
+//        module_type: AnalyzerITEP
+//	ProductLabel: "G4BertiniRsc05"
+//	IncludeExpData: 
+//	{
+// // new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 2515, 2516, 2517, 2518, 
+//	                2573 ]
+//	}
+//     }
+
   }
   
   path1:   [ PrimaryGenerator, 

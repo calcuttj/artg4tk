@@ -66,7 +66,7 @@ void artg4tk::PhysModelConfigService::ConfigureModel( const std::string& mname,
    {
       // this is a "hack" and kind of "violation" of the PSet philosophy but...
       //
-      std::vector<std::string> keys = mpset.get_keys();
+      std::vector<std::string> keys = mpset.get_names(); // no loger: get_keys()
       for ( unsigned int i=0; i<keys.size(); ++i )
       {
           std::string thekey = keys[i];

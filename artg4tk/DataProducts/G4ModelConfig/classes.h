@@ -6,5 +6,5 @@
 #include <string>
 //
 #include "artg4tk/DataProducts/G4ModelConfig/ArtG4tkModelConfig.hh"
-#include "art/Persistency/Common/Wrapper.h"
+#include "canvas/Persistency/Common/Wrapper.h"
 template class art::Wrapper<artg4tk::ArtG4tkModelConfig>;

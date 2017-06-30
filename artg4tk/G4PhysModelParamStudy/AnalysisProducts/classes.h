@@ -8,8 +8,7 @@
 // #include "artg4tk/DataProducts/ThinTargetAnalysis/BeamTargetConfig.hh"
 #include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/BeamThinTargetConfig.hh"
 #include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/RecordChi2.hh"
-#include "art/Persistency/Common/Wrapper.h"
+#include "canvas/Persistency/Common/Wrapper.h"
 template class art::Wrapper<BeamThinTargetConfig>;
-template class std::pair<int,double>;
 template class art::Wrapper<InfoChi2>;
 template class art::Wrapper<RecordChi2>;

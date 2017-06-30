@@ -25,7 +25,9 @@ bool VDBConnect::Init()
    
 //   fHTTP = "http://g4devel.fnal.gov:8080/ValidationWebAPI/webresources/validationWebapi/json/result/";
 //   fHTTP = "http://g4devel.fnal.gov:8080/DoSSiER_WS/json/result/";
-   fHTTP = "http://g4devel.fnal.gov:8080/DoSSiER/WebAPI/get?format=json&record=";
+//
+// --> FIXME !!! development is broken as on 4/18/17   fHTTP = "http://g4devel.fnal.gov:8080/DoSSiER/WebAPI/get?format=json&record=";
+   fHTTP = "http://g4validation.fnal.gov:8080/DoSSiER/WebAPI/get?format=json&record=";
    
    curl_easy_setopt( fCurl, CURLOPT_WRITEFUNCTION, &Write2String );
 //   curl_easy_setopt( fCurl, CURLOPT_WRITEFUNCTION, Write2String ); // By address or by value ???

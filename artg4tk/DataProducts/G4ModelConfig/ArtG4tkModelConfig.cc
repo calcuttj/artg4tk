@@ -16,7 +16,7 @@ void artg4tk::ArtG4tkModelConfig::Fill( const fhicl::ParameterSet& pset )
    //              MULTIPLE RunProducts (configs) in service which would be quite a complication !!!
    //
 
-   std::vector<std::string> keys = pset.get_keys();
+   std::vector<std::string> keys = pset.get_names(); // no longer available: pset.get_keys();
    std::vector<std::string> modkeys;
    for ( unsigned int i=0; i<keys.size(); ++i )
    {      
@@ -28,7 +28,7 @@ void artg4tk::ArtG4tkModelConfig::Fill( const fhicl::ParameterSet& pset )
       if ( fDefaultPhysics ) return;
       fhicl::ParameterSet mpset = pset.get<fhicl::ParameterSet>(keys[i]);
       modkeys.clear();
-      modkeys = mpset.get_keys();
+      modkeys = mpset.get_names(); // no more: get_keys();
       for ( unsigned i1=0; i1<modkeys.size(); ++i1 )
       {
          // FIXME !!!

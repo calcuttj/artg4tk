@@ -6,7 +6,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 
-#include "Cintex/Cintex.h"
+// --> NOT in Root6 #include "Cintex/Cintex.h"
 
 #include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/BeamThinTargetConfig.hh"
 #include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/RecordChi2.hh"
@@ -40,7 +40,7 @@ int main( int argc, char** argv )
 
    std::string fname = argv[1];
    
-   ROOT::Cintex::Cintex::Enable();
+// --> NOT in Root6   ROOT::Cintex::Cintex::Enable();
    
    std::string model = "Bertini";
    std::string def   = "Default";

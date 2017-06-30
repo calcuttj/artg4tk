@@ -17,7 +17,7 @@
 //#include <map>
 
 
-#include "art/Persistency/Common/Wrapper.h"
+#include "canvas/Persistency/Common/Wrapper.h"
 #include "artg4tk/pluginDetectors/gdml/myCaloArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myDRCaloArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/myPhotonArtHitData.hh"
@@ -31,7 +31,5 @@ template class art::Wrapper< artg4tk::myDRCaloArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myPhotonArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myTrackerArtHitDataCollection >;
 template class art::Wrapper< artg4tk::myInteractionArtHitDataCollection >;
-template class std::pair<  std::string,double >; 
-template class std::map<  std::string,double >;
 template class art::Wrapper< artg4tk::myParticleEContribArtData >;
 //template class art::Wrapper< artg4tk::myParticleNCerenContribArtData >;

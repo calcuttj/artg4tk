@@ -16,7 +16,7 @@
 #include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/BeamThinTargetConfig.hh"
 #include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/RecordChi2.hh"
 
-#include "Cintex/Cintex.h"
+// --> NOT in Root6 #include "Cintex/Cintex.h"
 
 
 using namespace std;
@@ -26,7 +26,7 @@ int main( int argc, char** argv )
 
    string fname = argv[1];
    
-   ROOT::Cintex::Cintex::Enable();
+// --> NOT in Root6   ROOT::Cintex::Cintex::Enable();
 
    vector<string> SecPartName;
    SecPartName.push_back("piplus");

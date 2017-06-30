@@ -7,8 +7,8 @@
 
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkParticle.hh"
 
-#include "art/Persistency/Common/Ptr.h"
-#include "art/Persistency/Common/PtrVector.h"
+#include "canvas/Persistency/Common/Ptr.h"
+#include "canvas/Persistency/Common/PtrVector.h"
 
 #include<string>
 // #include <ostream>
