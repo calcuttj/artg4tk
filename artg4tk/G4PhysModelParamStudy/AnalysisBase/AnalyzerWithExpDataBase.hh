@@ -26,7 +26,7 @@ namespace artg4tk {
                      
       bool matchVDBRec2MC( const int&, const double&, const int& );
       bool findExpDataByBeamTarget( const int&, const double&, const int& );
-      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>& ) { return NULL; }
+      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>&, const int& ) { return NULL; }
       
       void overlayDataMC();
 /*

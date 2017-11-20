@@ -29,6 +29,7 @@ int main( int argc, char** argv )
    SecPartName.push_back("piminus");
    SecPartName.push_back("proton");
    SecPartName.push_back("neutron");
+   SecPartName.push_back("antiproton");
    
    double chi2thr = 1383.5; // 5GeV/c proton beam
    // double chi2thr = 7385.14; // 5GeV/c pi- beam
@@ -97,6 +98,7 @@ int main( int argc, char** argv )
 	 size_t idx2 = str.find_first_not_of(" ", idx1+1);
 	 size_t idx3 = str.find("=");
 	 std::string pname = str.substr(idx2,(idx3-idx2));
+	 if ( pname.find("USE") != std::string::npos ) continue; // skip ON/OFF switches
 	 std::string sval = str.substr( str.find("=")+1 );
 	 double val = std::stod(sval);
          std::map< std::string, std::map< std::string,std::vector<double> > >::iterator itr1=mparams.find(model);
@@ -182,38 +184,40 @@ int main( int argc, char** argv )
          double fractpart, intpart;
          fractpart = modf( pmin, &intpart );
 	 // double hmin = std::min( 0., intpart-1.) ;
-	 double hmin = intpart;
+	 // ---> double hmin = intpart;
+	 double hmin=pmin;
 	 fractpart = modf( pmax, &intpart );
-	 double hmax = intpart+1.;
+	 // ---> double hmax = intpart+1.;
+	 double hmax=pmax;
          for ( size_t i=0; i<SecPartName.size(); ++i )
          {
 	    histos.insert( std::pair< std::string, std::vector<TProfile*> >( SecPartName[i], std::vector<TProfile*>() )  );
 	    std::map< std::string, std::vector<TProfile*> >::iterator ih=histos.find( SecPartName[i] );
-	    (ih->second).push_back( new TProfile( ( hname + "_Chi2_" + SecPartName[i] ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	    (ih->second).push_back( new TProfile( ( SecPartName[i] + "_Chi2_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	    (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	    (ih->second).back()->GetYaxis()->SetTitle( ( "Chi2" ) );
-	    (ih->second).push_back( new TProfile( ( hname + "_Chi2NDF_" + SecPartName[i] ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	    (ih->second).push_back( new TProfile( ( SecPartName[i] + "_Chi2NDF_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	    (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	    (ih->second).back()->GetYaxis()->SetTitle( ( "Chi2/NDF" ) );
-	    (ih->second).push_back( new TProfile( ( hname + "_" + SecPartName[i] ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	    (ih->second).push_back( new TProfile( ( SecPartName[i] + "_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	    (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	    (ih->second).back()->GetYaxis()->SetTitle( ( "Number of entries" ) );
-	    (ih->second).push_back( new TProfile( ( hname + "_Wt_" + SecPartName[i] ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	    (ih->second).push_back( new TProfile( ( SecPartName[i] + "_Wt_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	    (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	    (ih->second).back()->GetYaxis()->SetTitle( ( "exp(-0.5*chi2)" ) );
          }
 	 histos.insert( std::pair< std::string, std::vector<TProfile*> >( "total", std::vector<TProfile*>() )  );
 	 std::map< std::string, std::vector<TProfile*> >::iterator ih=histos.find( "total" );
-	 (ih->second).push_back( new TProfile( ( hname + "_total" ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	 (ih->second).push_back( new TProfile( ( "total_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	 (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	 (ih->second).back()->GetYaxis()->SetTitle( ( "Number of entries" ) );
-	 (ih->second).push_back( new TProfile( ( hname + "_Chi2_total" ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	 (ih->second).push_back( new TProfile( ( "total_Chi2_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	 (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	 (ih->second).back()->GetYaxis()->SetTitle( ( "Chi2" ) );
-	 (ih->second).push_back( new TProfile( ( hname + "_Chi2NDF_total" ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	 (ih->second).push_back( new TProfile( ( "total_Chi2NDF_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	 (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	 (ih->second).back()->GetYaxis()->SetTitle( ( "Chi2/NDF" ) );
-	 (ih->second).push_back( new TProfile( ( hname + "_Wt_total" ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
+	 (ih->second).push_back( new TProfile( ( "total_Wt_" + hname ).c_str(), "", 25, hmin, hmax, 0., 50000. ) );
 	 (ih->second).back()->GetXaxis()->SetTitle( ( itr1->first + " " + itr2->first ).c_str() );
 	 (ih->second).back()->GetYaxis()->SetTitle( ( "exp(-0.5*chi2)" ) );
 	 
@@ -271,6 +275,7 @@ int main( int argc, char** argv )
 	 size_t idx2 = str.find_first_not_of(" ", idx1+1);
 	 size_t idx3 = str.find("=");
 	 pname = str.substr(idx2,(idx3-idx2));
+	 if ( pname.find("USE") != std::string::npos ) continue; // skip ON/OFF switches
 	 std::string sval = str.substr( str.find("=")+1 );
 	 pval = std::stod(sval); 
 	 

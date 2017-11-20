@@ -11,6 +11,9 @@
 #include "Geant4/G4NuclearLevelData.hh"
 #include "Geant4/G4DeexPrecoParameters.hh"
 //
+// HDP (FTFP, etc,)
+#include "G4HadronicDeveloperParameters.hh"
+//
 #include "Geant4/G4RunManager.hh"
 #include "Geant4/G4UImanager.hh"
 #include "Geant4/G4StateManager.hh"
@@ -41,6 +44,9 @@
 // Technically, this happens later than the ctor is invoked (e.g. via physics list) 
 // but it is still part of run initialization
 //
+// FTF Notes: coming shortly...
+//
+
 
 ModelConfigMapper::ModelConfigMapper()
 {
@@ -53,13 +59,17 @@ ModelConfigMapper::ModelConfigMapper()
    //
    // model(s) that do not have G4UI but a C++ interface instead
    //
-   fNameConvention.insert( std::pair<std::string,std::string>("precompound","precompound" ) );
+   fNameConvention.insert( std::pair<std::string,std::string>("precompound","PreCo_" ) );
+   fNameConvention.insert( std::pair<std::string,std::string>("ftfp","FTF_" ) );
    
    FillBertiniDefaults();
    FillINCLXXDefaults();
    FillPreCompoundDefaults();
+   FillFTFPDefaults();
    
    FillConfigParamMapBertini();
+   FillConfigParamMapPreCo();
+   FillConfigParamMapFTFP();
 
 }
 
@@ -97,29 +107,29 @@ void ModelConfigMapper::PrintDefaults( const std::string& model ) // const
       return;   
    }
    
+   G4cout << " ***** Default settings for Geant4 model " << model << G4endl;
+
    std::string command = "";
-   if ( model == "bertini" || model == "inclxx" )
+   if ( model == "bertini" || model == "inclxx"  )
    {
       command += fBaseCommand; 
    }
    command += itr1->second;
-   
-   G4cout << " ***** Default settings for Geant4 model " << model << G4endl;
-   
+            
    itr1 = (itr->second).begin();
    for ( ; itr1!=(itr->second).end(); ++itr1 )
    {
-      // --> G4cout << " * " << command << itr1->first << " " << itr1->second << G4endl; 
-      itr3 = (itr2->second).find(itr1->first);
-      if ( itr3 == (itr2->second).end() )
-      {
-         G4cout << " Can NOT find command for parameter " << itr1->first << G4endl;
-      }
-      else
-      {
-         G4cout << " * " << command << itr3->second << " " << itr1->second << G4endl; 
-      }
-   }
+         // --> G4cout << " * " << command << itr1->first << " " << itr1->second << G4endl; 
+         itr3 = (itr2->second).find(itr1->first);
+         if ( itr3 == (itr2->second).end() )
+         {
+            G4cout << " Can NOT find command " << command << " for parameter " << itr1->first << G4endl;
+         }
+         else
+         {
+            G4cout << " * " << command << itr3->second << "   " << itr1->second << G4endl; 
+         }
+   }   
    
    G4cout << " ***** End of default settings for Geant4 model " << model << G4endl;
    
@@ -127,12 +137,16 @@ void ModelConfigMapper::PrintDefaults( const std::string& model ) // const
 
 }
 
-void ModelConfigMapper::PrintCurrentSettings()
+void ModelConfigMapper::PrintCurrentSettings( std::string model )
 {
 
-   PrintBertiniSettings();
-   PrintINCLXXSettings();
-   PrintPreCompoundSettings();
+   std::string mod = model;
+   mod = ToLower(mod); 
+   
+   if ( mod == "bertini" || mod == "all" )     PrintBertiniSettings();
+   if ( mod == "inclxx" || mod == "all" )      PrintINCLXXSettings();
+   if ( mod == "precompound" || mod == "all" ) PrintPreCompoundSettings();
+   if ( mod == "ftfp" || mod == "all" )        PrintFTFPSettings();
    
    // etc. in the future...
    
@@ -189,8 +203,9 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
    {
       ChangeParameterPreCo( param, value, verb );
    }
-   else if ( mod.find( "ftf" ) != std::string::npos )
+   else if ( mod.find( "ftfp" ) != std::string::npos )
    {
+      ChangeParameterFTFP( param, value, verb );
    }
    
    return;
@@ -241,7 +256,6 @@ void ModelConfigMapper::ChangeParameterByRatio( const std::string& model, const 
       return;
    }
    
-
    found = par.find("byratio");
    if ( found != std::string::npos )
    {
@@ -313,7 +327,7 @@ void ModelConfigMapper::RestoreAllDefaults()
 
 void ModelConfigMapper::RestoreDefaults( const std::string& model ) 
 {
-      
+
    std::string mod = model;
    mod = ToLower(mod);
 
@@ -481,98 +495,117 @@ void ModelConfigMapper::FillPreCompoundDefaults()
    std::ostringstream cmd;
 
    cmd << precoparams->GetLevelDensity()*CLHEP::MeV; 
-   (itr2->second).insert( std::pair<std::string,std::string>("LevelDensity",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("LevelDensity",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("leveldensity",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetR0()/CLHEP::fermi;
-   (itr2->second).insert( std::pair<std::string,std::string>("R0",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("R0",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("r0",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetTransitionsR0()/CLHEP::fermi;
-   (itr2->second).insert( std::pair<std::string,std::string>("TransitionsR0",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("TransitionsR0",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("transitionsr0",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    
    cmd << precoparams->GetFermiEnergy()/CLHEP::MeV;
-   (itr2->second).insert( std::pair<std::string,std::string>("FermiEnergy",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("FermiEnergy",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("fermienergy",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    
    cmd << precoparams->GetPrecoLowEnergy()/CLHEP::MeV;
-   (itr2->second).insert( std::pair<std::string,std::string>("PrecoLowEnergy",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("PrecoLowEnergy",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("precolowenergy",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetPhenoFactor();
-   (itr2->second).insert( std::pair<std::string,std::string>("PhenoFactor",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("PhenoFactor",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("phenofactor",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetMinExcitation()/CLHEP::eV;
-   (itr2->second).insert( std::pair<std::string,std::string>("MinExcitation",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("MinExcitation",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("minexcitation",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetMaxLifeTime()/CLHEP::microsecond;
-   (itr2->second).insert( std::pair<std::string,std::string>("MaxLifeTime",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("MaxLifeTime",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("maxlifetime",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    // cmd << precoparams->GetMinExPerNucleonForMF()/CLHEP::GeV;
    cmd << precoparams->GetMinExPerNucleounForMF()/CLHEP::GeV;
-   (itr2->second).insert( std::pair<std::string,std::string>("MinExPerNucleonForMF",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("MinExPerNucleonForMF",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("minexpernucleonformf",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetMinZForPreco();
-   (itr2->second).insert( std::pair<std::string,std::string>("MinZForPreco",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("MinZForPreco",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("minzforpreco",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetMinAForPreco();
-   (itr2->second).insert( std::pair<std::string,std::string>("MinAForPreco",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("MinAForPreco",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("minaforpreco",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetPrecoModelType();
-   (itr2->second).insert( std::pair<std::string,std::string>("PrecoModelType",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("PrecoModelType",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("precomodeltype",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->GetDeexModelType();
-   (itr2->second).insert( std::pair<std::string,std::string>("DeexModelType",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("DeexModelType",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("deexmodeltype",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->NeverGoBack();
-   (itr2->second).insert( std::pair<std::string,std::string>("NeverGoBack",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("NeverGoBack",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("nevergoback",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->UseSoftCutoff();
-   (itr2->second).insert( std::pair<std::string,std::string>("UseSoftCutoff",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("UseSoftCutoff",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("usesoftcutoff",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->UseCEM();
-   (itr2->second).insert( std::pair<std::string,std::string>("UseCEM",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("UseCEM",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("usecem",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->UseGNASH();
-   (itr2->second).insert( std::pair<std::string,std::string>("UseGNASH",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("UseGNASH",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("usegnash",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->UseHETC();
-   (itr2->second).insert( std::pair<std::string,std::string>("UseHETC",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("UseHETC",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("usehetc",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    cmd << precoparams->UseAngularGen();
-   (itr2->second).insert( std::pair<std::string,std::string>("UseAngularGen",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("UseAngularGen",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("useangulargen",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
@@ -584,7 +617,8 @@ void ModelConfigMapper::FillPreCompoundDefaults()
 //   cmd.clear();
 
    cmd << precoparams->CorrelatedGamma();
-   (itr2->second).insert( std::pair<std::string,std::string>("CorrelatedGamma",cmd.str()) );
+   // (itr2->second).insert( std::pair<std::string,std::string>("CorrelatedGamma",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("correlatedgamma",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
@@ -610,6 +644,345 @@ void ModelConfigMapper::FillPreCompoundDefaults()
 // The current setting is "fEvaporation" 
 // 
 
+   return;
+
+}
+
+void ModelConfigMapper::FillFTFPDefaults()
+{
+
+//   G4DeexPrecoParameters* precoparams = G4NuclearLevelData::GetInstance()->GetParameters();
+//   precoparams->SetDefaults();
+
+   G4HadronicDeveloperParameters& HDP = G4HadronicDeveloperParameters::GetInstance();
+
+   fDEFAULTS.insert( std::pair< std::string, std::map<std::string,std::string> >( "ftfp", 
+                                                                                  std::map<std::string,std::string>() ) );
+
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr2=fDEFAULTS.find("ftfp");
+   
+   std::ostringstream cmd;
+
+   double dpar = 0.;
+   
+   // CROSS SECTIONS for ELEMENTARY PROCESSES
+   //
+   // these are for Inelastic interactions, i.e. Xinelastic=(Xtotal-Xelastix)>0.
+   // for elastic, all the A's & B's, Atop & Ymin are zeros
+   // general formula: Pp = A1*exp(B1*Y) + A2*exp(B2*Y) + A3
+   // but if Y<Ymin, then Pp=max(0.,Atop)
+   // for details, see also G4FTFParameters::GetProcProb( ProcN, y )
+   //
+    
+   // baryon projectile
+   //
+	 
+/* RELEASE LATER !!!
+   // Process=0 --> Qexchg w/o excitation
+   //
+   HDP.GetDefault( "FTF_BARYON_PROC0_A1",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_a1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC0_B1",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_b1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC0_A2",  dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_a2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC0_B2",  dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_b2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC0_A3",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_a3",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC0_ATOP",dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_atop",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC0_YMIN",dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_ymin",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   // Process=1 --> Qexchg w/excitation
+   //
+   HDP.GetDefault( "FTF_BARYON_PROC1_A1",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc1_a1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC1_B1",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc1_b1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC1_A2",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc1_a2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC1_B2",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc1_b2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC1_A3",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc1_a3",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC1_ATOP",dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc1_atop",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC1_YMIN",dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc1_ymin",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+	 //
+         // NOTE: Process #2 & 3 are projectile & target diffraction
+         //       they have more complex definition of A1 & A2 
+         //      (see around line 540 or so)
+         // SetParams( 2, 6.0/Xinel, 0.0 ,-6.0/Xinel*16.28, 3.0 , 0.0, 0.0  ,     0.93);// Projectile diffraction
+         // SetParams( 3, 6.0/Xinel, 0.0 ,-6.0/Xinel*16.28, 3.0 , 0.0, 0.0  ,     0.93);// Target diffraction
+         //
+   // Proc=2 & Proc=3 for the case ( AbsProjectileBaryonNumber > 1 ||  NumberOfTargetNucleons > 1 )
+   // (diffraction dissociation)
+RELEASE LATER !!!     */
+
+   bool bpar = false;
+   HDP.GetDefault( "FTF_BARYON_DIFF_DISSO_PROJ", bpar );
+   cmd << bpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_proj",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   HDP.GetDefault( "FTF_BARYON_DIFF_DISSO_TGT", bpar );
+   cmd << bpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+	 
+/* RELEASE LATER !!!
+   // Process=4 --> Qexchg w/additional multiplier in excitation 
+   //
+   HDP.GetDefault( "FTF_BARYON_PROC4_A1",  dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_a1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC4_B1",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_b1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC4_A2",  dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_a2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC4_B2",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_b2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC4_A3",  dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_a3",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC4_ATOP",dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_atop",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROC4_YMIN",dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_ymin",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+RELEASE LATER !!! */
+
+   // PARAMETERS of PARTICIPATING HADRON EXCITATION
+   //
+	 
+   // baryon projectile
+   //
+	 
+   HDP.GetDefault( "FTF_BARYON_DELTA_PROB_QEXCHG", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_delta_prob_qexchg",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_PROB_SAME_QEXCHG", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_prob_same_qexchg",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_DIFF_M_PROJ", dpar ); // units of CLHEP::GeV will apply in the Set<...> method of G4FTFParameters
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_diff_m_proj",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_NONDIFF_M_PROJ", dpar ); // units - same as above
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nondiff_m_proj",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_DIFF_M_TGT", dpar ); // units - as above
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_diff_m_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_NONDIFF_M_TGT", dpar ); // units - as above
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nondiff_m_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_BARYON_AVRG_PT2", dpar ); // units of (CLHEP::GeV)**2 will apply in Set<...> method of G4FTFParameters
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_avrg_pt2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   // PARAMETERS OF NUCLEAR DESTRUCTION
+   //
+   
+   // "common" parameters, i.e. used for all types of projectile
+   //
+   
+   HDP.GetDefault(  "FTF_NUCDESTR_P1_PROJ", dpar );
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_PROJ",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p1_proj",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   bpar = false;
+   HDP.GetDefault( "FTF_NUCDESTR_P1_NBRN_PROJ", bpar );
+   cmd << bpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_NBRN_PROJ",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_nbrn_proj",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_NUCDESTR_P1_TGT", dpar );
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_TGT",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p1_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_NUCDESTR_P1_ADEP_TGT", bpar );
+   cmd << bpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_ADEP_TGT",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_adep_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   // NOTE: P2 & P3 for PROJ nuc.destr. are FIXED for now
+   
+   HDP.GetDefault( "FTF_NUCDESTR_P2_TGT", dpar );
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P2",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p2_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_NUCDESTR_P3_TGT", dpar );
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P3",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p3_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_PT2_NUCDESTR_P1", dpar ); 
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P1",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_PT2_NUCDESTR_P2", dpar ); 
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P2",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_PT2_NUCDESTR_P3", dpar ); 
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P3",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p3",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_PT2_NUCDESTR_P4", dpar ); 
+   cmd << dpar;
+   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P4",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p4",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   // parameters specific to baryon projectile
+   //
+
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_R2", dpar  ); // in the units of (CLHEP::fermi)**2
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_r2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_BARYON_EXCI_E_PER_WNDNUCLN", dpar ); // in the units of CLHEP::MeV
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_exci_e_per_wndnucln",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_DOF", dpar ); // arbitrary units
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_dof",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
    return;
 
 }
@@ -655,6 +1028,7 @@ void ModelConfigMapper::FillConfigParamMapPreCo()
    (itr->second).insert( std::pair<std::string,std::string>("leveldensity","LevelDensity") );
    (itr->second).insert( std::pair<std::string,std::string>("r0","R0") );
    (itr->second).insert( std::pair<std::string,std::string>("transitionsr0","TransitionsR0") );
+   (itr->second).insert( std::pair<std::string,std::string>("fermienergy","FermiEnergy") ); // WAS MISSING !!! 
    (itr->second).insert( std::pair<std::string,std::string>("precolowenergy","PrecoLowEnergy") );
    (itr->second).insert( std::pair<std::string,std::string>("phenofactor","PhenoFactor") );
    (itr->second).insert( std::pair<std::string,std::string>("minexcitation","MinExcitation") );
@@ -675,6 +1049,110 @@ void ModelConfigMapper::FillConfigParamMapPreCo()
    return;
 
 }
+
+void ModelConfigMapper::FillConfigParamMapFTFP()
+{
+
+   fConfigParameters.insert( std::pair< std::string, std::map<std::string,std::string> >( "ftfp", std::map<std::string,std::string>() ) );
+   
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr=fConfigParameters.find("ftfp");
+
+   // CROSS SECTIONS for ELEMENTARY PROCESSES
+   //
+   // these are for Inelastic interactions, i.e. Xinelastic=(Xtotal-Xelastix)>0.
+   // for elastic, all the A's & B's, Atop & Ymin are zeros
+   // general formula: Pp = A1*exp(B1*Y) + A2*exp(B2*Y) + A3
+   // but if Y<Ymin, then Pp=max(0.,Atop)
+   // for details, see also G4FTFParameters::GetProcProb( ProcN, y )
+   //
+	 
+   // baryon projectile
+   //
+	 
+/* RELEASE LATER !!!
+   // Process=0 --> Qexchg w/o excitation
+   //
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_a1",  "BARYON_PROC0_A1") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_b1",  "BARYON_PROC0_B1") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_a2",  "BARYON_PROC0_A2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_b2",  "BARYON_PROC0_B2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_a3",  "BARYON_PROC0_A3") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_atop","BARYON_PROC0_ATOP") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_ymin","BARYON_PROC0_YMIN") );
+
+   // Process=1 --> Qexchg w/excitation
+   //
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc1_a1",  "BARYON_PROC1_A1") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc1_b1",  "BARYON_PROC1_B1") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc1_a2",  "BARYON_PROC1_A2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc1_b2",  "BARYON_PROC1_B2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc1_a3",  "BARYON_PROC1_A3") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc1_atop","BARYON_PROC1_ATOP") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc1_ymin","BARYON_PROC1_YMIN") );
+
+	 //
+         // NOTE: Process #2 & 3 are projectile & target diffraction
+         //       they have more complex definition of A1 & A2 
+         //      (see around line 540 or so)
+         // SetParams( 2, 6.0/Xinel, 0.0 ,-6.0/Xinel*16.28, 3.0 , 0.0, 0.0  ,     0.93);// Projectile diffraction
+         // SetParams( 3, 6.0/Xinel, 0.0 ,-6.0/Xinel*16.28, 3.0 , 0.0, 0.0  ,     0.93);// Target diffraction
+         //
+RELEASE LATER !!! */
+
+   (itr->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_proj","BARYON_DIFF_DISSO_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_tgt","BARYON_DIFF_DISSO_TGT") );
+
+/* RELEASE LATER !!!
+   // Process=4 --> Qexchg w/additional multiplier in excitation 
+   //
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_a1",  "BARYON_PROC4_A1") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_b1",  "BARYON_PROC4_B1") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_a2",  "BARYON_PROC4_A2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_b2",  "BARYON_PROC4_B2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_a3",  "BARYON_PROC4_A3") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_atop","BARYON_PROC4_ATOP") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_ymin","BARYON_PROC4_YMIN") );
+RELEASE LATER !!! */
+
+   // PARAMETERS of PARTICIPATING HADRON EXCITATION
+   //
+	 
+   // baryon projectile
+   //
+
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_delta_prob_qexchg","BARYON_DELTA_PROB_QEXCHG") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_prob_same_qexchg", "BARYON_PROB_SAME_QEXCHG") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_diff_m_proj",      "BARYON_DIFF_M_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nondiff_m_proj",   "BARYON_NONDIFF_M_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_diff_m_tgt",       "BARYON_DIFF_M_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nondiff_m_tgt",    "BARYON_NONDIFF_M_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_avrg_pt2",         "BARYON_AVRG_PT2") );
+
+   // NUCLEAR DESTRUCTION
+   
+   // Common parameters (all projectiles)
+   
+   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p1_proj",         "NUCDESTR_P1_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_nbrn_proj","NUCDESTR_P1_NBRN_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p1_tgt",          "NUCDESTR_P1_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_adep_tgt", "NUCDESTR_P1_ADEP_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p2_tgt",          "NUCDESTR_P2_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p3_tgt",          "NUCDESTR_P3_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p1",          "PT2_NUCDESTR_P1") );
+   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p2",          "PT2_NUCDESTR_P2") );
+   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p3",          "PT2_NUCDESTR_P3") );
+   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p4",          "PT2_NUCDESTR_P4") );
+
+   // Baryon projectile
+   
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_r2",        "BARYON_NUCDESTR_R2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_exci_e_per_wndnucln","BARYON_EXCI_E_PER_WNDNUCLN") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_dof",       "BARYON_NUCDESTR_DOF") );
+
+   return;
+
+}
+
 void ModelConfigMapper::PrintBertiniSettings()
 {
 
@@ -781,6 +1259,30 @@ void ModelConfigMapper::PrintPreCompoundSettings()
 
 }
 
+void ModelConfigMapper::PrintFTFPSettings()
+{
+
+   G4HadronicDeveloperParameters& HDP = G4HadronicDeveloperParameters::GetInstance();
+      
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr=fConfigParameters.find("ftfp");
+   
+   if ( itr==fConfigParameters.end() )
+   {
+      G4cout << " FTFP parameters NOT found " << G4endl;
+      return;
+   }
+   
+   std::map<std::string,std::string>::iterator itr1=(itr->second).begin();
+   for ( ; itr1!=(itr->second).end(); ++itr1 )
+   {
+      std::string pname = "FTF_" + itr1->second;
+      HDP.Dump( pname );
+   }
+
+   return;
+
+}
+
 void ModelConfigMapper::ChangeParameterViaG4UI( const std::string& model, const std::string& param, const double& value, bool verb )
 {
 
@@ -843,7 +1345,7 @@ void ModelConfigMapper::ChangeParameterViaG4UI( const std::string& model, const 
    if ( verb )
    {
       G4cout << " Current Settings: " << std::endl;
-      PrintCurrentSettings();
+      PrintCurrentSettings( model );
    }   
 
 //      G4cout << " Cross-check  usePreCompound = " << G4CascadeParameters::usePreCompound() << G4endl;
@@ -945,7 +1447,7 @@ void ModelConfigMapper::ChangeParameterPreCo( const std::string& param, const do
    {
       precoparams->SetUseAngularGen( value_asbool );
    }
-   else if ( par == "CorrelatedGamma" )
+   else if ( par == "correlatedgamma" )
    {
       precoparams->SetCorrelatedGamma( value_asbool );
    }
@@ -958,3 +1460,49 @@ void ModelConfigMapper::ChangeParameterPreCo( const std::string& param, const do
    return;
 
 }
+
+void ModelConfigMapper::ChangeParameterFTFP( const std::string& pname, const double& value, bool verb )
+{
+   
+   G4HadronicDeveloperParameters& HDP = G4HadronicDeveloperParameters::GetInstance();
+      
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr=fConfigParameters.find("ftfp");
+   
+   if ( itr==fConfigParameters.end() )
+   {
+      G4cout << " FTFP parameters NOT found; do nothing " << G4endl;
+      return;
+   }
+   
+   std::map<std::string,std::string>::iterator itr1=(itr->second).find(pname);
+   if ( itr1==(itr->second).end() )
+   {
+      G4cout << " FTFP parameter " << pname << " is NOT found; do nothing" << G4endl;
+   }
+   
+   // ---> std::string param = (fNameConvention.find("ftfp"))->second + itr1->second;
+   std::string param = "FTF_" + itr1->second;      
+   //
+   // Special treatment for BOOLEAN parameters
+   //
+   if ( pname.find("use") != std::string::npos )
+   {
+      bool bvalue = false;
+      if ( value > 0 ) bvalue = true;
+      HDP.Set( param, bvalue );
+   } 
+   else // double parameters; NOTE: As of 10.3.ref05, so far there're no INTEGER parameters in FTF
+   {
+      HDP.Set( param, value );
+   }
+   
+   if ( verb )
+   {
+      G4cout << " FTFP: new value of parameter " /* << param << "=" << value */ << G4endl;
+      HDP.Dump( param );
+   }
+
+   return;
+
+}
+

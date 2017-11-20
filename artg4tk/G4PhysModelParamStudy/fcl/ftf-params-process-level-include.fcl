@@ -1,0 +1,44 @@
+BEGIN_PROLOG
+
+# example configuration for FTF parameters
+
+# DEFAULT configuration 
+
+     G4FTFPDefault:
+     {
+        module_type: ProcLevelMPVaryProducer
+	//
+	Verbosity: 1
+	HadronicModel:
+	{
+	   DefaultPhysics: true
+	   ModelParameters:
+	   {
+	      // none
+	   }
+	}
+     }
+
+# vary parameters for modeling diffraction  (and/or nuclear destruction of the target)
+     
+     G4FTFPVar1:
+     {
+        module_type: ProcLevelMPVaryProducer
+	Verbosity: 1
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+           {
+	      // NUCDESTR_P1_TGT: 0.2
+	      // USE_NUCDESTR_P1_ADEP_TGT: 0
+	      // BARYON_AVRG_PT2: 0.995 // tested stand-alone 0.15 & 1.5 (now max=1.)
+	      BARYON_DIFF_M_PROJ: 3.
+	      BARYON_NONDIFF_M_PROJ: 3.
+	      BARYON_DIFF_M_TGT: 3.
+	      BARYON_NONDIFF_M_TGT: 3.
+	   }
+	}
+     }
+
+END_PROLOG

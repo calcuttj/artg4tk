@@ -11,7 +11,8 @@
 
 MetaData::MetaData()
    : /* fBeamPID(0), fBeamMomentum(0.), */ fBeamLink(-1), fTargetNucleus(0), fSecondaryPID(0),
-                                           fTitle(""), 
+                                           fObservable(-1),
+					   fTitle(""), 
 					   fRefLink(-1)
 {
 }
@@ -22,9 +23,11 @@ MetaData::MetaData( const MetaData& rhs )
      fBeamLink(rhs.fBeamLink),
      fTargetNucleus(rhs.fTargetNucleus),
      fSecondaryPID(rhs.fSecondaryPID),
+     fObservable(rhs.fObservable),
      fTitle(rhs.fTitle),
      fRefLink(rhs.fRefLink),
-     fParameters(rhs.fParameters)
+     fParNames(rhs.fParNames),
+     fParValues(rhs.fParValues)
 {
 }
 
@@ -37,7 +40,7 @@ bool MetaData::operator==( const MetaData& rhs ) const
    
    if ( /* fBeamPID==rhs.fBeamPID && (fBeamMomentum-rhs.fBeamMomentum)<=1.e-10 && */
         fBeamLink==rhs.fBeamLink &&
-        fTargetNucleus==rhs.fTargetNucleus && fSecondaryPID==rhs.fSecondaryPID )
+        fTargetNucleus==rhs.fTargetNucleus && fSecondaryPID==rhs.fSecondaryPID && fObservable==rhs.fObservable )
    {
       return true;
    }
@@ -47,11 +50,11 @@ bool MetaData::operator==( const MetaData& rhs ) const
 }
 
 bool MetaData::IsMatch( const int& beamid, const double& mom,
-                        const int& tgt,    const int& secid ) const
+                        const int& tgt,    const int& secid,   const int& observable ) const
 {
 
    if ( IsBeamTargetMatch( beamid, mom, tgt ) &&
-	secid == fSecondaryPID )
+	secid == fSecondaryPID && observable == fObservable )
    {
       return true;
    }
@@ -88,6 +91,10 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
       {
          blnk = 7;
       }
+      else if ( fabs(mom-100.) <= 1.e-10  && fRefLink == 56 )
+      {
+         blnk = 12;
+      }
       else if ( fabs(mom-3.) <= 1.e-10 )
       {
          blnk = 37;
@@ -118,7 +125,11 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
    }
    else if (pid == 211 )
    {
-      if ( fabs(mom-3.) <= 1.e-10 )
+      if ( fabs(mom-100.) <= 1.e-10  && fRefLink == 56 )
+      {
+         blnk = 10;
+      }
+      else if ( fabs(mom-3.) <= 1.e-10 )
       {
          if ( fRefLink == 17 )
 	 {
@@ -175,6 +186,13 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
          blnk = 49;
       }
    }
+   else if ( pid == 321 )
+   {
+      if ( fabs(mom-100.) <= 1.e-10  && fRefLink == 56 )
+      {
+         blnk = 11;
+      }
+   }
    
 //   std::cout << " beam = " << pid << " momentum = " << mom << " beamlink = " << blnk << std::endl;
    
@@ -195,10 +213,12 @@ void JSON2Data::ClearMetaData()
    fMetaData.fBeamLink = -1;
    fMetaData.fTargetNucleus = 0;
    fMetaData.fSecondaryPID = 0;
+   fMetaData.fObservable = -1;
    fMetaData.fTitle.clear();
    fMetaData.fTitle = "";
    fMetaData.fRefLink = -1;
-   fMetaData.fParameters.clear();
+   fMetaData.fParNames.clear();
+   fMetaData.fParValues.clear();
 
    return;
 
@@ -210,25 +230,30 @@ void JSON2Data::ParseMetaData( const std::string& jstr )
    ClearMetaData();
    
    std::stringstream ss(jstr.c_str()); 
-
+   
    ptree pt;
    read_json( ss, pt );
    
    fMetaData.fBeamLink      = pt.get<int>("beamlnk");
    fMetaData.fTargetNucleus = pt.get<int>("targetlnk");
    fMetaData.fSecondaryPID  = pt.get<int>("secondarylnk");
+   fMetaData.fObservable    = pt.get<int>("observablelnk");
    
    fMetaData.fTitle         = pt.get<std::string>("datatable.title");
    
    fMetaData.fRefLink = pt.get<int>("referencelnk");
    
-/*
-   BOOST_FOREACH( ptree::value_type &v, pt.get_child("parnames") )
+   BOOST_FOREACH( ptree::value_type &v, pt.get_child("parnames.") )
    {
-      //std::cout << " parnames: " << v.second.data() << std::endl;
-      fParameters.push_back( v.second.data() );
+      fMetaData.fParNames.push_back( v.second.data() );
+      
    }
-*/
+   BOOST_FOREACH( ptree::value_type &v, pt.get_child("parvalues.") )
+   {
+      fMetaData.fParValues.push_back( v.second.data() );
+      
+   }
+   
    return;
 
 }
@@ -254,11 +279,16 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
 //   if ( dtype == "1000" || dtype == "1001" )
    if ( dtype >= 1000 )
    {
-     // 1D Datapoint set - can NOT convert to TH1D since the binning is unknowns
+     // 1D Datapoint set - can NOT convert to TH1D directly since the binning is unknowns
+     // Thus we convert via Graph... which is a bit of cheating but not the end of the world
+     // At least, we'll go like this until we get a better idea and/or time to refine the infrastructure
      //
      mf::LogInfo log;
-     log << " Can NOT convert 1D Datapoints set into TH1D since the binning is unknown" << std::endl;
-     return NULL;
+     log << " 1D Datapoints set can be converted into TH1D via TGraphErrors" << std::endl;
+     // ---> return NULL;
+     fGraph = Convert2Graph( jstr, hname );
+     ConvertGraph2Histo( hname );
+     return fHisto;
    }   
    
    int     nbins = 0;
@@ -292,8 +322,6 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
    int cnt = 0;
    BOOST_FOREACH( ptree::value_type &v, pt.get_child("datatable.val") )
    {
-       // std::cout << " datatable.val: " << v.second.data() << std::endl;
-       //cv.push_back( atof( v.second.data().c_str() ) );
       cv[cnt] = atof( v.second.data().c_str() );
       cnt++;
       if ( cnt >= nbins ) break; 
@@ -391,7 +419,7 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
 
 }
 
-TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
+TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr, const char* grname )
 {
 
 
@@ -453,7 +481,6 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
    }
    
    // assert ( (nbins > 0) && cv && estat && esys && xx ); 
-
    cv = new double[ nbins ];
    estat = new double[ nbins ];
    esys = new double[ nbins ];
@@ -471,29 +498,16 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
    int cnt = 0;
    BOOST_FOREACH( ptree::value_type &v, pt.get_child("datatable.val") )
    {
-       //std::cout << " datatable.val: " << v.second.data() << std::endl;
-       //cv.push_back( atof( v.second.data().c_str() ) );
-      cv[cnt] = atof( v.second.data().c_str() );
+      if ( cnt < nbins )
+      {
+         xx[cnt] = atof( v.second.data().c_str() );
+      }
+      else
+      {
+         cv[cnt-nbins] = atof( v.second.data().c_str() );
+      }
       cnt++;
-      if ( cnt >= nbins ) break; 
-   }
-   
-   // get binning (x-axis, etc...)
-   //
-   cnt = 0;
-   BOOST_FOREACH( ptree::value_type& v, pt.get_child("datatable.binMin") )
-   {
-      xx[cnt] = atof( v.second.data().c_str() );
-      cnt++;
-      if ( cnt >= nbins ) break;
-   }
-   cnt = 0;
-   BOOST_FOREACH( ptree::value_type& v, pt.get_child("datatable.binMax") )
-   {
-      xx[cnt] += atof( v.second.data().c_str() );
-      xx[cnt] /= 2.;
-      cnt++;
-      if ( cnt >= nbins ) break;
+      if ( cnt >= 2*nbins ) break; 
    }
    
    // now get errors
@@ -503,32 +517,52 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
    cnt = 0;
    BOOST_FOREACH( ptree::value_type& v, pt.get_child("datatable.errStatMinus") )
    {
-      estat[cnt] = atof( v.second.data().c_str() );
+      if ( cnt < nbins ) 
+      {
+         cnt++;
+	 continue;
+      }
+      estat[cnt-nbins] = atof( v.second.data().c_str() );
       cnt++;
-      if ( cnt >= nbins ) break;
+      if ( cnt >= 2*nbins ) break;
    }
    cnt = 0;
    BOOST_FOREACH( ptree::value_type& v, pt.get_child("datatable.errStatPlus") )
    {
-      estat[cnt] += atof( v.second.data().c_str() );
+      if ( cnt < nbins )
+      {
+         cnt++;
+	 continue;
+      }
+      estat[cnt-nbins] += atof( v.second.data().c_str() );
       cnt++;
-      if ( cnt >= nbins ) break;
+      if ( cnt >= 2*nbins ) break;
    }
    
    // now sys err
    cnt = 0;
    BOOST_FOREACH( ptree::value_type& v, pt.get_child("datatable.errSysMinus") )
    {
-      esys[cnt] = atof( v.second.data().c_str() );
+      if ( cnt < nbins )
+      {
+         cnt++;
+	 continue;
+      } 
+      esys[cnt-nbins] = atof( v.second.data().c_str() );
       cnt++;
-      if ( cnt >= nbins ) break;
+      if ( cnt >= 2*nbins ) break;
    }
    cnt = 0;
    BOOST_FOREACH( ptree::value_type& v, pt.get_child("datatable.errSysPlus") )
    {
-      esys[cnt] += atof( v.second.data().c_str() );
+      if ( cnt < nbins )
+      {
+         cnt++;
+	 continue;
+      }
+      esys[cnt-nbins] += atof( v.second.data().c_str() );
       cnt++;
-      if ( cnt >= nbins ) break;
+      if ( cnt >= 2*nbins ) break;
    }
 
    double* etot = new double[ nbins ];
@@ -540,6 +574,7 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
    
    fGraph = new TGraphErrors( nbins, xx, cv, 0, etot );
    
+   
    std::string gtitle = pt.get<std::string>( "datatable.title" );
    fGraph->SetTitle( gtitle.c_str() );
    
@@ -550,7 +585,8 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
    }
    fGraph->GetXaxis()->SetTitle( axtitle[0].c_str() );
    fGraph->GetYaxis()->SetTitle( axtitle[1].c_str() );
-   fGraph->SetName( "GrExpData" );
+   std::string name = "GrExpData" + std::string( grname );
+   fGraph->SetName( name.c_str() );
    
    delete [] cv;
    delete [] estat;
@@ -559,5 +595,40 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr )
    delete [] xx;
 
    return fGraph;   
+
+}
+
+void JSON2Data::ConvertGraph2Histo( const char* hname )
+{
+
+   assert(fGraph);
+   
+   if ( fHisto ) delete fHisto;
+   
+   TH1* h = fGraph->GetHistogram();
+   
+   int NBins   = h->GetNbinsX();
+   double xmin = h->GetBinLowEdge(1);
+   double xmax = h->GetBinLowEdge(NBins) + h->GetBinWidth(NBins);
+   
+   fHisto = new TH1D( hname, fGraph->GetTitle(), NBins, xmin, xmax );
+
+   int     NPt = fGraph->GetN();
+   double* XX  = fGraph->GetX();
+   double* YY  = fGraph->GetY();
+   double* EYY = fGraph->GetEY();
+   
+   for ( int i=0; i<NPt; ++i )
+   {
+      int ibin = fHisto->FindBin( XX[i] );
+      if ( ibin > 0 ) 
+      {
+	 fHisto->SetBinContent( ibin, YY[i] );
+         fHisto->SetBinError( ibin, EYY[i] );
+	 
+      }
+   } 
+   
+   return;
 
 }

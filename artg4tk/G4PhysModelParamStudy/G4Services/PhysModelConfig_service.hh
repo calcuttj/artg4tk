@@ -37,6 +37,10 @@ class PhysModelConfigService
                      
    private:
    
+      // member functions
+      //
+      void DoConfigure( const std::string&, const std::string&, const fhicl::ParameterSet& );
+      
       // data members
       //
       ModelConfigMapper*  fConfigMapper;

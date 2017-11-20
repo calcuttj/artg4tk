@@ -166,7 +166,7 @@ artg4tk::ModelParamStudyProducer::ModelParamStudyProducer( const fhicl::Paramete
    //
    produces<ArtG4tkModelConfig,art::InRun>();
    
-   // NOTE(JVY): This is consideter a "hit by sens.det" so 
+   // NOTE(JVY): This is consideted a "hit by sens.det" so 
    //            it has moved to GDMLDetectorService  
    //
 // ->   produces<ArtG4tkVtx>();

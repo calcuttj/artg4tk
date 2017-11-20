@@ -1,7 +1,4 @@
 
-
-// --> #include <iostream>
-
 #include "artg4tk/DataProducts/G4ModelConfig/ArtG4tkModelConfig.hh"
 
 #include "fhiclcpp/ParameterSet.h"
@@ -31,12 +28,26 @@ void artg4tk::ArtG4tkModelConfig::Fill( const fhicl::ParameterSet& pset )
       modkeys = mpset.get_names(); // no more: get_keys();
       for ( unsigned i1=0; i1<modkeys.size(); ++i1 )
       {
-         // FIXME !!!
-	 // Treat everything as doubles for now
-	 // Doubles can be converted to int(s), and those map fine vs bool(s)
-	 //
-	 double value = mpset.get<double>(modkeys[i1]);
-	 Insert( keys[i], modkeys[i1], value );
+         std::string modkey = modkeys[i1];
+	 for ( unsigned int ik=0; ik<modkey.size(); ++ik ) modkey[ik] = std::tolower(modkey[ik]);
+	 if ( modkey == "underlyingmodels" )
+	 {
+	     fhicl::ParameterSet umpset = mpset.get<fhicl::ParameterSet>( modkeys[i1] );
+	     std::vector<std::string> ukeys = umpset.get_names();
+	     for ( unsigned int iu=0; iu<ukeys.size(); ++iu )
+	     {
+		fhicl::ParameterSet umodel = umpset.get<fhicl::ParameterSet>( ukeys[iu] );
+		std::vector<std::string> umconfig = umodel.get_names();
+		for ( unsigned int iukm=0; iukm<umconfig.size(); ++ iukm )
+		{
+		   DoFill( ukeys[iu], umconfig[iukm], umodel );
+		}
+	     }	    
+	 }
+	 else
+	 {
+	    DoFill( keys[i], modkeys[i1], mpset );
+	 }
       }
    }
    
@@ -44,6 +55,25 @@ void artg4tk::ArtG4tkModelConfig::Fill( const fhicl::ParameterSet& pset )
    
 }
 
+void artg4tk::ArtG4tkModelConfig::DoFill( std::string& key, std::string& modkey, fhicl::ParameterSet& mpset )
+{
+
+   std::string mkey = modkey;
+   for ( unsigned int ik=0; ik<modkey.size(); ++ik ) mkey[ik] = std::tolower(mkey[ik]);
+   if ( mkey.find("use") != std::string::npos )
+   {
+      int ivalue = mpset.get<int>(modkey,0);
+      Insert( key, modkey, ivalue );
+   }
+   else
+   {
+      double value = mpset.get<double>(modkey);
+      Insert( key, modkey, value );
+   }
+   
+   return;
+
+}
 
 void artg4tk::ArtG4tkModelConfig::Insert( const std::string& model, const std::string& param, const double& value )
 {

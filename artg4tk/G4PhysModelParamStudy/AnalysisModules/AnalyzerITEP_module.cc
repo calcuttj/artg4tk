@@ -38,7 +38,7 @@ namespace artg4tk {
          
    protected:
    
-      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>& ); 
+      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>&, const int& ); 
 
    private:
             
@@ -54,7 +54,7 @@ namespace artg4tk {
       double* fProtonKEBins;
       double* fNeutronKEBins;
  
-      // "leftover" from old impl.- for conveninece convenience
+      // "leftover" from old impl.- for conveninece 
       //
       double  fDeltaTheta;      
       std::vector<double> /* fKECBin, emin, emax, */ fThetaCBin, fCosThetaMin, fCosThetaMax, fDeltaCosTheta;
@@ -411,7 +411,7 @@ void artg4tk::AnalyzerITEP::analyze( const art::Event& e )
    
 }
 
-TH1* artg4tk::AnalyzerITEP::matchExpSpectrum2MC( const int& secid, const std::vector<std::string>& input )
+TH1* artg4tk::AnalyzerITEP::matchExpSpectrum2MC( const int& secid, const std::vector<std::string>& input, const int& )
 {
 
    // FIXME !!!
@@ -524,10 +524,10 @@ void artg4tk::AnalyzerITEP::calculateChi2()
       }
       
       std::map<int,std::string>::iterator itrda = fJSONRecords.find( itr->first );
-      TH1D* hda = 0;
+      TH1D* hda = 0;      
       if ( itrda != fJSONRecords.end() ) 
       {
-         hda = fJSON2Data->Convert2Histo(itrda->second,"tmpdata");
+	 hda = fJSON2Data->Convert2Histo(itrda->second,"tmpdata");
       }
       if ( !hda ) continue;
       int ndf = 0;

@@ -18,7 +18,7 @@ class MetaData
       bool operator==( const MetaData& ) const;
       
       bool IsMatch( const int&, const double&, 
-                    const int&,    const int& ) const;
+                    const int&,    const int&, const int& ) const;
       
       bool IsBeamTargetMatch( const int&, const double&, const int& ) const;
       
@@ -31,9 +31,11 @@ class MetaData
       int                      fBeamLink;
       int                      fTargetNucleus;
       int                      fSecondaryPID;
+      int                      fObservable;
       std::string              fTitle;
       int                      fRefLink;
-      std::vector<std::string> fParameters;
+      std::vector<std::string> fParNames;
+      std::vector<std::string> fParValues;
 
 };
 
@@ -51,10 +53,12 @@ class JSON2Data
       void ParseMetaData( const std::string& );
       const MetaData& GetMetaData() const { return fMetaData; }
       TH1D*           Convert2Histo( const std::string&, const char* );
-      TGraphErrors*   Convert2Graph( const std::string& );
+      TGraphErrors*   Convert2Graph( const std::string&, const char* );
    
    private:
         
+     void ConvertGraph2Histo( const char* );
+     
      // data members
      //
      MetaData                    fMetaData;

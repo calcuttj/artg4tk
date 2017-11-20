@@ -46,6 +46,10 @@ class ArtG4tkModelConfig
    
    private:
    
+      // private member functions
+      //
+      void DoFill( std::string&, std::string&, fhicl::ParameterSet& );  
+      
       // data members
       //
       bool fDefaultPhysics;

@@ -1,0 +1,81 @@
+process_name:processC
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-Bertini-PreCo-LevDens1-ProcL.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "IAEA-ProcL.root"
+  }
+
+//  RandomNumberGenerator: {}
+         
+}
+
+physics: {
+  analyzers:
+  {
+  
+     BertiniDefaultIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniDefault"
+//	IncludeExpData: 
+//	{
+// new record ids for 5GeVc/ proton on Pb
+//	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+//	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+//	}
+     }
+
+     BertiniPreCoIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCo"
+     }
+
+     BertiniPreCoLevDens1IAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCoLevDens1"
+     }
+
+
+  }
+  
+  path2:   [ BertiniDefaultIAEA, BertiniPreCoIAEA, BertiniPreCoLevDens1IAEA ]
+
+//   trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ path2 ]
+
+}

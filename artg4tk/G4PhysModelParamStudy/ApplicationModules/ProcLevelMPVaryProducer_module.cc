@@ -50,8 +50,18 @@
 // and finally, the "beef" - Geant4 Hadronic Model Interfaces !
 //
 #include "Geant4/G4HadronicProcess.hh"
+// Bertini
 #include "Geant4/G4CascadeInterface.hh"
+// INCLXX
 #include "Geant4/G4INCLXXInterface.hh"
+// FTF(P)
+// #include "G4TheoFSGenerator.hh"
+// #include "G4FTFModel.hh"
+// #include "G4LundStringFragmentation.hh"
+// #include "G4QGSMFragmentation.hh"
+#include "artg4tk/G4PhysModelParamStudy/G4Components/FTFPWrapper.hh"
+// PreCo (also needed for FTF & QGS)
+#include "G4GeneratorPrecompoundInterface.hh"
 //
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ProcessWrapper.hh"
 
@@ -62,6 +72,9 @@
 // Event/Run data products (produced here)
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh" // Evt product
 #include "artg4tk/DataProducts/G4ModelConfig/ArtG4tkModelConfig.hh" // Run product
+
+// Custom redirect of G4cout, etc. to MessageLogger --. pick up later from custom10.3.ref05 !!!
+// ---> #include "artg4tk/G4PhysModelParamStudy/G4Components/ArtG4tkUIsession.hh"
 
 // Incoming Event data products
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
@@ -126,6 +139,8 @@ namespace artg4tk {
     int         fVerbosity;
     mf::LogInfo fLogInfo;
     
+    // ---> ArtG4tkUIsession* fCustomG4Logger;
+    
   };
 
 }
@@ -136,7 +151,14 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
     
    fParticlesInit = false;
    fProcessInit   = false;
-
+   
+/* pick up later from custom10.3.ref05
+   // Custom redirect of G4cout, etc. to MessageLogger
+   //
+   fCustomG4Logger = new ArtG4tkUIsession();
+   G4UImanager* UI = G4UImanager::GetUIpointer();
+   UI->SetCoutDestination(fCustomG4Logger);
+*/
    // Check the state
    //
    if(!G4StateManager::GetStateManager()->SetNewState(G4State_PreInit))
@@ -169,7 +191,7 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
       fhicl::ParameterSet modelcfg = physicscfg.get<fhicl::ParameterSet>("ModelParameters");
       // mock up tmp pset to look like the one in phys.list-based producer for the RunProduct::Fill(...)
       fhicl::ParameterSet tmp;
-      tmp.put( fModelName, modelcfg );
+      tmp.put( fModelName, modelcfg );      
       fModelConfig->Fill( tmp );
       if ( !modelcfg.is_empty() ) physcfgservice->ConfigureModel(fModelName,modelcfg);
    }
@@ -228,9 +250,11 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
 artg4tk::ProcLevelMPVaryProducer::~ProcLevelMPVaryProducer()
 {
 
+   /// ---> Later from custom10.3.ref05 ---> if ( fCustomG4Logger ) delete fCustomG4Logger;
+   
    if ( fProcWrapper ) delete fProcWrapper;
    
-   // BUT WE DO NOT DLETE THE PROCESS MANAGER
+   // BUT WE DO NOT DELETE THE PROCESS MANAGER
    
 //   if ( fRegion )      delete fRegion;
    if ( fTrack)        delete fTrack;
@@ -465,6 +489,11 @@ void artg4tk::ProcLevelMPVaryProducer::initProcess()
 				     //
 				     // in principle INCL++ is good up to 3AGeV for p,n,pi, A(<18)
       pw->RegisterMe(inclxx);
+   }
+   else if ( mod.find("ftf") != std::string::npos )
+   {      
+      pw = new FTFPWrapper();
+      pw->Compose();
    }
     
    if (!pw) // need to stream to mlog !!!

@@ -100,7 +100,7 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
       std::vector<std::string> cond;
       cond.push_back( fJSON2Data->GetMetaData().fTitle );
       //
-      TH1* h = matchExpSpectrum2MC( fJSON2Data->GetMetaData().fSecondaryPID, cond );
+      TH1* h = matchExpSpectrum2MC( fJSON2Data->GetMetaData().fSecondaryPID, cond, fJSON2Data->GetMetaData().fObservable );
       if ( h )
       {
          fVDBRecID2MC[i].second = h;
@@ -168,6 +168,7 @@ void artg4tk::AnalyzerWithExpDataBase::overlayDataMC()
    
    for ( ; itr!=fVDBRecID2MC.end(); ++itr )
    {
+      if ( !itr->second ) continue;
       std::string dname = modlabel + "/ExpData/ExpDataR" + std::to_string(itr->first);
       TH1D* hd = (TH1D*)(hfile.Get(dname.c_str()));
       if ( !hd ) continue;

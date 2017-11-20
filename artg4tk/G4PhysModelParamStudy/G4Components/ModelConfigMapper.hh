@@ -21,7 +21,7 @@ class ModelConfigMapper
       // member functions
       //
       void PrintDefaults( const std::string& ); 
-      void PrintCurrentSettings();
+      void PrintCurrentSettings( std::string model="all" );
       void RestoreDefaults( const std::string& );
       void RestoreAllDefaults();
       //
@@ -44,17 +44,21 @@ class ModelConfigMapper
       //
       void FillBertiniDefaults();
       void FillINCLXXDefaults();
-      void FillPreCompoundDefaults();     
+      void FillPreCompoundDefaults();
+      void FillFTFPDefaults();     
       // etc. in the future...
       void FillConfigParamMapBertini();
       void FillConfigParamMapPreCo();
+      void FillConfigParamMapFTFP();
       //
       void PrintBertiniSettings();
       void PrintINCLXXSettings();
       void PrintPreCompoundSettings();
+      void PrintFTFPSettings();
       //
       void ChangeParameterViaG4UI( const std::string&, const std::string&, const double&, bool verb=false );
-      void ChangeParameterPreCo( const std::string&, const double&, bool verb=false );   
+      void ChangeParameterPreCo( const std::string&, const double&, bool verb=false );
+      void ChangeParameterFTFP( const std::string&, const double&, bool verb=false );    
       
       // data members
       //

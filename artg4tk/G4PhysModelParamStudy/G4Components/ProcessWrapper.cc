@@ -139,7 +139,7 @@ void ProcessWrapper::CleanUp()
 // or at least it's not clear what stays behid such approach
 //
 // so let's try to "hide" it and make a protected method called 
-// bu PostStepDo it before anything esles, because making an app 
+// by PostStepDo it before anything esles, because making an app 
 // do such cleanup will look even uglier
    
    for ( int i=0; i<pParticleChange->GetNumberOfSecondaries(); ++i )

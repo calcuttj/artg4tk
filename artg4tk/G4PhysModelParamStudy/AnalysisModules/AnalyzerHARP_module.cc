@@ -38,7 +38,7 @@ namespace artg4tk {
          
    protected:
    
-      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>& ); 
+      virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>&, const int& ); 
    
    private:
    
@@ -367,7 +367,7 @@ void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
    
 }
 
-TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::vector<std::string>& input )
+TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::vector<std::string>& input, const int& )
 {
    
    // FIXME !!!

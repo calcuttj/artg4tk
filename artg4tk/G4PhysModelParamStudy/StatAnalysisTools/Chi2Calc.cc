@@ -46,6 +46,10 @@ double Chi2Calc::Chi2DataMC( const TH1* data,
    // for( int imc=x1MC; imc<=x2MC; ++imc )
    for( int id=x1Data; id<=x2Data; ++id )
    {
+      // weed out empty (zero) bins in the data histogram
+      //
+      if ( tmpData->GetBinContent(id) < 1.e-10 || tmpData->GetBinError(id) < 1.e-10 ) continue;
+      //
       double xdc = tmpData->GetBinCenter(id);
       for ( int imc=x1MC; imc<=x2MC; ++imc )
       {
@@ -143,11 +147,12 @@ double Chi2Calc::Chi2DataMC( const TGraphErrors* data,
    const int x1MC   = tmpMC->GetXaxis()->GetFirst();
    const int x2MC   = tmpMC->GetXaxis()->GetLast();
    
-   for ( int id=x1MC; id<=x2MC; ++id )
+   for ( int imc=x1MC; imc<=x2MC; ++imc )
    {
-      for ( int imc=0; imc<nxd; ++imc )
+      for ( int id=0; id<nxd; ++id )
       {
-         double xmc  = tmpMC->GetBinLowEdge(imc);
+         if ( yd[id] < 1.e1-0 || eyd[id] < 1.e-10 ) continue;
+	 double xmc  = tmpMC->GetBinLowEdge(imc);
          double dxmc = tmpMC->GetBinWidth(imc);
          if ( xd[id] > xmc && xd[id] < xmc+dxmc )
 	 {
