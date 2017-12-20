@@ -548,7 +548,7 @@ void ModelConfigMapper::FillPreCompoundDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("minexpernucleonformf",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-
+   
    cmd << precoparams->GetMinZForPreco();
    // (itr2->second).insert( std::pair<std::string,std::string>("MinZForPreco",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("minzforpreco",cmd.str()) );
@@ -570,6 +570,11 @@ void ModelConfigMapper::FillPreCompoundDefaults()
    cmd << precoparams->GetDeexModelType();
    // (itr2->second).insert( std::pair<std::string,std::string>("DeexModelType",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("deexmodeltype",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   cmd << precoparams->GetTwoJMAX();
+   (itr2->second).insert( std::pair<std::string,std::string>("twojmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
@@ -1038,6 +1043,7 @@ void ModelConfigMapper::FillConfigParamMapPreCo()
    (itr->second).insert( std::pair<std::string,std::string>("minaforpreco","MinAForPreco") );
    (itr->second).insert( std::pair<std::string,std::string>("precomodeltype","PrecoModelType") );
    (itr->second).insert( std::pair<std::string,std::string>("deexmodeltype","DeexModelType") );
+   (itr->second).insert( std::pair<std::string,std::string>("twojmax","TwoJMAX") );
    (itr->second).insert( std::pair<std::string,std::string>("nevergoback","NeverGoBack") );
    (itr->second).insert( std::pair<std::string,std::string>("usesoftcutoff","UseSoftCutoff") );
    (itr->second).insert( std::pair<std::string,std::string>("usecem","UseCEM") );
@@ -1243,7 +1249,8 @@ void ModelConfigMapper::PrintPreCompoundSettings()
    G4cout << "MinZForPreco " << precoparams->GetMinZForPreco() << G4endl;
    G4cout << "MinAForPreco " << precoparams->GetMinAForPreco() << G4endl;
    G4cout << "PrecoModelType " << precoparams->GetPrecoModelType() << G4endl;
-   G4cout << "GetDeexModelType " << precoparams->GetDeexModelType() << G4endl;
+   G4cout << "DeexModelType " << precoparams->GetDeexModelType() << G4endl;
+   G4cout << "TwoJMAX " << precoparams->GetTwoJMAX() << G4endl;
    G4cout << "NeverGoBack " << precoparams->NeverGoBack() << G4endl;
    G4cout << "UseSoftCutoff " << precoparams->UseSoftCutoff() << G4endl;
    G4cout << "UseCEM " << precoparams->UseCEM() << G4endl;
@@ -1422,6 +1429,10 @@ void ModelConfigMapper::ChangeParameterPreCo( const std::string& param, const do
    else if ( par == "deexmodeltype" )
    {
       precoparams->SetDeexModelType( (int)value );
+   }
+   else if ( par == "twojmax" )
+   {
+      precoparams->SetTwoJMAX( (int)value );
    }
    else if ( par == "nevergoback" )
    {

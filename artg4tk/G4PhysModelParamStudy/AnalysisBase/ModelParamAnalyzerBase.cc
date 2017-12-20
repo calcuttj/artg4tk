@@ -218,7 +218,17 @@ bool artg4tk::ModelParamAnalyzerBase::ensureBeamTgtConfig( const art::Event& e )
    }
 
    std::string tgtmatname = firstint->GetMaterialName();
-   G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial(tgtmatname.c_str());
+   std::string tmp = tgtmatname;
+   if ( tgtmatname == "LAr" )
+   {
+      tmp = "G4_Ar";
+   }
+   if ( tmp.find("G4_") == std::string::npos )
+   {
+      tmp = "G4_" + tgtmatname;
+   }
+// --->   G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial(tgtmatname.c_str());
+   G4Material* mat = G4NistManager::Instance()->FindOrBuildMaterial(tmp.c_str());
    
    if ( fBTConf.GetTargetID() == 0 ) fBTConf.SetTargetID( (int)(mat->GetZ()+0.5) );
    if ( fBTConf.GetTargetID() != (int)(mat->GetZ()+0.5) ) fConsistentRunConditions = false;

@@ -1,4 +1,3 @@
-// #include "detectorDefaults.fcl"
 process_name:processA
 
 source: 

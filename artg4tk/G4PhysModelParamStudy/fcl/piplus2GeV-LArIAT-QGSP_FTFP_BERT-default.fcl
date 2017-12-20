@@ -57,7 +57,7 @@ outputs:
    outA: 
    {
       module_type: RootOutput   
-      fileName: "Evt-G4-Default-piplus-2GeV.root"
+      fileName: "Evt-piplus2GeV-LAr-G4Default.root"
    }
 }
 
@@ -80,6 +80,11 @@ physics: {
      G4Default:
      {
         module_type: ModelParamStudyProducer
+	//
+	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
+	//       thus the ArtG4Vtx product is NOT always available;
+	//       this key below tell Art NOT to throw if the product is not put
+	//       in the art::Event 
 	//
 	errorOnFailureToPut: false
 	//
