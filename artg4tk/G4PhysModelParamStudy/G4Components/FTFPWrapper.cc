@@ -26,15 +26,15 @@
 
 #include "FTFPWrapper.hh"
 
-#include "G4TheoFSGenerator.hh"
+#include "Geant4/G4TheoFSGenerator.hh"
 
-#include "G4FTFModel.hh"
+#include "Geant4/G4FTFModel.hh"
 
-#include "G4LundStringFragmentation.hh"
-#include "G4QGSMFragmentation.hh"
-#include "G4GeneratorPrecompoundInterface.hh"
+#include "Geant4/G4LundStringFragmentation.hh"
+#include "Geant4/G4QGSMFragmentation.hh"
+#include "Geant4/G4GeneratorPrecompoundInterface.hh"
 
-#include "G4SystemOfUnits.hh"
+#include "Geant4/G4SystemOfUnits.hh"
 
 FTFPWrapper::FTFPWrapper( const G4String& name, G4ProcessType type )
    : ProcessWrapper(name,type)

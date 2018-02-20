@@ -12,7 +12,7 @@
 #include "Geant4/G4DeexPrecoParameters.hh"
 //
 // HDP (FTFP, etc,)
-#include "G4HadronicDeveloperParameters.hh"
+#include "Geant4/G4HadronicDeveloperParameters.hh"
 //
 #include "Geant4/G4RunManager.hh"
 #include "Geant4/G4UImanager.hh"

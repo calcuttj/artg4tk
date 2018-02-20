@@ -50,14 +50,14 @@ cet_report_compiler_flags()
 # Locate some UPS areas (the versions are just minimum required) and setup include paths
 # These are needed for Art stuff
 
-find_ups_product(cetbuildtools v5_06_07)
+find_ups_product(cetbuildtools v7_00_02)
 #
 set( G4INSTALL $ENV{G4INSTALL} )
 #
 IF (NOT G4INSTALL) 
 # FIXME: this will need to be updated !!!
 MESSAGE ( STATUS "Looking for UPS product geant4" )
-find_ups_geant4(v4_10_3_p01)
+find_ups_geant4(v4_10_4)
 #
 # Enable visualization using OpenGL in x windows
 #
@@ -150,11 +150,11 @@ ENDIF()
 
 ENDIF()
 #
-find_ups_product(xerces_c v3_1_4a)
-find_ups_product(art v2_06_03)
-find_ups_product(canvas v1_06_04)
-find_ups_product(fhiclcpp v4_04_00)
-find_ups_product(messagefacility v1_18_04)
+find_ups_product(xerces_c v3_2_0)
+find_ups_product(art v2_10_02)
+find_ups_product(canvas v3_02_02)
+find_ups_product(fhiclcpp v4_06_05)
+find_ups_product(messagefacility v2_01_06)
 
 # We need xerces_c for a geant library
 #find_library( XERCESCLIB  NAMES xerces-c PATHS $ENV{XERCESCROOT}/lib NO_DEFAULT_PATH )

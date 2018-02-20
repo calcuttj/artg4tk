@@ -61,7 +61,7 @@
 // #include "G4QGSMFragmentation.hh"
 #include "artg4tk/G4PhysModelParamStudy/G4Components/FTFPWrapper.hh"
 // PreCo (also needed for FTF & QGS)
-#include "G4GeneratorPrecompoundInterface.hh"
+#include "Geant4/G4GeneratorPrecompoundInterface.hh"
 //
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ProcessWrapper.hh"
 
