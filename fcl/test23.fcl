@@ -4,6 +4,7 @@ source: {
   module_type: EmptyEvent
   maxEvents:  10000
 }
+
 services: {
   message : {
      debugModules : ["*"]
@@ -22,12 +23,12 @@ services: {
   {
     fileName      : "CheckHits.root"
   }
-  user: {
-    DetectorHolder: {}
-    ActionHolder: {}
-    RandomNumberGenerator: {}
-    PhysicsListHolder: {} 
-    PhysicsList: { 
+
+  DetectorHolder: {}
+  ActionHolder: {}
+  RandomNumberGenerator: {}
+  PhysicsListHolder: {} 
+  PhysicsList: { 
 	PhysicsListName: "FTFP_BERT"
 	DumpList: false	
   	enableCerenkov: false
@@ -37,18 +38,18 @@ services: {
   	enableMieHG: false       
   	enableBoundary: false    
   	enableWLS: false
-}
+  }
 
-    // Detector(s) for the simulation
-    GDMLDetector : 
-    {
-    category: "world"
-    gdmlFileName_ : "./gdml/ta_target.gdml"
-    }   
+  // Detector(s) for the simulation
+  GDMLDetector : 
+  {
+      category: "world"
+      gdmlFileName_ : "$MRB_SOURCE/artg4tk/gdml/ta_target.gdml"
+  }   
 
 
-    // Action(s) for the simulation
-    ClockAction: {}
+  // Action(s) for the simulation
+  // ClockAction: {}
 
 //    writeGdml: {
 //      name: "writeGdml"
@@ -56,18 +57,19 @@ services: {
 //    }
 
 
-    ExampleGeneralAction: {
+  ExampleGeneralAction: {
       name: "exampleGeneral"
-    }
-      myParticleGunAction: {
+  }
+
+  myParticleGunAction: {
       name: "myParticleGun"	
       NParticle: 1
       Name: "proton"
       Direction: [ 0,  0,  1  ]
       Energy: 10.
       Position: [ 0,  0,  -130.  ]
-    }
   }
+
 }
 
 outputs: {
@@ -96,7 +98,7 @@ physics: {
 }
 
   path1: [ artg4Main ]
-  stream1:  [ out1, CheckHits,CheckInteractions ]
+  stream1:  [ out1, CheckHits, CheckInteractions ]
 
   trigger_paths: [ path1 ]
   end_paths: [ stream1 ]

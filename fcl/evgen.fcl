@@ -28,11 +28,7 @@ services:
      }
   }
 
-  user: 
-  {
-
-
-  }
+  RandomNumberGenerator: {}
 
 }
 
