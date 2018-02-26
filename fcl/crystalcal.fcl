@@ -1,8 +1,7 @@
-#include "detectorDefaults.fcl"
 process_name:processA
 source: {
   module_type: EmptyEvent
-  maxEvents:  100
+  maxEvents:  10
 }
 services: {
   message : {
@@ -22,7 +21,7 @@ services: {
   {
     fileName      : "CheckHits.root"
   }
-  user: {
+
     DetectorHolder: {}
     ActionHolder: {}
     RandomNumberGenerator: {}
@@ -47,8 +46,7 @@ services: {
     }   
 
 
-    // Action(s) for the simulation
-    ClockAction: {}
+
 
 //    writeGdml: {
 //      name: "writeGdml"
@@ -67,7 +65,6 @@ services: {
       Energy: 10.
       Position: [ 0,  0,  -130.  ]
     }
-  }
 }
 
 outputs: {
