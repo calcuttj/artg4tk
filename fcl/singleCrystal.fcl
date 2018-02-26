@@ -1,8 +1,7 @@
-#include "detectorDefaults.fcl"
 process_name:processA
 source: {
   module_type: EmptyEvent
-  maxEvents:  100
+  maxEvents:  5
 }
 services: {
   message : {
@@ -22,7 +21,6 @@ services: {
   {
     fileName      : "CheckPhotonHits.root"
   }
-  user: {
     DetectorHolder: {}
     ActionHolder: {}
     RandomNumberGenerator: {}
@@ -57,15 +55,7 @@ services: {
     ExampleGeneralAction: {
       name: "exampleGeneral"
     }
-      myParticleGunAction: {
-      name: "myParticleGun"	
-      NParticle: 1
-      Name: "proton"
-      Direction: [ 0,  0,  1  ]
-      Energy: 10.
-      Position: [ 0,  0,  -10.  ]
-    }
-  }
+
 }
 
 outputs: {
@@ -77,14 +67,33 @@ out1: {
 
 physics: {
   producers: {
-    artg4Main: {
-      module_type: artg4Main
-      enableVisualization: false
-      macroPath: ".:./macros"
-      visMacro: "vis.mac"
-      //afterEvent: pause
-    }
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	momentum: [ 0., 0., 5. ] // in GeV 
+     }
 
+     G4Default:
+     {
+        module_type: ModelParamStudyProducer
+	//
+	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
+	//       thus the ArtG4Vtx product is NOT always available;
+	//       this key below tells Art NOT to throw if the product is not put
+	//       in the art::Event 
+	//
+	errorOnFailureToPut: false
+	//
+        RNDMSeed: 12345
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: true
+	}
+     }
   }
   analyzers: {
    CheckPhotonHits: {   module_type: CheckPhotonHits
@@ -92,7 +101,7 @@ physics: {
 
 }
 
-  path1: [ artg4Main ]
+  path1: [ PrimaryGenerator,G4Default ]
   stream1:  [ out1, CheckPhotonHits ]
 
   trigger_paths: [ path1 ]
