@@ -36,6 +36,7 @@
 // #include "Geant4/G4GeneratorPrecompoundInterface.hh"
 #include "Geant4/G4VIntraNuclearTransportModel.hh"
 #include "Geant4/G4ExcitedStringDecay.hh"
+#include "Geant4/G4HadronInelasticDataSet.hh"
 
 // NOTE: In principle, there's a class G4WrapperProcess ( : public G4VProcess)
 // under /processes/management, but that one seems to be aiming something different'
@@ -53,7 +54,7 @@ class ProcessWrapper : public G4HadronicProcess
 								     fStringModel(0),
                                                                      fCascade(0), 
 								     fStringDecay(0), 
-								     fUseLundStrFragm(false) {}
+								     fUseLundStrFragm(false) { AddDataSet(new G4HadronInelasticDataSet()); }
      virtual ~ProcessWrapper();
      
      void UseG4LundStringFragm( bool g4lund=true ) { fUseLundStrFragm=g4lund; return ; } 
@@ -83,16 +84,7 @@ class ProcessWrapper : public G4HadronicProcess
       G4VIntraNuclearTransportModel*   fCascade; // both G4PreCo & G4Binary inherit from this class
       G4ExcitedStringDecay*            fStringDecay;
       bool                             fUseLundStrFragm;
-      
-      // NO NEED for this since G4VProcess has a data member 
-      // G4VParticleChange* pParticleChange
-      // (which actually points at the (almsot obsolete)
-      // G4VParticleChange aParticleChange
-      // It can be used and is (presumeable) taken care of
-      // in terms of memory management, etc.
-      // 
-      // G4VParticleChange                fPartChange;
-                                                 
+                                                       
 };
 
 #endif

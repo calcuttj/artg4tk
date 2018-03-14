@@ -66,7 +66,7 @@ ModelConfigMapper::ModelConfigMapper()
    FillINCLXXDefaults();
    FillPreCompoundDefaults();
    FillFTFPDefaults();
-   
+
    FillConfigParamMapBertini();
    FillConfigParamMapPreCo();
    FillConfigParamMapFTFP();
@@ -342,6 +342,7 @@ void ModelConfigMapper::RestoreDefaults( const std::string& model )
    std::map<std::string,std::string>::iterator itr1 = (itr->second).begin();
    for ( ; itr1!=(itr->second).end(); ++itr1 )
    {
+      
       ChangeParameter( itr->first, itr1->first, std::stod((itr1->second).c_str()), false );
    }
    
@@ -377,12 +378,13 @@ void ModelConfigMapper::FillBertiniDefaults()
    cmd.str( "" );
    cmd.clear();
    
+   // NOTE(JVY): maybe I should rename it to "useCoalescence" ?
    cmd << G4CascadeParameters::doCoalescence();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/doCoalescence",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("docoalescence",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-
+   
 // these params/methods are NOT available in G4.9.6-series, but only starting 10.1-ref03
 //   
    cmd << G4CascadeParameters::piNAbsorption();
@@ -390,11 +392,13 @@ void ModelConfigMapper::FillBertiniDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("pinabsorption",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::use3BodyMom();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/use3BodyMom",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("use3bodymom",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::usePhaseSpace();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/usePhaseSpace",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("usephasespace",cmd.str()) );
@@ -404,62 +408,75 @@ void ModelConfigMapper::FillBertiniDefaults()
 // technically speaking, these parameters are available in 9.6-series, together with their G4UI,  
 // but in practice in 9.6 they can only be changed via env.variables, due to some implementation details 
 //
+/*
    cmd << G4CascadeParameters::useTwoParam();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/useTwoParamNuclearRadius",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("use2paramnucradius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+*/
+
    cmd << G4CascadeParameters::radiusScale();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/nuclearRadiusScale",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("radiusscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << (G4CascadeParameters::radiusSmall()/G4CascadeParameters::radiusScale()); // due to specifics of Bertini implementation
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/smallNucleusRadius",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("smallnucradius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::radiusAlpha();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/alphaRadiusScale",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("alpharadiusscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
 //   cmd << G4CascadeParameters::radiusTrailing(); 
    cmd << (G4CascadeParameters::radiusTrailing()/G4CascadeParameters::radiusScale()); 
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/shadowningRadius",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("trailingradius",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << (G4CascadeParameters::fermiScale()/G4CascadeParameters::radiusScale()); // due to specifics of Bertini implementation
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/fermiScale",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("fermiscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::xsecScale();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/crossSectionScale",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("xsecscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::gammaQDScale();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/gammaQuasiDeutScale",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("gammaqdscale",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::dpMaxDoublet();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/cluster2DPmax",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("cluster2dpmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::dpMaxTriplet();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/cluster3DPmax",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("cluster3dpmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::dpMaxAlpha();
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/cluster4DPmax",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("cluster4dpmax",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
+
    cmd << G4CascadeParameters::usePreCompound() ; // false/0 by default
    // --> (itr2->second).insert( std::pair<std::string,std::string>("/usePreCompound",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("useprecompound",cmd.str()) );
@@ -1010,7 +1027,7 @@ void ModelConfigMapper::FillConfigParamMapBertini()
    (itr->second).insert( std::pair<std::string,std::string>("pinabsorption","/piNAbsorption") );  
    (itr->second).insert( std::pair<std::string,std::string>("use3bodymom","/use3BodyMom") );  
    (itr->second).insert( std::pair<std::string,std::string>("usephasespace","/usePhaseSpace") );  
-   (itr->second).insert( std::pair<std::string,std::string>("use2paramnucradius","/useTwoParamNuclearRadius") );  
+   // ---> (itr->second).insert( std::pair<std::string,std::string>("use2paramnucradius","/useTwoParamNuclearRadius") );  
    (itr->second).insert( std::pair<std::string,std::string>("smallnucradius","/smallNucleusRadius") );  
    (itr->second).insert( std::pair<std::string,std::string>("alpharadiusscale","/alphaRadiusScale") );  
    (itr->second).insert( std::pair<std::string,std::string>("cluster2dpmax","/cluster2DPmax") );  
@@ -1184,7 +1201,7 @@ void ModelConfigMapper::PrintBertiniSettings()
 // technically speaking, these parameters are available in 9.6-series, together with their G4UI,  
 // but in practice they can only be changed via env.variables, due to some implementation details 
 //
-   G4cout << fBaseCommand << "cascade/useTwoParamNuclearRadius " << G4CascadeParameters::useTwoParam() << G4endl;
+   // ---> G4cout << fBaseCommand << "cascade/useTwoParamNuclearRadius " << G4CascadeParameters::useTwoParam() << G4endl;
 
    G4cout << fBaseCommand << "cascade/nuclearRadiusScale " << G4CascadeParameters::radiusScale() << G4endl;
 

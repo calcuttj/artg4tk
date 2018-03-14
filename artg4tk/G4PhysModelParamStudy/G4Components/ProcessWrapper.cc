@@ -54,13 +54,16 @@ G4double ProcessWrapper::PostStepGetPhysicalInteractionLength(const G4Track&,
 
 }
 
-G4VParticleChange* ProcessWrapper::PostStepDoIt( const G4Track& track, const G4Step& )
+G4VParticleChange* ProcessWrapper::PostStepDoIt( const G4Track& track, const G4Step& step )
 {
 
    // See note/comment(s) in the code of CleanUp 
    //
    CleanUp();
    
+   return G4HadronicProcess::PostStepDoIt( track, step );
+   
+/*
    G4Material* mat = track.GetMaterial();
    G4Element*  elm = (G4Element*)mat->GetElement(0); // terrible trick - cast away const...
    
@@ -120,8 +123,9 @@ G4VParticleChange* ProcessWrapper::PostStepDoIt( const G4Track& track, const G4S
 
    // return &fPartChange;
    return pParticleChange;
-
+*/
 }
+
 
 void ProcessWrapper::CleanUp()
 {
@@ -139,15 +143,22 @@ void ProcessWrapper::CleanUp()
 // or at least it's not clear what stays behid such approach
 //
 // so let's try to "hide" it and make a protected method called 
-// by PostStepDo it before anything esles, because making an app 
+// by PostStepDo it before anything else, because making an app 
 // do such cleanup will look even uglier
-   
+
+/*   
    for ( int i=0; i<pParticleChange->GetNumberOfSecondaries(); ++i )
    {
       delete pParticleChange->GetSecondary(i);
-   }
-   
+   }   
    pParticleChange->Clear();
+*/
+   
+   for ( int i=0; i<theTotalResult->GetNumberOfSecondaries(); ++i )
+   {
+      delete theTotalResult->GetSecondary(i);
+   }
+   theTotalResult->Clear();
    
    return;
 
