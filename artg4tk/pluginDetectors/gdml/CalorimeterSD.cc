@@ -44,7 +44,6 @@ void artg4tk::CalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
     if (HCID < 0) {
         G4cout << "artg4tk::CalorimeterSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-
     }
 }
 
@@ -56,11 +55,15 @@ G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / CLHEP::ns;
     const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
     const G4ThreeVector cellpos = touch->GetTranslation();
+    int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
     G4Track* theTrack = aStep->GetTrack();
     G4String particleType = theTrack->GetDefinition()->GetParticleName();
+    // 
+    //  check if this cell has been hit before
+    //
     for (unsigned int j = 0; j < calorimeterCollection.size(); j++) {
         CalorimeterHit aPreviousHit = calorimeterCollection[j];
-        if (cellpos.x() == aPreviousHit.GetXpos()) {
+        if (ID ==  aPreviousHit.GetID()) {
             aPreviousHit.SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit.GetEdep());
             if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
                 aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
@@ -70,11 +73,14 @@ G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
             return true;
         }
     }
+    //
+    // otherwise create a new hit:
+    //
     CalorimeterHit newHit;
     if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-      newHit= CalorimeterHit(0,edep,edep,0.0,cellpos.x(),cellpos.y(),cellpos.z(),time);
+      newHit= CalorimeterHit(ID,edep,edep,0.0,cellpos.x(),cellpos.y(),cellpos.z(),time);
     } else {
-      newHit= CalorimeterHit(0,edep,0.0,edep,cellpos.x(),cellpos.y(),cellpos.z(),time);
+      newHit= CalorimeterHit(ID,edep,0.0,edep,cellpos.x(),cellpos.y(),cellpos.z(),time);
     }
     
     calorimeterCollection.push_back(newHit);
