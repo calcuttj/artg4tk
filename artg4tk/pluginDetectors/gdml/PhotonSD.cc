@@ -36,12 +36,13 @@ artg4tk::PhotonSD::PhotonSD(G4String name)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void artg4tk::PhotonSD::Initialize(G4HCofThisEvent* HCE) {
-    photonCollection = new PhotonHitsCollection(SensitiveDetectorName, collectionName[0]);
+  hitCollection.clear();
+   //hitCollection = new PhotonHitsCollection(SensitiveDetectorName, collectionName[0]);
     if (HCID < 0) {
         G4cout << "artg4tk::PhotonSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     }
-    HCE->AddHitsCollection(HCID, photonCollection);
+    //    HCE->AddHitsCollection(HCID, photonCollection);
 }
 
 
@@ -76,12 +77,14 @@ G4bool artg4tk::PhotonSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     } else {
         theCreationProcessid = -1;
     }
-    PhotonHit* newHit = new PhotonHit();
-    newHit->SetProcessID(theCreationProcessid);
-    newHit->SetEdep(theEdep);
-    newHit->SetPos(aStep->GetPostStepPoint()->GetPosition());
-    newHit->SetTime(theTrack->GetGlobalTime());
-    photonCollection->insert(newHit);
+    PhotonHit newHit =  PhotonHit(theCreationProcessid,
+				  theEdep,
+				  aStep->GetPostStepPoint()->GetPosition().x(),
+				  aStep->GetPostStepPoint()->GetPosition().y(),
+				  aStep->GetPostStepPoint()->GetPosition().z(),
+				  theTrack->GetGlobalTime()
+				  );
+    hitCollection.push_back(newHit);
     theTrack->SetTrackStatus(fStopAndKill);
     return true;
 }

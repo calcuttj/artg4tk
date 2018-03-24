@@ -6,17 +6,21 @@
     <class name="std::vector< artg4tk::myDRCaloArtHitData >"/>
     <class name="art::Wrapper< std::vector< artg4tk::myDRCaloArtHitData> >"/>
     <!-- For CaloArtHit -->
-    <class name="artg4tk::myCaloArtHitData"/>
-    <class name="std::vector< artg4tk::myCaloArtHitData >"/>
-    <class name="art::Wrapper< std::vector< artg4tk::myCaloArtHitData> >"/>
+    <class name="artg4tk::CalorimeterHit"/>
+    <class name="std::vector< artg4tk::CalorimeterHit >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::CalorimeterHit> >"/>
     <!-- For PhotonArtHit -->
-    <class name="artg4tk::myPhotonArtHitData"/>
-    <class name="std::vector< artg4tk::myPhotonArtHitData >"/>
-    <class name="art::Wrapper< std::vector< artg4tk::myPhotonArtHitData> >"/>
+    <class name="artg4tk::PhotonHit"/>
+    <class name="std::vector< artg4tk::PhotonHit >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::PhotonHit> >"/>
     <!-- For TrackerArtHit -->
-    <class name="artg4tk::myTrackerArtHitData"/>
-    <class name="std::vector< artg4tk::myTrackerArtHitData >"/>
-    <class name="art::Wrapper< std::vector< artg4tk::myTrackerArtHitData> >"/>
+    <class name="artg4tk::TrackerHit"/>
+    <class name="std::vector< artg4tk::TrackerHit >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::TrackerHit> >"/>
+    <!-- For nobleGasTPCArtHit -->
+    <class name="artg4tk::nobleGasTPCHit"/>
+    <class name="std::vector< artg4tk::nobleGasTPCHit >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::nobleGasTPCHit> >"/>
     <!-- For InteractionArtHit -->
     <class name="artg4tk::myInteractionArtHitData"/>
     <class name="std::vector< artg4tk::myInteractionArtHitData >"/>

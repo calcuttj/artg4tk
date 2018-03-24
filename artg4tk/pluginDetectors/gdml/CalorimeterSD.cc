@@ -40,14 +40,12 @@ artg4tk::CalorimeterSD::~CalorimeterSD() {
 
 void artg4tk::CalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
 
-    calorimeterCollection = new CalorimeterHitsCollection
-            (SensitiveDetectorName, collectionName[0]);
+  calorimeterCollection.clear();
     if (HCID < 0) {
         G4cout << "artg4tk::CalorimeterSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
 
     }
-    HCE->AddHitsCollection(HCID, calorimeterCollection);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -60,31 +58,26 @@ G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     const G4ThreeVector cellpos = touch->GetTranslation();
     G4Track* theTrack = aStep->GetTrack();
     G4String particleType = theTrack->GetDefinition()->GetParticleName();
-    for (G4int j = 0; j < calorimeterCollection->entries(); j++) {
-        CalorimeterHit* aPreviousHit = (*calorimeterCollection)[j];
-        if (cellpos == aPreviousHit->GetPos()) {
-            aPreviousHit->SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit->GetEdep());
+    for (unsigned int j = 0; j < calorimeterCollection.size(); j++) {
+        CalorimeterHit aPreviousHit = calorimeterCollection[j];
+        if (cellpos.x() == aPreviousHit.GetXpos()) {
+            aPreviousHit.SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit.GetEdep());
             if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-                aPreviousHit->SetEdepEM(edep + aPreviousHit->GetEdepEM());
+                aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
             } else {
-                aPreviousHit->SetEdepnonEM(edep + aPreviousHit->GetEdepnonEM());
+                aPreviousHit.Setnonenm_Edep(edep + aPreviousHit.GetEdepnonEM());
             }
             return true;
         }
     }
-    CalorimeterHit* newHit = new CalorimeterHit();
-    newHit->SetEdep(edep);
-    newHit->SetPos(cellpos);
-    newHit->SetTime(time);
+    CalorimeterHit newHit;
     if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-        newHit->SetEdepEM(edep);
-        newHit->SetEdepnonEM(0.0);
+      newHit= CalorimeterHit(0,edep,edep,0.0,cellpos.x(),cellpos.y(),cellpos.z(),time);
     } else {
-        newHit->SetEdepnonEM(edep);
-        newHit->SetEdepEM(0.0);
+      newHit= CalorimeterHit(0,edep,0.0,edep,cellpos.x(),cellpos.y(),cellpos.z(),time);
     }
-
-    calorimeterCollection->insert(newHit);
+    
+    calorimeterCollection.push_back(newHit);
     return true;
 }
 

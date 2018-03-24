@@ -45,18 +45,18 @@ void artg4tk::CheckTrackerHits::beginJob() {
 } // end beginJob
 
 void artg4tk::CheckTrackerHits::analyze(const art::Event& event) {
-    typedef std::vector< art::Handle<myTrackerArtHitDataCollection> > HandleVector;
+    typedef std::vector< art::Handle<TrackerHitCollection> > HandleVector;
     HandleVector allSims;
     event.getManyByType(allSims);
 
 //    cout << "CheckTrackerHits Event:  " << event.event() << "  Nr of CaloHit collections: " << allSims.size() << endl;
     for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
-        const myTrackerArtHitDataCollection & sims(**i);
+        const TrackerHitCollection & sims(**i);
         //cout << "CaloHit collection size:  " << sims.size() << endl;
         double sumE = 0.0;
         _hnHits->Fill(sims.size());
-        for (myTrackerArtHitDataCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
-            const myTrackerArtHitData& hit = *j;
+        for (TrackerHitCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
+            const TrackerHit& hit = *j;
 	    double radius= 0.1*sqrt(hit.xpos*hit.xpos + hit.ypos*hit.ypos);
 	    _hrEdep ->Fill(radius);
 	    _hzEdep ->Fill(0.1*hit.zpos+300.,hit.Edep);

@@ -17,26 +17,24 @@
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
-
 class G4Step;
 class G4HCofThisEvent;
+class TrackerHitCollection;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
 
     class TrackerSD : public G4VSensitiveDetector {
     public:
-        TrackerSD(G4String);
-        ~TrackerSD();
-
-        void Initialize(G4HCofThisEvent*);
-        G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-        //      void EndOfEvent(G4HCofThisEvent*);
-
+      TrackerSD(G4String);
+      ~TrackerSD();
+      
+      void Initialize(G4HCofThisEvent*);
+      G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+      const TrackerHitCollection& GetHits() const { return trackerCollection; }
     private:
-        TrackerHitsCollection* trackerCollection;
-        G4int HCID;
-
+      TrackerHitCollection trackerCollection;
+      G4int HCID;
     };
 
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

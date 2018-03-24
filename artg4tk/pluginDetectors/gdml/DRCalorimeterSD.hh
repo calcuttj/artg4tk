@@ -24,7 +24,7 @@
 #include "Geant4/G4Material.hh" 
 #include "Geant4/G4MaterialPropertyVector.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
-#include "artg4tk/pluginDetectors/gdml/Cerenkov.hh"
+//#include "artg4tk/pluginDetectors/gdml/Cerenkov.hh"
 class G4Step;
 class G4HCofThisEvent;
 //class Cerenkov;
@@ -48,7 +48,7 @@ namespace artg4tk {
         std::map<std::string,double> NCerenbyParticle; //  Cerenkov contribution by particle type
         double TotalNCeren;
         G4int HCID;
-        Cerenkov* CerenGenerator;
+      //        Cerenkov* CerenGenerator;
         
     public:
         std::map<std::string,double> GetEbyParticle(){return EbyParticle;};

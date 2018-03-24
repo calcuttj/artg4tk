@@ -18,7 +18,6 @@
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/pluginDetectors/gdml/PhotonHit.hh"
-//#include "Geant4/globals.hh"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -27,14 +26,15 @@ class G4HCofThisEvent;
 namespace artg4tk {
 class PhotonSD : public G4VSensitiveDetector {
 public:
-    PhotonSD(G4String);
-    ~PhotonSD();
-
-    void Initialize(G4HCofThisEvent*);
-    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+  PhotonSD(G4String);
+  ~PhotonSD();
+  
+  void Initialize(G4HCofThisEvent*);
+  G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+  const PhotonHitCollection& GetHits() const { return hitCollection;}
 
 private:
-    PhotonHitsCollection* photonCollection;
+    PhotonHitCollection hitCollection;
     G4int HCID;
 
 };

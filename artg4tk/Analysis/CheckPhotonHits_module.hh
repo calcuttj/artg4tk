@@ -32,7 +32,7 @@
 // artg4tk includes:
 #include "artg4tk/services/DetectorHolder_service.hh"
 
-#include "artg4tk/pluginDetectors/gdml/myPhotonArtHitData.hh"
+#include "artg4tk/pluginDetectors/gdml/PhotonHit.hh"
 // Root includes.
 //#include "TFile.h"
 #include "TH1F.h"
@@ -58,7 +58,7 @@ public:
 private:
 
     bool _DumpGDML; // enable/disable dumping of GDML geometry information
-    TH1F* _hnHits;  // number of CaloHits
+    TH1F* _hnHits;  // number of PhotonHits
     TH1F* _hEdep;   // energy of optical photons
     TH2F* _hxydet0; // position of photons det 0
     TH2F* _hxydet1; // position of photons det 1

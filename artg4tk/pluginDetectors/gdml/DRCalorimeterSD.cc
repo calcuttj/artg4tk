@@ -22,7 +22,17 @@
 #include "Geant4/G4SDManager.hh"
 #include "Geant4/G4ios.hh"
 #include "Geant4/G4VVisManager.hh"
-#include "Geant4/G4Poisson.hh"
+#include "Geant4/G4SteppingManager.hh"
+#include "Geant4/G4Cerenkov.hh"
+#include "Geant4/G4Scintillation.hh"
+#include "Geant4/G4SteppingManager.hh"
+#include "Geant4/G4EventManager.hh"
+#include "Geant4/G4Event.hh"
+#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
+
+//#include "Geant4/G4Poisson.hh"
 #include<iomanip>
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
@@ -31,7 +41,7 @@ namespace artg4tk {
     : G4VSensitiveDetector(name) {
         G4String HCname = name + "_HC";
         collectionName.insert(HCname);
-        CerenGenerator = new(Cerenkov);
+        //CerenGenerator = new(Cerenkov);
         G4cout << collectionName.size() << "   artg4tk::DRCalorimeterSD name:  " << name << " collection Name: " << HCname << G4endl;
         HCID = -1;
     }
@@ -124,14 +134,44 @@ namespace artg4tk {
     G4bool DRCalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
       G4double edep = aStep->GetTotalEnergyDeposit() / CLHEP::MeV;
         if (edep == 0.) return false;
+        if (aStep->GetTrack()->GetDynamicParticle()->GetCharge() == 0) return false;
         TotalE = TotalE + edep;
         const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / CLHEP::ns;
         const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
         G4String thematerial = touch->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
         //const G4ThreeVector cellpos = touch->GetTranslation();
         G4int NCerenPhotons = 0;
+
+	//    G4int photons = 0;
+    G4SteppingManager* fpSteppingManager = G4EventManager::GetEventManager()
+            ->GetTrackingManager()->GetSteppingManager();
+    G4StepStatus stepStatus = fpSteppingManager->GetfStepStatus();
+    if (stepStatus != fAtRestDoItProc) {
+        G4ProcessVector* procPost = fpSteppingManager->GetfPostStepDoItVector();
+        size_t MAXofPostStepLoops = fpSteppingManager->GetMAXofPostStepLoops();
+        for (size_t i3 = 0; i3 < MAXofPostStepLoops; i3++) {
+
+            if ((*procPost)[i3]->GetProcessName() == "Cerenkov") {
+                G4Cerenkov* proc =(G4Cerenkov*) (*procPost)[i3];
+                NCerenPhotons+=proc->GetNumPhotons();
+            }
+
+	  /*
+            if ((*procPost)[i3]->GetProcessName() == "Scintillation") {
+                G4Scintillation* proc1 = (G4Scintillation*) (*procPost)[i3];
+                photons += proc1->GetNumPhotons();
+            }
+	  */
+        }
+    }
+
+
+
+
+
+
         G4Track* theTrack = aStep->GetTrack();
-        const G4double charge = theTrack->GetDefinition()->GetPDGCharge();
+        //const G4double charge = theTrack->GetDefinition()->GetPDGCharge();
         G4String particleType = theTrack->GetDefinition()->GetParticleName();
         G4String fragment = "Fragment";
         if (theTrack->GetParticleDefinition()->GetParticleType() == "nucleus" && theTrack->GetParticleDefinition()->GetParticleSubType() == "generic") {
@@ -142,24 +182,13 @@ namespace artg4tk {
         } else {
             EbyParticle[particleType] = EbyParticle[particleType] + edep;
         }
+	if (NCerenbyParticle.find(particleType) == NCerenbyParticle.end()) {
+	  NCerenbyParticle["other"] = NCerenbyParticle["other"] +NCerenPhotons;
+	} else {
+	  NCerenbyParticle[particleType] = NCerenbyParticle[particleType] + NCerenPhotons;
+	}
 
-        G4StepPoint* pPreStepPoint = aStep->GetPreStepPoint();
-        G4StepPoint* pPostStepPoint = aStep->GetPostStepPoint();
-        G4double beta = 0.5 * (pPreStepPoint ->GetBeta() + pPostStepPoint->GetBeta());
-        G4double MeanNumberOfPhotons = CerenGenerator->GetAverageNumberOfPhotons(charge, beta, thematerial);
-        if (MeanNumberOfPhotons > 0.0) {
-            G4double step_length = aStep->GetStepLength();
-            MeanNumberOfPhotons = MeanNumberOfPhotons * step_length;
-            NCerenPhotons = (G4int) G4Poisson(MeanNumberOfPhotons);
-            TotalNCeren=TotalNCeren+NCerenPhotons;
-            if (NCerenbyParticle.find(particleType) == NCerenbyParticle.end()) {
-                NCerenbyParticle["other"] = NCerenbyParticle["other"] +NCerenPhotons;
-            } else {
-                NCerenbyParticle[particleType] = NCerenbyParticle[particleType] + NCerenPhotons;
-            }
-        } else {
-            NCerenPhotons = 0;
-        }
+
         const G4ThreeVector cellpos = touch->GetTranslation();
         for (G4int j = 0; j < calorimeterCollection->entries(); j++) {
             DRCalorimeterHit* aPreviousHit = (*calorimeterCollection)[j];

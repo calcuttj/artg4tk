@@ -18,7 +18,7 @@
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"
-#include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
+#include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -42,7 +42,7 @@ public:
    // specific to this SD
    //
    const ArtG4tkVtx& Get1stInteraction() const { return fFirstInter; }
-   const myTrackerArtHitDataCollection& GetEdepTrkHits() const { return fEdepTrkHits; }
+   const TrackerHitCollection& GetEdepTrkHits() const { return fEdepTrkHits; }
 
 private:
 
@@ -50,7 +50,7 @@ private:
     void ProcessEdep( G4Step* );
 
     ArtG4tkVtx                    fFirstInter;
-    myTrackerArtHitDataCollection fEdepTrkHits;
+    TrackerHitCollection fEdepTrkHits;
 
 };
 }

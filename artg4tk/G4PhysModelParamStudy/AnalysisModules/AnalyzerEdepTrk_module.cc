@@ -11,7 +11,7 @@
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        
 //
 // "Trk" Hits (actually, it's edep along the track in the designeted volume)
-#include "artg4tk/pluginDetectors/gdml/myTrackerArtHitData.hh"
+#include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
 //
 // Event Generator products
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
@@ -252,7 +252,7 @@ void artg4tk::AnalyzerEdepTrk::analyze( const art::Event& e )
       }
    }
    
-   art::Handle<myTrackerArtHitDataCollection> edeptrkhits;
+   art::Handle<TrackerHitCollection> edeptrkhits;
    e.getByLabel( fProdLabel, edeptrkhits );
    if ( !edeptrkhits.isValid() )
    {

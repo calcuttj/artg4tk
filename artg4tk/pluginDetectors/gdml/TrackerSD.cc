@@ -19,19 +19,20 @@
 #include "Geant4/G4SDManager.hh"
 #include "Geant4/G4ios.hh"
 #include "Geant4/G4VVisManager.hh"
-
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4EventManager.hh"
 #include "Geant4/G4VSolid.hh"
-
-//#include "RootIO.hh"
-
+#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //namespace artg4tk {
 
  artg4tk::TrackerSD::TrackerSD(G4String name)
 : G4VSensitiveDetector(name) {
+   trackerCollection.clear();
     G4String HCname =  name + "_HC";
     collectionName.insert(HCname);
-        G4cout << collectionName.size() << "   PhotonSD name:  " << name << " collection Name: " << HCname << G4endl;
+        G4cout << collectionName.size() << "   TrackerSD name:  " << name << " collection Name: " << HCname << G4endl;
     HCID = -1;
 }
 
@@ -44,43 +45,26 @@ artg4tk::TrackerSD::~TrackerSD() {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void  artg4tk::TrackerSD::Initialize(G4HCofThisEvent* HCE) {
-    trackerCollection = new TrackerHitsCollection
-            (SensitiveDetectorName, collectionName[0]);
-    //static G4int HCID = -1;
+   trackerCollection.clear();
     if (HCID < 0) {
         G4cout << "artg4tk::TrackerSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     }
-    HCE->AddHitsCollection(HCID, trackerCollection);
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool  artg4tk::TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
-
-
-/*
-   G4Track*           trk = aStep->GetTrack();
-   std::cout << "TrackerSD: particle = " << trk->GetParticleDefinition()->GetPDGEncoding() << std::endl;
-   std::cout << "TrackerSD: parent of the particle (ID) = " << trk->GetParentID() << std::endl;
-	 std::cout << "TrackerSD: position = " << aStep->GetTrack()->GetPosition().x() << " "
-	                                       << aStep->GetTrack()->GetPosition().y() << " "
-					       << aStep->GetTrack()->GetPosition().z() << std::endl;
-
-    std::cout << "TrackerSD: momentum = " << trk->GetMomentum().x() << " "
-                                          << trk->GetMomentum().y() << " "
-					  << trk->GetMomentum().z() << std::endl;
-    
-    std::cout << "TrackerSD: edep = " << aStep->GetTotalEnergyDeposit() << std::endl;
-*/
-    
-    G4double edep = aStep->GetTotalEnergyDeposit();
-    if (edep == 0.) return false;
-   
-    TrackerHit* newHit = new TrackerHit();
-    newHit->SetEdep(edep);
-    newHit->SetPos(aStep->GetPostStepPoint()->GetPosition());
-    trackerCollection->insert(newHit);
+  G4double edep = aStep->GetTotalEnergyDeposit();
+  if (edep == 0.) return false;
+  if (aStep->GetTrack()->GetDynamicParticle()->GetCharge() == 0) return false;
+  TrackerHit  newHit =  TrackerHit(
+				   edep,
+				   aStep->GetPostStepPoint()->GetPosition().x(),
+				   aStep->GetPostStepPoint()->GetPosition().y(),
+				   aStep->GetPostStepPoint()->GetPosition().z(),
+				   aStep->GetPostStepPoint()->GetGlobalTime() / ns
+				   );
+    trackerCollection.push_back(newHit);
     return true;
 }
-//}
+
