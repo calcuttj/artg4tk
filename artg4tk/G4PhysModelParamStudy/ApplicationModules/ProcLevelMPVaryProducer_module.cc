@@ -16,7 +16,7 @@
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4IonTable.hh"
 //
-#include "Geant4/G4ParticleChange.hh"
+#include "Geant4/G4VParticleChange.hh"
 #include "Geant4/G4DynamicParticle.hh"
 #include "Geant4/G4GenericIon.hh"
 //
@@ -35,11 +35,13 @@
 #include "Geant4/G4ElementVector.hh"
 #include "Geant4/G4NistManager.hh"
 //
+/*
 #include "Geant4/G4HadronCrossSections.hh"
 #include "Geant4/G4VCrossSectionDataSet.hh"
 #include "Geant4/G4HadronInelasticDataSet.hh"
 #include "Geant4/G4BGGNucleonInelasticXS.hh"
 #include "Geant4/G4BGGPionInelasticXS.hh"
+*/
 //
 #include "Geant4/G4ForceCondition.hh"
 //
@@ -62,8 +64,8 @@
 #include "artg4tk/G4PhysModelParamStudy/G4Components/FTFPWrapper.hh"
 // PreCo (also needed for FTF & QGS)
 #include "Geant4/G4GeneratorPrecompoundInterface.hh"
-//
-#include "artg4tk/G4PhysModelParamStudy/G4Components/ProcessWrapper.hh"
+
+// #include "artg4tk/G4PhysModelParamStudy/G4Components/ProcessWrapper.hh"
 
 // model setup & params change services 
 #include "artg4tk/G4PhysModelParamStudy/G4Services/PhysModelConfig_service.hh"
@@ -180,6 +182,7 @@ artg4tk::ProcLevelMPVaryProducer::ProcLevelMPVaryProducer( const fhicl::Paramete
    
    //
    // Now get the config parameters
+   //  
    // It's a TRACKED PSet(s) - outputs with different settings will NOT mix
    //
    fhicl::ParameterSet physicscfg = p.get<fhicl::ParameterSet>("HadronicModel");
@@ -256,7 +259,6 @@ artg4tk::ProcLevelMPVaryProducer::~ProcLevelMPVaryProducer()
    
    // BUT WE DO NOT DELETE THE PROCESS MANAGER
    
-//   if ( fRegion )      delete fRegion;
    if ( fTrack)        delete fTrack;
    if ( fStep )        delete fStep;
    
@@ -299,8 +301,7 @@ void artg4tk::ProcLevelMPVaryProducer::produce( art::Event& e )
       fLogInfo << " Module is NOT properly initialized; bail out " ;
       return;
    }
-   
-   
+      
    // first of all, fetch event from prinamry generator
    // (pgun from artg4tk/EventGenerators)
    //
@@ -320,7 +321,7 @@ void artg4tk::ProcLevelMPVaryProducer::produce( art::Event& e )
    
    if ( primgenparts->empty() )
    {
-      fLogInfo << " Generator Partticle(s) empty "; // << std::endl;
+      fLogInfo << " Generator Particle(s) empty "; // << std::endl;
       return;
    }  
    
@@ -358,13 +359,13 @@ void artg4tk::ProcLevelMPVaryProducer::produce( art::Event& e )
    G4VParticleChange* thechange = fProcWrapper->PostStepDoIt( *fTrack, *fStep );
    
    int nsec = thechange->GetNumberOfSecondaries();
-   
+
    if ( nsec <= 0 ) 
    {
       fLogInfo << " Event " << e.id().event() << ": NO secondaries in HAD interaction " ;
       return;
    }
-
+   
    // Create an (empty) output data product
    //
    std::unique_ptr<ArtG4tkVtx> firstint(new ArtG4tkVtx());
@@ -393,7 +394,7 @@ void artg4tk::ProcLevelMPVaryProducer::produce( art::Event& e )
       firstint->AddOutcoming( ArtG4tkParticle( strk->GetParticleDefinition()->GetPDGEncoding(),
 	                                       strk->GetMomentum() ) );
    }
-
+   
    // Put the output collection into the event
    //
    // NOTE: technically speaking, one can also add an "instance name" to a product, 
@@ -497,11 +498,9 @@ void artg4tk::ProcLevelMPVaryProducer::initProcess()
    }
     
    if (!pw) // need to stream to mlog !!!
-   { 
-//      G4cout 
-//	     << " generator " << name << " is unavailable"
-//	     << G4endl;
-//      exit(1);
+   {
+      fLogInfo << " Generator " << fModelName << " is NOT available";  
+      exit(1);
    } 
         
 /* this is for future, when we add ftf and/or qgs
@@ -515,6 +514,13 @@ void artg4tk::ProcLevelMPVaryProducer::initProcess()
 */
    
    fProcWrapper = pw;
+   
+   // WARNING !!!!!
+   // process needs to be added to the ProcessManager !!!
+   // EXAMPLE:
+   // fProcManager = new G4ProcessManager( part ); 
+   // fProcManager->AddDiscreteProcess(fProc);
+   
 
    fProcessInit = true;
    
