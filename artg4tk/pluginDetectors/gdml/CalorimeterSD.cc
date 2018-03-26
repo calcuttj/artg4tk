@@ -56,11 +56,13 @@ G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
     const G4ThreeVector cellpos = touch->GetTranslation();
     int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
+    //std::cout<<"ID:  "<<ID<<"  Edep:  "<< edep<<std::endl;
     G4Track* theTrack = aStep->GetTrack();
     G4String particleType = theTrack->GetDefinition()->GetParticleName();
     // 
     //  check if this cell has been hit before
     //
+
     for (unsigned int j = 0; j < calorimeterCollection.size(); j++) {
         CalorimeterHit aPreviousHit = calorimeterCollection[j];
         if (ID == aPreviousHit.GetID()) {

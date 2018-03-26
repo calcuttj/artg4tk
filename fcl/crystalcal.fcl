@@ -19,7 +19,7 @@ services: {
   }
   TFileService :
   {
-    fileName      : "CheckHits.root"
+    fileName      : "CheckCaloHits.root"
   }
 
     DetectorHolder: {}
@@ -42,7 +42,7 @@ services: {
     GDMLDetector : 
     {
     category: "world"
-    gdmlFileName_ : "./gdml/crystalcal_pbwo.gdml"
+    gdmlFileName_ : "crystalcal_PbF2.gdml"
     }   
 
 
@@ -60,17 +60,17 @@ services: {
       myParticleGunAction: {
       name: "myParticleGun"	
       NParticle: 1
-      Name: "proton"
+      Name: "mu+"
       Direction: [ 0,  0,  1  ]
       Energy: 10.
-      Position: [ 0,  0,  -130.  ]
+      Position: [ 1,  1,  -20.  ]
     }
 }
 
 outputs: {
 out1: {
   module_type: RootOutput   
-  fileName: "exampleTestingout.root"
+  fileName: "Testingout.root"
   }
 }
 
@@ -86,14 +86,13 @@ physics: {
 
   }
   analyzers: {
-   CheckHits: {   module_type: CheckHits
-		  hist_dir: "HistoDir"
+   CheckHits: {   module_type: CheckCalorimeterHits
+		  hist_dir: "CaloHitsDir"
 		  DumpGDML: true}	
-
 }
 
   path1: [ artg4Main ]
-  stream1:  [ out1, CheckHits ]
+  stream1:  [ out1, CheckHits  ]
 
   trigger_paths: [ path1 ]
   end_paths: [ stream1 ]
