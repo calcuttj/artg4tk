@@ -63,7 +63,7 @@ G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     //
     for (unsigned int j = 0; j < calorimeterCollection.size(); j++) {
         CalorimeterHit aPreviousHit = calorimeterCollection[j];
-        if (ID ==  aPreviousHit.GetID()) {
+        if (ID == aPreviousHit.GetID()) {
             aPreviousHit.SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit.GetEdep());
             if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
                 aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
@@ -82,7 +82,6 @@ G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     } else {
       newHit= CalorimeterHit(ID,edep,0.0,edep,cellpos.x(),cellpos.y(),cellpos.z(),time);
     }
-    
     calorimeterCollection.push_back(newHit);
     return true;
 }
