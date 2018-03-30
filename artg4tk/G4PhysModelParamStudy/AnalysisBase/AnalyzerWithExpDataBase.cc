@@ -30,6 +30,12 @@ artg4tk::AnalyzerWithExpDataBase::AnalyzerWithExpDataBase( const fhicl::Paramete
          fLogInfo << " Exp.data are requested but connection to VDB fails"; // << std::endl;
       }
       fJSON2Data = new JSON2Data();
+      fJSON2Data->BuildDictionaries( "Particle",   fVDBConnect->GetDictionary("Particle") );
+      fJSON2Data->BuildDictionaries( "Material",   fVDBConnect->GetDictionary("Material") );
+      fJSON2Data->BuildDictionaries( "Beam",       fVDBConnect->GetDictionary("Beam") );
+      fJSON2Data->BuildDictionaries( "Observable", fVDBConnect->GetDictionary("Observable") );
+      fJSON2Data->BuildDictionaries( "Reference",  fVDBConnect->GetDictionary("Reference") );
+      fJSON2Data->BuildDictionaries( "Datatypes",  fVDBConnect->GetDictionary("Datatypes") ); 
    }
    
 }
@@ -90,6 +96,7 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
    
    for ( size_t i=0; i<fVDBRecID2MC.size(); ++i )
    {
+      
       itr = fJSONRecords.find( fVDBRecID2MC[i].first );
       if ( itr == fJSONRecords.end() ) continue;
       fJSON2Data->ParseMetaData( itr->second );
@@ -98,14 +105,18 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
       // In the next iteration this should be parnames/parvalues !!!!!
       //
       std::vector<std::string> cond;
-      cond.push_back( fJSON2Data->GetMetaData().fTitle );
+      cond.push_back( fJSON2Data->GetMetaData().fTitle );      
       //
       TH1* h = matchExpSpectrum2MC( fJSON2Data->GetMetaData().fSecondaryPID, cond, fJSON2Data->GetMetaData().fObservable );
       if ( h )
       {
-         fVDBRecID2MC[i].second = h;
+	 fVDBRecID2MC[i].second = h;
 	 ok = true;
       } 
+      else
+      {
+         std::cout << " Histo = NULL " << std::endl;
+      }
    }
    
 /* for testing/debugging purposes

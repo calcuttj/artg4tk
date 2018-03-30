@@ -549,6 +549,8 @@ TH1* artg4tk::AnalyzerNA49::matchExpSpectrum2MC( const int& secid,
 //             Double diff. spectra are graphs, and that functionality will come later !!!
 
 
+   // NOTE: for integrated spectra, xfbin = "" (since it's not in the histo title)
+   //
    std::string xfbin = extractXFBinFromTitle( cond[0] );
    
    if ( secid == 211 )
@@ -821,7 +823,7 @@ std::string artg4tk::AnalyzerNA49::extractXFBinFromTitle( const std::string& tit
    std::string ret = "";
    
    size_t pos = title.find("xF");
-   ret = title.substr( pos );
+   if ( pos != std::string::npos ) ret = title.substr( pos );
 
    return ret;
 

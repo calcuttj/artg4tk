@@ -194,7 +194,7 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
       }
    }
    
-//   std::cout << " beam = " << pid << " momentum = " << mom << " beamlink = " << blnk << std::endl;
+// --->   std::cout << " beam = " << pid << " momentum = " << mom << " beamlink = " << blnk << std::endl;
    
    return blnk;
 
@@ -224,9 +224,30 @@ void JSON2Data::ClearMetaData()
 
 }
 
+bool JSON2Data::BuildDictionaries( const std::string& type, const std::string& jstr )
+{
+
+   if ( type == "Particle" )   return BuildParticlesDict( jstr );
+   if ( type == "Material" )   return BuildTargetsDict( jstr );
+   if ( type == "Beam" )       return BuildBeamsDict( jstr );
+   if ( type == "Observable" ) return BuildObservablesDict( jstr );
+   if ( type == "Reference" )  return BuildReferencesDict( jstr );
+   if ( type == "Datatypes" )  return BuildDataTypesDict( jstr );
+   
+   return false;
+
+}
+
 void JSON2Data::ParseMetaData( const std::string& jstr )
 {
 
+   assert( !fParticles.empty() );
+   assert( !fTargets.empty() );
+   assert( !fBeams.empty() ); 
+   assert( !fObservables.empty() );
+   assert( !fReferences.empty() );
+   assert( !fDaraTypes.empty() );
+   
    ClearMetaData();
    
    std::stringstream ss(jstr.c_str()); 
@@ -234,15 +255,50 @@ void JSON2Data::ParseMetaData( const std::string& jstr )
    ptree pt;
    read_json( ss, pt );
    
+   std::string kw = "";
+   std::map<std::string,int>::iterator itr;
+   kw = pt.get<std::string>("beamkw");
+   itr = fBeams.find(kw);
+   if ( itr != fBeams.end() )
+   {
+      fMetaData.fBeamLink = itr->second;
+   }
+   kw = pt.get<std::string>("targetkw");
+   itr = fTargets.find(kw);
+   if ( itr != fTargets.end() )
+   {  
+      fMetaData.fTargetNucleus = itr->second; 
+   }
+   kw = pt.get<std::string>("secondarykw");
+   itr = fParticles.find(kw);
+   if ( itr != fParticles.end() )
+   {
+      fMetaData.fSecondaryPID = itr->second;
+   }
+   kw = pt.get<std::string>("observablekw");
+   itr = fObservables.find(kw);
+   if ( itr != fObservables.end() )
+   {
+      fMetaData.fObservable = itr->second;
+   }
+/*
    fMetaData.fBeamLink      = pt.get<int>("beamlnk");
    fMetaData.fTargetNucleus = pt.get<int>("targetlnk");
    fMetaData.fSecondaryPID  = pt.get<int>("secondarylnk");
    fMetaData.fObservable    = pt.get<int>("observablelnk");
+*/
    
    fMetaData.fTitle         = pt.get<std::string>("datatable.title");
    
+   kw = pt.get<std::string>("referencekw");
+   int inspireid = std::atoi( kw.c_str() );
+   if ( fReferences.find(inspireid) != fReferences.end() )
+   {
+      fMetaData.fRefLink = (fReferences.find(inspireid))->second;
+   }
+/*
    fMetaData.fRefLink = pt.get<int>("referencelnk");
-   
+*/   
    BOOST_FOREACH( ptree::value_type &v, pt.get_child("parnames.") )
    {
       fMetaData.fParNames.push_back( v.second.data() );
@@ -255,6 +311,127 @@ void JSON2Data::ParseMetaData( const std::string& jstr )
    }
    
    return;
+
+}
+
+bool JSON2Data::BuildParticlesDict( const std::string& jstr )
+{
+
+    std::stringstream ss(jstr.c_str()); 
+
+    ptree pt;
+    read_json( ss, pt );
+        
+    BOOST_FOREACH( ptree::value_type &v, pt )
+    {
+       int pdgid = (v.second).get<int>("pdgid");
+       std::string pname = (v.second).get<std::string>("pname");
+       fParticles.insert( std::pair<std::string,int>(pname,pdgid) );
+    } 
+      
+   return ( !fParticles.empty() );
+
+}
+
+bool JSON2Data::BuildTargetsDict( const std::string& jstr )
+{
+
+    std::stringstream ss(jstr.c_str()); 
+
+    ptree pt;
+    read_json( ss, pt );
+        
+    BOOST_FOREACH( ptree::value_type &v, pt )
+    {
+       int z = (v.second).get<int>("z");
+       std::string mname = (v.second).get<std::string>("mname");
+       if ( mname == "Pb" )
+       {
+          std::cout << " Pb --> id = " << z << std::endl;
+       }
+       fTargets.insert( std::pair<std::string,int>(mname,z) );
+    } 
+      
+   std::cout << " Is fTargets empty ? " << fTargets.empty() << std::endl;
+   std::cout << " Size of fTargets = " << fTargets.size() << std::endl;
+   
+   return ( !fTargets.empty() );
+
+}
+
+bool JSON2Data::BuildBeamsDict( const std::string& jstr )
+{
+
+    std::stringstream ss(jstr.c_str()); 
+
+    ptree pt;
+    read_json( ss, pt );
+        
+    BOOST_FOREACH( ptree::value_type &v, pt )
+    {
+       int blnk = (v.second).get<int>("bid");
+       std::string bname = (v.second).get<std::string>("Bname");
+       fBeams.insert( std::pair<std::string,int>(bname,blnk) );
+    } 
+      
+   return ( !fBeams.empty() );
+
+}
+
+bool JSON2Data::BuildObservablesDict( const std::string& jstr )
+{
+
+    std::stringstream ss(jstr.c_str()); 
+
+    ptree pt;
+    read_json( ss, pt );
+        
+    BOOST_FOREACH( ptree::value_type &v, pt )
+    {
+       int olnk = (v.second).get<int>("oid");
+       std::string oname = (v.second).get<std::string>("oname");
+       fObservables.insert( std::pair<std::string,int>(oname,olnk) );
+    } 
+      
+   return ( !fObservables.empty() );
+
+}
+
+bool JSON2Data::BuildReferencesDict( const std::string& jstr )
+{
+
+    std::stringstream ss(jstr.c_str()); 
+
+    ptree pt;
+    read_json( ss, pt );
+        
+    BOOST_FOREACH( ptree::value_type &v, pt )
+    {
+       int olnk      = (v.second).get<int>("refid");
+       int inspireid = (v.second).get<int>("inspireid");
+       fReferences.insert( std::pair<int,int>(inspireid,olnk) );
+    } 
+      
+   return ( !fReferences.empty() );
+
+}
+
+bool JSON2Data::BuildDataTypesDict( const std::string& jstr )
+{
+
+    std::stringstream ss(jstr.c_str()); 
+
+    ptree pt;
+    read_json( ss, pt );
+        
+    BOOST_FOREACH( ptree::value_type &v, pt )
+    {
+       int dtlnk      = (v.second).get<int>("dtype");
+       std::string desc = (v.second).get<std::string>("description");
+       fDataTypes.insert( std::pair<std::string,int>(desc,dtlnk) );
+    } 
+      
+   return ( !fDataTypes.empty() );
 
 }
 
@@ -275,7 +452,17 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
    read_json( ss, pt );
    
 //   std::string dtype = pt.get<std::string>("datatable.datatypeslnk");
-   int dtype = pt.get<int>("datatable.datatypeslnk");
+//   int dtype = pt.get<int>("datatable.datatypeslnk");
+   std::string dtypekw = pt.get<std::string>("datatable.datatypeskw");
+   std::map<std::string,int>::iterator itr = fDataTypes.find( dtypekw );
+   if ( itr == fDataTypes.end() )
+   {
+      // FIXME !!! maybe it should also give a warning ?...
+      return NULL;
+   }
+   
+   int dtype = itr->second;
+
 //   if ( dtype == "1000" || dtype == "1001" )
    if ( dtype >= 1000 )
    {

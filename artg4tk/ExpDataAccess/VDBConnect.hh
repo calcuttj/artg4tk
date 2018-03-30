@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <string>
+
 #include <curl/curl.h> 
+// #include "/usr/local/Anaconda3-5.0.1/include/curl/curl.h"
 
 class VDBConnect
 {
@@ -18,6 +20,8 @@ class VDBConnect
       bool Init();
       bool IsInitialized() { return fInitialized; }
       
+      std::string& GetDictionary( const std::string& );
+
       std::string& GetHTTPResponse( const int );
       
    private:
@@ -25,14 +29,15 @@ class VDBConnect
       // private member function(s)
       //
       static size_t  Write2String( void*, size_t, size_t, void* );
-  
+        
       // private data members
       //
       CURL*       fCurl;
       std::string fHTTP;
       std::string fResponse;
       bool        fInitialized;
-
+      
+      
 };
 
 #endif
