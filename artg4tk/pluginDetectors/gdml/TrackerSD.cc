@@ -22,8 +22,8 @@
 #include "Geant4/G4Event.hh"
 #include "Geant4/G4EventManager.hh"
 #include "Geant4/G4VSolid.hh"
-#include "G4UnitsTable.hh"
-#include "G4SystemOfUnits.hh"
+#include "Geant4/G4UnitsTable.hh"
+#include "Geant4/G4SystemOfUnits.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //namespace artg4tk {
 

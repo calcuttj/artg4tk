@@ -19,8 +19,8 @@
 #include "Geant4/G4ThreeVector.hh"
 #include "Geant4/G4SDManager.hh"
 #include "Geant4/G4ios.hh"
-#include "G4UnitsTable.hh"
-#include "G4SystemOfUnits.hh"
+#include "Geant4/G4UnitsTable.hh"
+#include "Geant4/G4SystemOfUnits.hh"
 // #include "Geant4/G4RunManager.hh"
 //artg4tk includes:
 #include "artg4tk/pluginDetectors/gdml/HadIntAndEdepTrkSD.hh"
