@@ -21,6 +21,10 @@
     <class name="artg4tk::nobleGasTPCHit"/>
     <class name="std::vector< artg4tk::nobleGasTPCHit >"/>
     <class name="art::Wrapper< std::vector< artg4tk::nobleGasTPCHit> >"/>
+    <!-- For SimEnergyDepositHit -->
+    <class name="artg4tk::SimEnergyDepositHit"/>
+    <class name="std::vector< artg4tk::SimEnergyDepositHit >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::SimEnergyDepositHit> >"/>
     <!-- For InteractionArtHit -->
     <class name="artg4tk::myInteractionArtHitData"/>
     <class name="std::vector< artg4tk::myInteractionArtHitData >"/>

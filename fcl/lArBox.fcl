@@ -19,7 +19,7 @@ services: {
   }
   TFileService :
   {
-    fileName      : "CheckHits.root"
+    fileName      : "CheckSimEnergyDepositHits.root"
   }
 
     DetectorHolder: {}
@@ -30,7 +30,8 @@ services: {
 	PhysicsListName: "FTFP_BERT"
 	DumpList: false	
   	enableCerenkov: false
-  	enableScintillation: false
+  	enableScintillation: true
+	ScintillationByParticleType: false
   	enableAbsorption: false   
   	enableRayleigh: false     
   	enableMieHG: false       
@@ -86,15 +87,14 @@ physics: {
 
   }
   analyzers: {
-   CheckHits: {   module_type: CheckHits
-		  hist_dir: "HistoDir"
-		  DumpGDML: true}	
+   CheckSimEnergyDepositHit: {   module_type: CheckSimEnergyDepositHit
+		  hist_dir: "HistoDir"}
    CheckPhotonHits: {   module_type: CheckPhotonHits
 		  DumpGDML: true}	
 }
 
   path1: [ artg4Main ]
-  stream1:  [ out1, CheckHits,CheckPhotonHits  ]
+  stream1:  [ out1,CheckSimEnergyDepositHit ,CheckPhotonHits  ]
 
   trigger_paths: [ path1 ]
   end_paths: [ stream1 ]
