@@ -57,7 +57,7 @@ set( G4INSTALL $ENV{G4INSTALL} )
 IF (NOT G4INSTALL) 
 # FIXME: this will need to be updated !!!
 MESSAGE ( STATUS "Looking for UPS product geant4" )
-find_ups_geant4(v4_10_4)
+find_ups_geant4(v4_10_3_p01c)
 #
 # Enable visualization using OpenGL in x windows
 #
@@ -151,11 +151,11 @@ ENDIF()
 ENDIF()
 #
 find_ups_product(xerces_c v3_2_0)
-find_ups_product(art v2_10_02)
+find_ups_product(art v2_10_03)
 find_ups_product(canvas v3_02_02)
 find_ups_product(fhiclcpp v4_06_05)
 find_ups_product(messagefacility v2_01_06)
-
+find_ups_product(larcoreobj v1_22_00)
 # We need xerces_c for a geant library
 #find_library( XERCESCLIB  NAMES xerces-c PATHS $ENV{XERCESCROOT}/lib NO_DEFAULT_PATH )
 
