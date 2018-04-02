@@ -11,6 +11,17 @@
         <matrix name="FTC" coldim="1" values="7.*ns" />
         <matrix name="STC" coldim="1" values="1400.*ns" />
         <matrix name="YR"  coldim="1" values="0.75" /> 
+<!--
+    In case we want to enable  we want to enable ScintillationByParticleType we need to at least define the yield for electrons (see below)
+    for now since I don't know correct values I commented things out.
+
+       <matrix name="YP"  coldim="1" values="1./MeV" /> 
+       <matrix name="YD"  coldim="1" values="1./MeV" /> 
+       <matrix name="YT"  coldim="1" values="1./MeV" /> 
+       <matrix name="YA"  coldim="1" values="1./MeV" /> 
+       <matrix name="YI"  coldim="1" values="1./MeV" /> 
+       <matrix name="YE"  coldim="1" values="1./MeV" /> 
+-->
         <matrix name="ArINDEX" coldim="2" values="6.7*eV 1.5
                                                  7.1*eV 1.5 
                                                  7.4*eV 1.5  
@@ -68,6 +79,16 @@
             <property name="RESOLUTIONSCALE" ref="RS" />
             <property name="SLOWTIMECONSTANT" ref="STC" />
             <property name="YIELDRATIO" ref="YR" />
+<!--
+    In case we want to enable  we want to enable ScintillationByParticleType we need to at least define the yield for electrons
+
+    <property name="PROTONSCINTILLATIONYIELD" ref="YP"/>
+    <property name="DEUTERONSCINTILLATIONYIELD" ref="YD"/>
+    <property name="TRITONSCINTILLATIONYIELD" ref="YT"/>
+    <property name="ALPHASCINTILLATIONYIELD" ref="YA"/>
+    <property name="IONSCINTILLATIONYIELD" ref="YI"/>
+    <property name="ELECTRONSCINTILLATIONYIELD" ref="YE"/>
+-->
         </material>
         <material name="Iron" formula="Iron">
             <D value="4.0" unit="g/cm3"/>
@@ -108,7 +129,7 @@
         <volume name="volTPCActiveInner">
             <materialref ref="LAr"/>
             <solidref ref="TPCVolume"/>
-            <auxiliary auxtype="SensDet" auxvalue="Calorimeter"/>
+            <auxiliary auxtype="SensDet" auxvalue="SimEnergyDeposit"/>
             <auxiliary auxtype="Color" auxvalue="Blue"/>
             <auxiliary auxtype="StepLimit" auxvalue="0.01"/>
             <auxiliary auxtype="Efield" auxvalue="1000."/>
