@@ -30,7 +30,7 @@
 #include "artg4tk/services/DetectorHolder_service.hh"
 // artg4tk includes:
 //#include "artg4tk/pluginDetectors/gdml/myCaloArtHitData.hh"
-#include "artg4tk/pluginDetectors/gdml/myDRCaloArtHitData.hh"
+#include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/myParticleEContribArtData.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
 // Root includes.

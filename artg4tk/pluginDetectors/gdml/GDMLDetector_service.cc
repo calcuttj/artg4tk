@@ -36,14 +36,12 @@
 #include "artg4tk/pluginDetectors/gdml/CalorimeterSD.hh"
 #include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterSD.hh"
-#include "artg4tk/pluginDetectors/gdml/myDRCaloArtHitData.hh"
+#include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/myParticleEContribArtData.hh"
 #include "artg4tk/pluginDetectors/gdml/PhotonSD.hh"
 #include "artg4tk/pluginDetectors/gdml/PhotonHit.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerSD.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
-#include "artg4tk/pluginDetectors/gdml/nobleGasTPCSD.hh"
-#include "artg4tk/pluginDetectors/gdml/nobleGasTPCHit.hh"
 #include "artg4tk/pluginDetectors/gdml/SimEnergyDepositSD.hh"
 #include "artg4tk/pluginDetectors/gdml/SimEnergyDepositHit.hh"
 //
@@ -159,6 +157,7 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
                     << " Value: " << (*vit).value << std::endl;
 	    if ((*vit).type == "StepLimit") {
                 G4UserLimits *fStepLimit = new G4UserLimits(atof((*vit).value));
+		std::cout <<",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,fStepLimit:  "<<atof((*vit).value)<<"  "<<atof((*vit).value)/CLHEP::cm <<std::endl;
                 ((*iter).first)->SetUserLimits(fStepLimit);
             }
             if ((*vit).type == "SensDet") {
@@ -191,14 +190,6 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
                     TrackerSD* aTrackerSD = new TrackerSD(name);
                     SDman->AddNewDetector(aTrackerSD);
                     ((*iter).first)->SetSensitiveDetector(aTrackerSD);
-                    std::cout << "Attaching sensitive Detector: " << (*vit).value
-                            << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
-                    DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
-		} else if ((*vit).value == "nobleGasTPC") {
-                    G4String name = ((*iter).first)->GetName() + "_nobleGasTPC";
-                    nobleGasTPCSD* anobleGasTPCSD = new nobleGasTPCSD(name);
-                    SDman->AddNewDetector(anobleGasTPCSD);
-                    ((*iter).first)->SetSensitiveDetector(anobleGasTPCSD);
                     std::cout << "Attaching sensitive Detector: " << (*vit).value
                             << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
                     DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
@@ -270,7 +261,7 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer)
     for (cii = DetectorList.begin(); cii != DetectorList.end(); cii++) {
         if ((*cii).second == "DRCalorimeter") {
             std::string identifier = myName() +(*cii).first;
-            producer -> produces<myDRCaloArtHitDataCollection>(identifier);
+            producer -> produces<DRCalorimeterHitCollection>(identifier);
             std::string EdepID = identifier + "Edep";
             producer -> produces<myParticleEContribArtData>(EdepID);
             std::string NCerenID = identifier + "NCeren";
@@ -284,9 +275,6 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer)
         } else if ((*cii).second == "Tracker") {
             std::string identifier = myName() + (*cii).first;
             producer -> produces<TrackerHitCollection>(identifier);
-	} else if ((*cii).second == "nobleGasTPC") {
-            std::string identifier = myName() + (*cii).first;
-            producer -> produces<nobleGasTPCHitCollection>(identifier);
 	} else if ((*cii).second == "SimEnergyDeposit") {
             std::string identifier = myName() + (*cii).first;
             producer -> produces<SimEnergyDepositHitCollection>(identifier);
@@ -309,7 +297,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
   //
   // the following are left over sensitive detectors that write into the geant 4 hit collection first and then copy to the EDM
   //
-    std::unique_ptr<myDRCaloArtHitDataCollection> myDRArtHits(new myDRCaloArtHitDataCollection);
+    std::unique_ptr<DRCalorimeterHitCollection> myDRArtHits(new DRCalorimeterHitCollection);
     std::unique_ptr<myInteractionArtHitDataCollection> myInteractionHits(new myInteractionArtHitDataCollection);
     std::unique_ptr<myParticleEContribArtData> myEdepCon(new myParticleEContribArtData);
     std::unique_ptr<myParticleEContribArtData> myNCerenCon(new myParticleEContribArtData);
@@ -388,16 +376,18 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
 	  std::string identifier=myName()+(*cii).first;
 	  e.put(std::move(hits), identifier);
 	} 
-	else if ( (*cii).second == "nobleGasTPC") {
+	else if ( (*cii).second == "DRCalorimeter") {
 	  G4SDManager* sdman = G4SDManager::GetSDMpointer();
-	  nobleGasTPCSD* nbsd = dynamic_cast<nobleGasTPCSD*>(sdman->FindSensitiveDetector(sdname));
+	  DRCalorimeterSD* drcalsd = dynamic_cast<DRCalorimeterSD*>(sdman->FindSensitiveDetector(sdname));
 	  art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
 	  art::Event & e = detectorHolder -> getCurrArtEvent();
-	  const nobleGasTPCHitCollection& nbhits = nbsd->GetHits();
-	  std::unique_ptr<nobleGasTPCHitCollection> hits(new nobleGasTPCHitCollection(nbhits)); 
+	  const DRCalorimeterHitCollection& drcalhits = drcalsd->GetHits();
+	  std::unique_ptr<DRCalorimeterHitCollection> hits(new DRCalorimeterHitCollection(drcalhits)); 
 	  std::string identifier=myName()+(*cii).first;
 	  e.put(std::move(hits), identifier);
-	} 
+	}
+
+
 	else if ( (*cii).second == "SimEnergyDeposit") {
 	  G4SDManager* sdman = G4SDManager::GetSDMpointer();
 	  SimEnergyDepositSD* sedsd = dynamic_cast<SimEnergyDepositSD*>(sdman->FindSensitiveDetector(sdname));
@@ -429,50 +419,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
       std::string Volume = y[0];
       std::string SDName = y[0] + "_" + y[1];
       std::cout<<"Classname:    " << Classname<<std::endl;
-      if (Classname == "DRCalorimeter") {
-	G4int NbHits = hc->GetSize();
-	std::cout << "Number of Hits: " << NbHits << std::endl;
-	for (G4int ii = 0; ii < NbHits; ii++) {
-	  G4VHit* hit = hc->GetHit(ii);
-	  DRCalorimeterHit* Hit = dynamic_cast<DRCalorimeterHit*> (hit);
-	  G4ThreeVector Position = Hit->GetPos();
-	  myDRCaloArtHitData myDRhit = myDRCaloArtHitData(
-							  Hit->GetEdep(),
-							  Hit->GetEdepEM(),
-							  Hit->GetEdepnonEM(),
-							  Hit->GetNCeren(),
-							  Position.x(),
-							  Position.y(),
-							  Position.z(),
-							  Hit->GetTime()
-							  );
-	  myDRArtHits->push_back(myDRhit);
-	}
-	// Now that we have our collection of artized hits, add them to the event
-	art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
-	art::Event & e = detectorHolder -> getCurrArtEvent();
-	std::string dataname = myName() + Volume;
-	e.put(std::move(myDRArtHits), dataname);
-	G4SDManager* fSDM = G4SDManager::GetSDMpointer();
-	DRCalorimeterSD* junk = dynamic_cast<DRCalorimeterSD*> (fSDM->FindSensitiveDetector(SDName));
-	std::map<std::string, double> EbyParticle = junk->GetEbyParticle();
-	double TotalE = junk->GetTotalE();
-	myEdepCon -> insert(std::make_pair("ETot", TotalE));
-	for (std::map<std::string, double>::iterator it = EbyParticle.begin(); it != EbyParticle.end(); ++it) {
-	  //                std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalE << " % " << std::endl;
-	  myEdepCon -> insert(std::make_pair(it->first, 100.0 * it->second / TotalE));
-	}
-	dataname = myName() + Volume + "Edep";
-	e.put(std::move(myEdepCon), dataname);
-	std::map<std::string, double> NCerenbyParticle = junk->GetNCerenbyParticle();
-	double TotalNCeren = junk->GetTotalNCeren();
-	myNCerenCon-> insert(std::make_pair("NCerenTot", TotalNCeren));
-	for (std::map<std::string, double>::iterator it = NCerenbyParticle.begin(); it != NCerenbyParticle.end(); ++it) {
-	  myNCerenCon -> insert(std::make_pair(it->first, 100.0 * it->second / TotalNCeren));
-	}
-	dataname = myName() + Volume + "NCeren";
-	e.put(std::move(myNCerenCon), dataname);
-      } else if (Classname == "Interaction") {
+      if (Classname == "Interaction") {
 	G4int NbHits = hc->GetSize();
 	G4cout << "===================    " << NbHits << G4endl;
 	for (G4int ii = 0; ii < NbHits; ii++) {

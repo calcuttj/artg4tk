@@ -40,7 +40,7 @@ namespace artg4tk {
       void SetID(int id)      { ID = id; };
       void SetEdep(double de)      { Edep = de; };
       void Setem_Edep(double de)      { em_Edep = de; };
-      void Setnonenm_Edep(double de)      { nonem_Edep = de; };      
+      void Setnonem_Edep(double de)      { nonem_Edep = de; };      
       void SetXpos(double x){ xpos = x; };
       void SetYpos(double y){ xpos = y; };
       void SetZpos(double z){ xpos = z; };

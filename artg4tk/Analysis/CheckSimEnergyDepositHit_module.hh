@@ -57,10 +57,12 @@ public:
 private:
 
 
-  TH1F* _hnHits; // number of SimEnergyDepositHits
-  TH1F* _hEdep; // total energy deposition in SimEnergyDepositHits
-  TH1F* _haEdep; //  average energy deposition in SimEnergyDepositHits
-  TH1F* _hnumPhotons; //  number of Photons per SimEnergyDepositHits
+  TH1F* _hnHits;        // number of SimEnergyDepositHits
+  TH1F* _hEdep;        //  average energy deposition in SimEnergyDepositHits
+  TH1F* _hnumPhotons;   //  number of Photons per SimEnergyDepositHits
+  TH1F* _hLandauPhotons;//  Edep/cm  SimEnergyDepositHits
+  TH1F* _hLandauEdep;   //  number of Photons/cm SimEnergyDepositHits
+  TH1F* _hSteplength;   //  Geant 4 step length
   TNtuple* _ntuple;
 };
 

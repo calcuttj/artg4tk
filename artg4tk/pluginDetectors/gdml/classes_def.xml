@@ -2,9 +2,9 @@
 
 <lcgdict>
     <!-- For DRCaloArtHit -->
-    <class name="artg4tk::myDRCaloArtHitData"/>
-    <class name="std::vector< artg4tk::myDRCaloArtHitData >"/>
-    <class name="art::Wrapper< std::vector< artg4tk::myDRCaloArtHitData> >"/>
+    <class name="artg4tk::DRCalorimeterHit"/>
+    <class name="std::vector< artg4tk::DRCalorimeterHit >"/>
+    <class name="art::Wrapper< std::vector< artg4tk::DRCalorimeterHit> >"/>
     <!-- For CaloArtHit -->
     <class name="artg4tk::CalorimeterHit"/>
     <class name="std::vector< artg4tk::CalorimeterHit >"/>
@@ -17,10 +17,6 @@
     <class name="artg4tk::TrackerHit"/>
     <class name="std::vector< artg4tk::TrackerHit >"/>
     <class name="art::Wrapper< std::vector< artg4tk::TrackerHit> >"/>
-    <!-- For nobleGasTPCArtHit -->
-    <class name="artg4tk::nobleGasTPCHit"/>
-    <class name="std::vector< artg4tk::nobleGasTPCHit >"/>
-    <class name="art::Wrapper< std::vector< artg4tk::nobleGasTPCHit> >"/>
     <!-- For SimEnergyDepositHit -->
     <class name="artg4tk::SimEnergyDepositHit"/>
     <class name="std::vector< artg4tk::SimEnergyDepositHit >"/>

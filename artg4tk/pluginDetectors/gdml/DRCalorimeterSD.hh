@@ -24,7 +24,6 @@
 #include "Geant4/G4Material.hh" 
 #include "Geant4/G4MaterialPropertyVector.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
-//#include "artg4tk/pluginDetectors/gdml/Cerenkov.hh"
 class G4Step;
 class G4HCofThisEvent;
 //class Cerenkov;
@@ -39,22 +38,20 @@ namespace artg4tk {
         void Initialize(G4HCofThisEvent*);
         void EndOfEvent(G4HCofThisEvent*);
         G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
+      const DRCalorimeterHitCollection& GetHits() const { return drcalorimeterCollection; }
     private:
-        DRCalorimeterHitsCollection* calorimeterCollection;
-         	
-        std::map<std::string,double> EbyParticle; // Energy deposited by particle type
-        double TotalE;
-        std::map<std::string,double> NCerenbyParticle; //  Cerenkov contribution by particle type
-        double TotalNCeren;
-        G4int HCID;
-      //        Cerenkov* CerenGenerator;
-        
+      DRCalorimeterHitCollection drcalorimeterCollection;
+      G4int HCID;	
+      std::map<std::string,double> EbyParticle; // Energy deposited by particle type
+      double TotalE;
+      std::map<std::string,double> NCerenbyParticle; //  Cerenkov contribution by particle type
+      double TotalNCeren;
+      
     public:
-        std::map<std::string,double> GetEbyParticle(){return EbyParticle;};
-        double GetTotalE(){return TotalE;}
-        std::map<std::string,double> GetNCerenbyParticle(){return NCerenbyParticle;};
-        double GetTotalNCeren(){return TotalNCeren;}
+      std::map<std::string,double> GetEbyParticle(){return EbyParticle;};
+      double GetTotalE(){return TotalE;}
+      std::map<std::string,double> GetNCerenbyParticle(){return NCerenbyParticle;};
+      double GetTotalNCeren(){return TotalNCeren;}
     };
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -70,7 +70,7 @@ G4bool artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
             if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
                 aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
             } else {
-                aPreviousHit.Setnonenm_Edep(edep + aPreviousHit.GetEdepnonEM());
+                aPreviousHit.Setnonem_Edep(edep + aPreviousHit.GetEdepnonEM());
             }
             return true;
         }

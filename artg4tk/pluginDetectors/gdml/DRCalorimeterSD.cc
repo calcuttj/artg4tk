@@ -41,7 +41,6 @@ namespace artg4tk {
     : G4VSensitiveDetector(name) {
         G4String HCname = name + "_HC";
         collectionName.insert(HCname);
-        //CerenGenerator = new(Cerenkov);
         G4cout << collectionName.size() << "   artg4tk::DRCalorimeterSD name:  " << name << " collection Name: " << HCname << G4endl;
         HCID = -1;
     }
@@ -61,13 +60,12 @@ namespace artg4tk {
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
     void DRCalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
-        calorimeterCollection = new DRCalorimeterHitsCollection(SensitiveDetectorName, collectionName[0]);
+       drcalorimeterCollection.clear();
+       
         if (HCID < 0) {
             G4cout << "artg4tk::DRCalorimeterSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
             HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-
         }
-        HCE->AddHitsCollection(HCID, calorimeterCollection);
         // 
         TotalE = 0.0;
         EbyParticle["Fragment"] = 0.0;
@@ -76,9 +74,6 @@ namespace artg4tk {
         EbyParticle["deuteron"] = 0.0;
         EbyParticle["triton"] = 0.0;
         EbyParticle["proton"] = 0.0;
-        //   EbyParticle["p_ev"] = 0.0;
-        //   EbyParticle["p_sp"] = 0.0;
-        //   EbyParticle["p_he"] = 0.0;
         EbyParticle["neutron"] = 0.0;
         EbyParticle["e+"] = 0.0;
         EbyParticle["e-"] = 0.0;
@@ -138,7 +133,7 @@ namespace artg4tk {
         TotalE = TotalE + edep;
         const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / CLHEP::ns;
         const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
-        G4String thematerial = touch->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
+        //G4String thematerial = touch->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
         //const G4ThreeVector cellpos = touch->GetTranslation();
         G4int NCerenPhotons = 0;
 
@@ -190,33 +185,37 @@ namespace artg4tk {
 
 
         const G4ThreeVector cellpos = touch->GetTranslation();
-        for (G4int j = 0; j < calorimeterCollection->entries(); j++) {
-            DRCalorimeterHit* aPreviousHit = (*calorimeterCollection)[j];
-            if (cellpos == aPreviousHit->GetPos()) {
-                aPreviousHit->SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit->GetEdep());
-                aPreviousHit->SetNCeren(NCerenPhotons + aPreviousHit->GetNCeren());
-                if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-                    aPreviousHit->SetEdepEM(edep + aPreviousHit->GetEdepEM());
-                } else {
-                    aPreviousHit->SetEdepnonEM(edep + aPreviousHit->GetEdepnonEM());
-                }
-                return true;
-            }
+	int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
+        for (unsigned int j = 0; j < drcalorimeterCollection.size(); j++) {
+            DRCalorimeterHit aPreviousHit = drcalorimeterCollection[j];
+	    if (ID == aPreviousHit.GetID()) {
+	      aPreviousHit.SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit.GetEdep());
+	      if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
+                aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
+	      } else {
+                aPreviousHit.Setnonem_Edep(edep + aPreviousHit.GetEdepnonEM());
+	      }
+	      return true;
+	    }
+
         }
-        DRCalorimeterHit* newHit = new DRCalorimeterHit();
-        newHit->SetEdep(edep);
-        newHit->SetNCeren(NCerenPhotons);
-        newHit->SetPos(cellpos);
-        newHit->SetTime(time);
+        DRCalorimeterHit newHit;
+        newHit.SetEdep(edep);
+        newHit.SetNceren(NCerenPhotons);
+	newHit.SetXpos(cellpos.x());
+	newHit.SetYpos(cellpos.y());
+	newHit.SetZpos(cellpos.z());
+
+        newHit.SetTime(time);
         if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-            newHit->SetEdepEM(edep);
-            newHit->SetEdepnonEM(0.0);
+            newHit.Setem_Edep(edep);
+            newHit.Setnonem_Edep(0.0);
         } else {
-            newHit->SetEdepnonEM(edep);
-            newHit->SetEdepEM(0.0);
+            newHit.Setnonem_Edep(edep);
+            newHit.Setem_Edep(0.0);
         }
 
-        calorimeterCollection->insert(newHit);
+        drcalorimeterCollection.push_back(newHit);
         return true;
     }
 

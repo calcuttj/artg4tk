@@ -1,123 +1,75 @@
-//
-//               __        __ __  __  __  
-//   ____ ______/ /_____ _/ // / / /_/ /__
-//  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
-// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
-// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
-//               /____/                  
-//
-// artg4tk: art based Geant 4 Toolkit
-// 
-//=============================================================================
-// DRCalorimeterHit.hh: Class representing a dual readout CalorimeterHit 
-// to be used by Geant4. Besides the energy deposition the number of Cerenkov 
-// photons is registered
-// Author: Hans Wenzel (Fermilab)
-//=============================================================================
-#ifndef DRCalorimeterHit_h
-#define DRCalorimeterHit_h 1
-#include "Geant4/G4VHit.hh"
-#include "Geant4/G4THitsCollection.hh"
-#include "Geant4/G4Allocator.hh"
-#include "Geant4/G4ThreeVector.hh"
+// DR Calorimeter Art Hits  
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#ifndef DRCALORIMETERHIT_HH
+#define DRCALORIMETERHIT_HH
+
+#include <vector>
+
 namespace artg4tk {
 
-    class DRCalorimeterHit : public G4VHit {
-    private:
+    class DRCalorimeterHit {
+    public: // change later
+      int    ID;
+      double Edep;
+      double em_Edep;
+      double nonem_Edep;
+      int Nceren;
+      double xpos;
+      double ypos;
+      double zpos;
+      double time;
 
-        G4double edep; // total energy deposit 
-        G4double edepem; // energy deposit by e+/-, gamma 
-        G4double edepnonem; // energy deposit by non e+/-, gamma 
-        G4int nceren; // number of cerenkov photons
-        G4ThreeVector pos; // position of calorimeter cell
-        G4double time; // time of first energy deposit
+        // Default constructor
     public:
 
-        DRCalorimeterHit();
-        DRCalorimeterHit(G4double e, G4double eem, G4double enonem, G4int nc, G4ThreeVector p, G4double t);
-        ~DRCalorimeterHit();
-        DRCalorimeterHit(const DRCalorimeterHit&);
-        const DRCalorimeterHit& operator=(const DRCalorimeterHit&);
-        G4int operator==(const DRCalorimeterHit&) const;
+        DRCalorimeterHit() {
+        }
 
-        inline void* operator new(size_t);
-        inline void operator delete(void*);
+        // Hide the following from Root
+#ifndef __GCCXML__
 
-        void Draw();
-        void Print();
+      DRCalorimeterHit(int id, double edep, double emedep, double nonemdep, int nceren, double xp, double yp, double zp, double t) :
+	ID(id),
+        Edep(edep),
+        em_Edep(emedep),
+        nonem_Edep(nonemdep),
+        Nceren(nceren),
+        xpos(xp),
+        ypos(yp),
+        zpos(zp),
+        time(t) {
+        }
 
-        void SetEdep(G4double de) {
-            edep = de;
+        double GetEdep() {
+            return Edep;
         };
+      void SetID(int id)      { ID = id; };
+      void SetEdep(double de)      { Edep = de; };
+      void Setem_Edep(double de)      { em_Edep = de; };
+      void Setnonem_Edep(double de)      { nonem_Edep = de; }; 
+      void SetNceren(int nc){ Nceren =nc;};
+      void SetXpos(double x){ xpos = x; };
+      void SetYpos(double y){ xpos = y; };
+      void SetZpos(double z){ xpos = z; };
+      void SetTime(double t){ time = t; };
 
-        void SetEdepEM(G4double de) {
-            edepem = de;
-        };
+      int    GetID()   const  { return ID; };  
+      double GetEdep() const   { return Edep; }; 
+      double GetEdepEM() const   { return em_Edep; }; 
+      double GetEdepnonEM()  const  { return nonem_Edep; };
+      int    GetNCeren() const { return Nceren;};
+      double GetXpos()   const { return xpos; };
+      double GetYpos()   const { return ypos; };
+      double GetZpos()   const { return zpos; };
+      double GetTime()   const { return time; }; 
 
-        void SetEdepnonEM(G4double de) {
-            edepnonem = de;
-        };
 
-        void SetNCeren(G4int nc) {
-            nceren = nc;
-        };
 
-        void SetPos(G4ThreeVector xyz) {
-            pos = xyz;
-        };
-
-        void SetTime(G4double de) {
-            time = de;
-        };
-
-        G4double GetEdep() {
-            return edep;
-        };
-
-        G4double GetEdepEM() {
-            return edepem;
-        };
-
-        G4double GetEdepnonEM() {
-            return edepnonem;
-        };
-
-        G4double GetNCeren() {
-            return nceren;
-        };
-
-        G4ThreeVector GetPos() {
-            return pos;
-        };
-
-        G4double GetTime() {
-            return time;
-        };
+#endif
 
     };
 
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-    typedef G4THitsCollection<DRCalorimeterHit> DRCalorimeterHitsCollection;
-
-    extern G4Allocator<DRCalorimeterHit> DRCalorimeterHitAllocator;
-
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-    inline void* DRCalorimeterHit::operator new(size_t) {
-        void *aHit;
-        aHit = (void *) DRCalorimeterHitAllocator.MallocSingle();
-        return aHit;
-    }
-
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-    inline void DRCalorimeterHit::operator delete(void *aHit) {
-        DRCalorimeterHitAllocator.FreeSingle((DRCalorimeterHit*) aHit);
-    }
-
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    typedef std::vector<DRCalorimeterHit> DRCalorimeterHitCollection;
 }
+
 #endif

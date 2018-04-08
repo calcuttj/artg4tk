@@ -61,18 +61,18 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
         }
         _hEdep->Fill(sumE / CLHEP::GeV);
     }
-    typedef std::vector< art::Handle<myDRCaloArtHitDataCollection> > DRHandleVector;
+    typedef std::vector< art::Handle<DRCalorimeterHitCollection> > DRHandleVector;
     DRHandleVector allDRSims;
     event.getManyByType(allDRSims);
     cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
-        const myDRCaloArtHitDataCollection & DRsims(**i);
+        const DRCalorimeterHitCollection & DRsims(**i);
         cout << "DRCaloHit collection size:  " << DRsims.size() << endl;
         double sumDRE = 0.0;
         double sumNCeren = 0.0;
         _hnDRHits->Fill(DRsims.size());
-        for (myDRCaloArtHitDataCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
-            const myDRCaloArtHitData& hit = *j;
+        for (DRCalorimeterHitCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
+            const DRCalorimeterHit& hit = *j;
             sumDRE = sumDRE + hit.Edep;
             sumNCeren = sumNCeren + hit.Nceren;
         }
