@@ -511,31 +511,43 @@ void ModelConfigMapper::FillPreCompoundDefaults()
    
    std::ostringstream cmd;
 
-   cmd << precoparams->GetLevelDensity()*CLHEP::MeV; 
+   // NOTE: in G4DeexPrecoParameters::SetDefaults(), a number ot settings are defined
+   //       as value*CLHEP::unit or value/CLHEP::unit
+   //       it's an open question if we should rescale them, and then scale back in 
+   //       ChangePreCoParameter(...) funtion or just leave values "untouched" and
+   //       properly document the units for each such parameter 
+   //       for now, it's the later
+   
+   // cmd << precoparams->GetLevelDensity()*CLHEP::MeV; // because the "native" default is 0.10/CLHEP::MeV 
+   cmd << precoparams->GetLevelDensity(); 
    // (itr2->second).insert( std::pair<std::string,std::string>("LevelDensity",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("leveldensity",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   cmd << precoparams->GetR0()/CLHEP::fermi;
+   // cmd << precoparams->GetR0()/CLHEP::fermi; // because the "native" default is 1.5*CLHEP::fermi
+   cmd << precoparams->GetR0();
    // (itr2->second).insert( std::pair<std::string,std::string>("R0",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("r0",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   cmd << precoparams->GetTransitionsR0()/CLHEP::fermi;
+   // cmd << precoparams->GetTransitionsR0()/CLHEP::fermi; // because the "native" default is 0.6*CLHEP::fermi
+   cmd << precoparams->GetTransitionsR0();
    // (itr2->second).insert( std::pair<std::string,std::string>("TransitionsR0",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("transitionsr0",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-   
-   cmd << precoparams->GetFermiEnergy()/CLHEP::MeV;
+  
+   // cmd << precoparams->GetFermiEnergy()/CLHEP::MeV; // because the "native" default is 35.0*CLHEP::MeV
+   cmd << precoparams->GetFermiEnergy();
    // (itr2->second).insert( std::pair<std::string,std::string>("FermiEnergy",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("fermienergy",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    
-   cmd << precoparams->GetPrecoLowEnergy()/CLHEP::MeV;
+   // cmd << precoparams->GetPrecoLowEnergy()/CLHEP::MeV; // because the "native" default is 0.1*CLHEP::MeV
+   cmd << precoparams->GetPrecoLowEnergy();
    // (itr2->second).insert( std::pair<std::string,std::string>("PrecoLowEnergy",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("precolowenergy",cmd.str()) );
    cmd.str( "" );
@@ -547,20 +559,22 @@ void ModelConfigMapper::FillPreCompoundDefaults()
    cmd.str( "" );
    cmd.clear();
 
-   cmd << precoparams->GetMinExcitation()/CLHEP::eV;
+   // cmd << precoparams->GetMinExcitation()/CLHEP::eV; // because the "native" default is 10*CLHEP::eV
+   cmd << precoparams->GetMinExcitation();
    // (itr2->second).insert( std::pair<std::string,std::string>("MinExcitation",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("minexcitation",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   cmd << precoparams->GetMaxLifeTime()/CLHEP::microsecond;
+   // cmd << precoparams->GetMaxLifeTime()/CLHEP::second; // because the "native" default is 1000*CLHEP::second
+   cmd << precoparams->GetMaxLifeTime();
    // (itr2->second).insert( std::pair<std::string,std::string>("MaxLifeTime",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("maxlifetime",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   // cmd << precoparams->GetMinExPerNucleonForMF()/CLHEP::GeV;
-   cmd << precoparams->GetMinExPerNucleounForMF()/CLHEP::GeV;
+   // cmd << precoparams->GetMinExPerNucleounForMF()/CLHEP::GeV; // because the "native" default is 100*CLHEP::GeV
+   cmd << precoparams->GetMinExPerNucleounForMF();
    // (itr2->second).insert( std::pair<std::string,std::string>("MinExPerNucleonForMF",cmd.str()) );
    (itr2->second).insert( std::pair<std::string,std::string>("minexpernucleonformf",cmd.str()) );
    cmd.str( "" );
@@ -894,7 +908,7 @@ RELEASE LATER !!! */
    cmd.clear();
    
    HDP.GetDefault( "FTF_BARYON_NONDIFF_M_TGT", dpar ); // units - as above
-   cmd << dpar;
+   cmd << dpar; 
    (itr2->second).insert( std::pair<std::string,std::string>("baryon_nondiff_m_tgt",cmd.str()) );
    cmd.str( "" );
    cmd.clear();

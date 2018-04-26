@@ -1,4 +1,8 @@
 
+
+
+
+
 #include <iostream>
 #include "artg4tk/ExpDataAccess/JSON2Data.hh"
 #include "boost/foreach.hpp"
@@ -121,6 +125,12 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
       else if ( fabs(mom-12.) <= 1.e-10 )
       {
          blnk = 41;
+      }
+      // IAEA/Ishibashi (there should also be mom's corresponding 
+      // to Ekin=0.8GeV and EKin=1.5GeV
+      else if ( fabs(mom-3.824) <= 1.e-10 && fRefLink == 68 )
+      {
+         blnk = 107;
       }
    }
    else if (pid == 211 )
@@ -345,15 +355,8 @@ bool JSON2Data::BuildTargetsDict( const std::string& jstr )
     {
        int z = (v.second).get<int>("z");
        std::string mname = (v.second).get<std::string>("mname");
-       if ( mname == "Pb" )
-       {
-          std::cout << " Pb --> id = " << z << std::endl;
-       }
        fTargets.insert( std::pair<std::string,int>(mname,z) );
     } 
-      
-   std::cout << " Is fTargets empty ? " << fTargets.empty() << std::endl;
-   std::cout << " Size of fTargets = " << fTargets.size() << std::endl;
    
    return ( !fTargets.empty() );
 
@@ -649,7 +652,16 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr, const char* grn
    // First of all, find oud what kind of record it is
    //
    // std::string dtype = pt.get<std::string>("datatable.datatypeslnk");
-   int dtype = pt.get<int>("datatable.datatypeslnk");
+   // int dtype = pt.get<int>("datatable.datatypeslnk");
+   std::string dtypekw = pt.get<std::string>("datatable.datatypeskw");
+   std::map<std::string,int>::iterator itr = fDataTypes.find( dtypekw );
+   if ( itr == fDataTypes.end() )
+   {
+      // FIXME !!! maybe it should also give a warning ?...
+      return NULL;
+   }
+   
+   int dtype = itr->second;
 //   if ( dtype == "1000" || dtype == "1001" )
    if ( dtype >= 1000 )
    {
@@ -792,18 +804,33 @@ void JSON2Data::ConvertGraph2Histo( const char* hname )
    
    if ( fHisto ) delete fHisto;
    
-   TH1* h = fGraph->GetHistogram();
-   
-   int NBins   = h->GetNbinsX();
-   double xmin = h->GetBinLowEdge(1);
-   double xmax = h->GetBinLowEdge(NBins) + h->GetBinWidth(NBins);
-   
-   fHisto = new TH1D( hname, fGraph->GetTitle(), NBins, xmin, xmax );
-
    int     NPt = fGraph->GetN();
    double* XX  = fGraph->GetX();
    double* YY  = fGraph->GetY();
    double* EYY = fGraph->GetEY();
+   
+   double* xbins = new double[NPt+1];
+   
+   double delta = (XX[1]-XX[0])/2.;
+   xbins[0] = XX[0] - delta;
+   xbins[1] = XX[0] + delta;
+   for ( int i=1; i<NPt-2; ++i )
+   {
+      xbins[i+1] = XX[i] + delta;
+      double delta_next = (XX[i+1]-XX[i])/2.;
+      if ( fabs(delta_next-delta) > 1.e-10 )
+      {
+	 delta_next = (XX[i+2]-XX[i+1])/2.;
+	 assert( fabs((XX[i+1]-delta_next)-xbins[i+1]) < 1.e-10 );
+      }
+      delta = delta_next;
+   }
+   xbins[NPt-1] = XX[NPt-2] + delta;
+   // delta = XX[NPt-1] - xbins[NPt-1];
+   // xbins[NPt] = XX[NPt-1] + delta;
+   xbins[NPt] = 2.*XX[NPt-1] - xbins[NPt-1];
+   
+   fHisto = new TH1D( hname, fGraph->GetTitle(), NPt, xbins );
    
    for ( int i=0; i<NPt; ++i )
    {
@@ -811,8 +838,7 @@ void JSON2Data::ConvertGraph2Histo( const char* hname )
       if ( ibin > 0 ) 
       {
 	 fHisto->SetBinContent( ibin, YY[i] );
-         fHisto->SetBinError( ibin, EYY[i] );
-	 
+         fHisto->SetBinError( ibin, EYY[i] );	 
       }
    } 
    

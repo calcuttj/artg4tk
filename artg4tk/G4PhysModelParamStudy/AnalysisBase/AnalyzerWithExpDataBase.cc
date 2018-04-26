@@ -115,7 +115,8 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
       } 
       else
       {
-         std::cout << " Histo = NULL " << std::endl;
+         std::cout << " Problematic match for: " << fJSON2Data->GetMetaData().fTitle << std::endl;
+	 std::cout << " Histo = NULL " << std::endl;
       }
    }
    
@@ -160,6 +161,66 @@ bool artg4tk::AnalyzerWithExpDataBase::findExpDataByBeamTarget( const int& bid,
    }
    
    return ( !fVDBRecID2MC.empty() );
+
+}
+
+void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data()
+{
+
+   art::ServiceHandle<art::TFileService> tfs;  
+   TH1::SetDefaultSumw2();
+
+   std::vector< std::pair<int,TH1*> >::iterator itr = fVDBRecID2MC.begin();
+   for ( ; itr!=fVDBRecID2MC.end(); ++itr )
+   {
+         std::map<int,std::string>::iterator itrda = fJSONRecords.find( itr->first );
+         TH1D* hda = 0;      
+         if ( itrda != fJSONRecords.end() ) 
+         {
+	    hda = fJSON2Data->Convert2Histo(itrda->second,"tmpdata");
+         }
+         if ( !hda ) 
+	 {
+	    fLogInfo << " Can NOT find ExpData by (DoSSiER) record = " << itr->first;
+	    continue;
+	 }
+	 TH1D* h = tfs->make<TH1D>( *hda );
+	 int nbdata = h->GetNbinsX();
+	 double* bcont = new double[nbdata];
+	 double* err2  = new double[nbdata];
+	 for ( int ib=0; ib<nbdata; ++ib )
+	 {
+	    bcont[ib] = 0.;
+	    err2[ib]  = 0.;
+	 }
+	 h->Reset();
+         std::string hname = (itr->second)->GetName();
+	 size_t pos = hname.find("Tmp");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("Tmp").length() );	 
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( (itr->second)->GetTitle() );
+	 for ( int ib=1; ib<=(itr->second)->GetNbinsX(); ++ib )
+	 {
+	    double xx  = (itr->second)->GetBinCenter(ib);
+	    double yy  = (itr->second)->GetBinContent(ib);
+	    double eyy = (itr->second)->GetBinError(ib);
+	    int    ibf = h->FindBin(xx);
+	    if ( ibf > 0 && ibf <= nbdata ) 
+	    {
+	       err2[ibf-1] += eyy*eyy;
+	       bcont[ibf-1] += yy;
+	    }
+	 }
+         for ( int ib=1; ib<=nbdata; ++ib )
+         {
+            h->SetBinContent( ib, bcont[ib-1] );
+	    double err = std::sqrt( err2[ib-1] );
+	    h->SetBinError( ib, err ); 
+         }
+	 itr->second = h;
+   }
+
+   return; 
 
 }
 

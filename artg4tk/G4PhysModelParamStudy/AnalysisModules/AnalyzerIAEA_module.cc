@@ -1,3 +1,6 @@
+
+
+
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/ModelParamAnalyzerBase.hh"
 
 #include "art/Framework/Core/ModuleMacros.h"
@@ -158,63 +161,74 @@ void artg4tk::AnalyzerIAEA::endJob()
 
    if ( fIncludeExpData )
    {
-      std::vector< std::pair<int,TH1*> >::iterator itr = fVDBRecID2MC.begin();
-      for ( ; itr!=fVDBRecID2MC.end(); ++itr )
+      
+      // scale MC histos with the xsec and theta-bin
+      //
+      for ( size_t ih=0; ih<fTmpKENeutron.size(); ++ih )
       {
-         std::map<int,std::string>::iterator itrda = fJSONRecords.find( itr->first );
-         TH1D* hda = 0;      
-         if ( itrda != fJSONRecords.end() ) 
-         {
-	    hda = fJSON2Data->Convert2Histo(itrda->second,"tmpdata");
-         }
-         if ( !hda ) continue;
-	 TH1D* h = tfs->make<TH1D>( *hda );
-	 int nbdata = h->GetNbinsX();
-	 double* bcont = new double[nbdata];
-	 double* err2  = new double[nbdata];
-	 for ( int ib=0; ib<nbdata; ++ib )
-	 {
-	    bcont[ib] = 0.;
-	    err2[ib]  = 0.;
-	 }
-	 // find position in the local container
-	 size_t ih = 0;
-	 for ( ; ih<fTmpKENeutron.size(); ++ih )
+	 double scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTh[ih] );
+         fTmpKENeutron[ih]->Scale( scale );
+      }
+      
+      
+      bool ok = matchVDBRec2MC( fBTConf.GetBeamPartID(),
+                                fBTConf.GetBeamMomentum(),
+				fBTConf.GetTargetID() );
+      
+      if ( !ok )
+      {
+         fLogInfo << " ExpData do NOT match any of the MC; NO bechmarking; bail out" ;
+	 return;
+      }
+      
+      std::vector< std::pair<int,TH1*> >::iterator itr; 
+
+      // find and mark up unmatched MC histos (if any); 
+      // create copies to be written to the Root output file
+      // 
+      std::vector<int> unmatched;
+      size_t ih = 0;
+      for ( ; ih<fTmpKENeutron.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
 	 {
 	    if ( fTmpKENeutron[ih] == itr->second ) break;
 	 }
-	 assert(ih>=0&&ih<fTmpKENeutron.size());
-	 double scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTh[ih] );
-	 h->Reset();
-         std::string hname = (itr->second)->GetName();
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);
+      }       
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fTmpKENeutron[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 std::string hname = h->GetName();
 	 size_t pos = hname.find("Tmp");
-	 hname.erase( pos, std::string("Tmp").length() );	 
-	 h->SetName( hname.c_str() );
-	 h->SetTitle( (itr->second)->GetTitle() );
-	 for ( int ib=1; ib<=(itr->second)->GetNbinsX(); ++ib )
-	 {
-	    double xx  = (itr->second)->GetBinCenter(ib);
-	    double yy  = (itr->second)->GetBinContent(ib);
-	    double eyy = (itr->second)->GetBinError(ib);
-	    int    ibf = h->FindBin(xx);
-	    if ( ibf > 0 && ibf <= nbdata ) 
-	    {
-	       err2[ibf-1] += eyy*eyy;
-	       bcont[ibf-1] += yy;
-	    }
-	 }
-         for ( int ib=1; ib<=nbdata; ++ib )
-         {
-            h->SetBinContent( ib, bcont[ib-1] );
-	    double err = std::sqrt( err2[ib-1] );
-	    h->SetBinError( ib, err ); 
-         }
-         h->Scale( scale, "width" );
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("Tmp").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 h1->Scale( 1., "width" );  
+      }     
+         
+      // now those MC's that are matched to exp.data
+      //
+      rebinMC2Data();
+         
+      // and finally re-scale each histo to the EKin bin width
+      // NOTE: scaling to the XSec and theta-interval is done earlier
+      //
+      for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+      {
+         (itr->second)->Scale( 1., "width" );
       }
+      
+      // TO BE ADDED SHORTLY; the chi2 calc business needs to be implemented !
+      // calculateChi2();
+      overlayDataMC();
+   
    }
    else
    {
-      
+         
+/* ---> 
       int NEKinBins = 27;
       double* EKinBins = new double[NEKinBins+1];
       
@@ -254,7 +268,7 @@ void artg4tk::AnalyzerIAEA::endJob()
          err2[ib] = 0.;
          bcont[ib] = 0.;
       }
-      
+*/      
       for ( size_t i=0; i<fTmpKENeutron.size(); ++i )
       {
          std::string hname = fTmpKENeutron[i]->GetName();
@@ -265,6 +279,7 @@ void artg4tk::AnalyzerIAEA::endJob()
 	 double scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTh[i] );
 	 h->Scale( scale, "width" );
 
+/* ---> 
          for ( int ib=0; ib<NEKinBins; ++ib )
          {
             err2[ib] = 0.;
@@ -280,7 +295,6 @@ void artg4tk::AnalyzerIAEA::endJob()
 	    int    ibf = hh->FindBin(xx);
 	    if ( ibf > 0 && ibf <= NEKinBins ) 
 	    {
-	       // h.AddBinContent( ibf, yy );
 	       err2[ibf-1] += eyy*eyy;
 	       bcont[ibf-1] += yy;
 	    }
@@ -292,8 +306,10 @@ void artg4tk::AnalyzerIAEA::endJob()
 	    hh->SetBinError( ib, err ); 
 	 }
 	 hh->Scale( scale, "width" );
-      } 
-   }
+*/
+      } // end of loop over tmp histos
+
+   } // end of if ( fIncludeExpData )
       
    return;
 
