@@ -24,6 +24,8 @@
 #include <cmath>
 #include <memory>
 
+#include "boost/math/special_functions/sign.hpp"
+
 namespace artg4tk {
 
    class AnalyzerNA49 : public ModelParamAnalyzerBase {
@@ -168,25 +170,77 @@ void artg4tk::AnalyzerNA49::beginJob()
    fPBinsPT[fNPBinsPT-1] = fPBinsPT[fNPBinsPT-2] + 0.2;
     
    bincenter.clear();
+   
+   std::vector<std::string> PrXFLabel;
+   PrXFLabel.push_back("-0.800");
+   PrXFLabel.push_back("-0.750");
+   PrXFLabel.push_back("-0.700");
+   PrXFLabel.push_back("-0.650");
+   PrXFLabel.push_back("-0.600");
+   PrXFLabel.push_back("-0.550");
+   PrXFLabel.push_back("-0.500");
+   PrXFLabel.push_back("-0.450");
+   PrXFLabel.push_back("-0.400");
+   PrXFLabel.push_back("-0.350");
+   PrXFLabel.push_back("-0.300");
+   PrXFLabel.push_back("-0.250");
+   PrXFLabel.push_back("-0.200");
+   PrXFLabel.push_back("-0.150");
+   PrXFLabel.push_back("-0.100");
+   PrXFLabel.push_back("-0.075");
+   PrXFLabel.push_back("-0.050");
+   PrXFLabel.push_back("-0.025");
+   PrXFLabel.push_back("0.000");
+   PrXFLabel.push_back("0.025");
+   PrXFLabel.push_back("0.050");
+   PrXFLabel.push_back("0.075");
+   PrXFLabel.push_back("0.100");
+   PrXFLabel.push_back("0.150");
+   PrXFLabel.push_back("0.200");
+   PrXFLabel.push_back("0.250");
+   PrXFLabel.push_back("0.300");
+   PrXFLabel.push_back("0.350");
+   PrXFLabel.push_back("0.400");
+   PrXFLabel.push_back("0.450");
+   PrXFLabel.push_back("0.500");
+   PrXFLabel.push_back("0.550");
+   PrXFLabel.push_back("0.600");
+   PrXFLabel.push_back("0.650");
+   PrXFLabel.push_back("0.700");
+   PrXFLabel.push_back("0.750");
+   PrXFLabel.push_back("0.800");
+   PrXFLabel.push_back("0.850");
+   PrXFLabel.push_back("0.900");
+   PrXFLabel.push_back("0.950");
 
    // booking histos for integrated ** proton ** spectra
 
-   fHistoSecProton.push_back( tfs->make<TH1D>( "proton_dNdxF",   "Integrated", fNPBinsXF-1, fPBinsXF ) );
-   fHistoSecProton.push_back( tfs->make<TProfile>( "proton_pT",  "Integrated", fNPBinsXF-1, fPBinsXF, 0., 10. ) );
+   // fHistoSecProton.push_back( tfs->make<TH1D>( "proton_dNdxF",   "Integrated", fNPBinsXF-1, fPBinsXF ) );
+   // fHistoSecProton.push_back( tfs->make<TProfile>( "proton_pT",  "Integrated", fNPBinsXF-1, fPBinsXF, 0., 10. ) );
+   fHistoSecProton.push_back(  new TH1D( "tmp_proton_dNdxF",   "Integrated", 2000, -1., 1. ) );
+   fHistoSecProton.push_back(  new TProfile( "tmp_proton_pT",  "Integrated", 2000, -1., 1., 0., 10. ) );
    
    // booking histos for double diff. pt ** proton ** spectra
    
    for ( int nb=0; nb<fNPBinsXF-1; ++nb ) // FIXME !!! fNPBinsXF is the actual # of bins
                                           // while all other are N+1 !!!
    {
-     double xF = (fPBinsXF[nb]+fPBinsXF[nb+1])/2.;
+
+/*
+     double xF = (fPBinsXF[nb]+fPBinsXF[nb+1])/2.;   
+     if ( fabs(xF-0.10625) < 1.e-10 ) xF = 0.1;
+     if ( fabs(xF+0.10625) < 1.e-10 ) xF = -0.1;
+
      std::ostringstream osXF;
      osXF << xF;
+*/
      std::ostringstream osBin;
      osBin << nb;
-     std::string title = "xF = " + osXF.str();
-     hname = "proton_pT_DDIFF_" + osBin.str();
-     fHistoPTProton.push_back( tfs->make<TH1D>( hname.c_str(), title.c_str(), fNPBinsPT-1, fPBinsPT ) );     
+     // std::string title = "xF=" + osXF.str();
+     std::string title = "xF=" + PrXFLabel[nb];
+     hname = "tmp_proton_pT_DDIFF_" + osBin.str();
+     // ---> fHistoPTProton.push_back( tfs->make<TH1D>( hname.c_str(), title.c_str(), fNPBinsPT-1, fPBinsPT ) );     
+     fHistoPTProton.push_back( new TH1D( hname.c_str(), title.c_str(), 250, 0., 2.5 ) );     
    }
    
    // secondary anti-proton
@@ -198,8 +252,10 @@ void artg4tk::AnalyzerNA49::beginJob()
 			 0.0125, 0.0375, 0.075, 0.125, 0.175, 0.25, 0.35, 0.45, 0.55 };
    int npbarbins = sizeof(pbarbins) / sizeof(double) - 1;
 
-   fHistoSecAntiProton.push_back( tfs->make<TH1D>( "antiproton_dNdxF",  "Integrated", npbarbins, pbarbins ) );	
-   fHistoSecAntiProton.push_back( tfs->make<TProfile>( "antiproton_pT", "Integrated", npbarbins, pbarbins, 0., 10. ) );	
+   // ---> fHistoSecAntiProton.push_back( tfs->make<TH1D>( "antiproton_dNdxF",  "Integrated", npbarbins, pbarbins ) );	
+   // ---> fHistoSecAntiProton.push_back( tfs->make<TProfile>( "antiproton_pT", "Integrated", npbarbins, pbarbins, 0., 10. ) );	
+   fHistoSecAntiProton.push_back( new TH1D( "tmp_antiproton_dNdxF",  "Integrated", 2000, -1., 1. ) );	
+   fHistoSecAntiProton.push_back( new TProfile( "tmp_antiproton_pT", "Integrated", 2000, -1., 1., 0., 10. ) );	
    
    // secondary pions
 
@@ -241,6 +297,7 @@ void artg4tk::AnalyzerNA49::beginJob()
   PiXFLabel.push_back( "-0.400" );
   PiXFLabel.push_back( "-0.300" );
   PiXFLabel.push_back( "-0.250" );
+  PiXFLabel.push_back( "-0.200" );
   PiXFLabel.push_back( "-0.150" );
   PiXFLabel.push_back( "-0.125" );
   PiXFLabel.push_back( "-0.100" );
@@ -248,17 +305,17 @@ void artg4tk::AnalyzerNA49::beginJob()
   PiXFLabel.push_back( "-0.050" );
   PiXFLabel.push_back( "-0.040" );
   PiXFLabel.push_back( "-0.030" );
-  PiXFLabel.push_back( "-0.025" );
+  // ---> PiXFLabel.push_back( "-0.025" );
   PiXFLabel.push_back( "-0.020" );
   PiXFLabel.push_back( "-0.010" );
   PiXFLabel.push_back(  "0.000" );
   PiXFLabel.push_back(  "0.010" );
   PiXFLabel.push_back(  "0.020" );
-  PiXFLabel.push_back(  "0.025" );
+  // ---> PiXFLabel.push_back(  "0.025" );
   PiXFLabel.push_back(  "0.030" );
   PiXFLabel.push_back(  "0.040" );
   PiXFLabel.push_back(  "0.050" );
-  // ---> PiXFLabel.push_back(  "0.060" );
+  // ---> PiXFLabel.push_back(  "0.060" ); // skip...
   PiXFLabel.push_back(  "0.075" );
   PiXFLabel.push_back(  "0.100" );
   PiXFLabel.push_back(  "0.125" );
@@ -292,13 +349,17 @@ void artg4tk::AnalyzerNA49::beginJob()
 
    // book histos for integrated ** pi- ** spectra
    
-   fHistoSecPiMinus.push_back( tfs->make<TH1D>( "piminus_dNdxF",   "Integrated", fNPiBinsXF-1, fPiBinsXF ) );
-   fHistoSecPiMinus.push_back( tfs->make<TProfile>( "piminus_pT",  "Integrated", fNPiBinsXF-1, fPiBinsXF, 0., 10. ) );
+   // ---> fHistoSecPiMinus.push_back( tfs->make<TH1D>( "piminus_dNdxF",   "Integrated", fNPiBinsXF-1, fPiBinsXF ) );
+   // ---> fHistoSecPiMinus.push_back( tfs->make<TProfile>( "piminus_pT",  "Integrated", fNPiBinsXF-1, fPiBinsXF, 0., 10. ) );
+   fHistoSecPiMinus.push_back( new TH1D( "tmp_piminus_dNdxF",   "Integrated", 2000, -1., 1. ) );
+   fHistoSecPiMinus.push_back( new TProfile( "tmp_piminus_pT",  "Integrated", 2000, -1., 1., 0., 10. ) );
 
    // book histos for integrated ** pi+ ** spectra
    
-   fHistoSecPiPlus.push_back( tfs->make<TH1D>( "piplus_dNdxF",   "Integrated", fNPiBinsXF-1, fPiBinsXF ) );
-   fHistoSecPiPlus.push_back( tfs->make<TProfile>( "piplus_pT",  "Integrated", fNPiBinsXF-1, fPiBinsXF, 0., 10. ) );
+   // ---> fHistoSecPiPlus.push_back( tfs->make<TH1D>( "piplus_dNdxF",   "Integrated", fNPiBinsXF-1, fPiBinsXF ) );
+   // ---> fHistoSecPiPlus.push_back( tfs->make<TProfile>( "piplus_pT",  "Integrated", fNPiBinsXF-1, fPiBinsXF, 0., 10. ) );
+   fHistoSecPiPlus.push_back( new TH1D( "tmp_piplus_dNdxF",   "Integrated", 2000, -1., 1. ) );
+   fHistoSecPiPlus.push_back( new TProfile( "tmp_piplus_pT",  "Integrated", 2000, -1., 1., 0., 10. ) );
 
    // book histos for double diff. pt ** pi-/pi+ ** spectra
 
@@ -314,15 +375,18 @@ void artg4tk::AnalyzerNA49::beginJob()
      // std::string title = " xF = " + osXF.str();
      // std::string title = "xF of secondary particle = " + PiXFLabel[nb];
      std::string title = "xF=" + PiXFLabel[nb];
-     hname = "piminus_pT_DDIFF_" + osBin.str();
-     fHistoPTPiMinus.push_back( tfs->make<TH1D>( hname.c_str(), title.c_str(), fNPiBinsPT-1, fPiBinsPT ) ); 
-     hname = "piplus_pT_DDIFF_" + osBin.str();  
-     fHistoPTPiPlus.push_back( tfs->make<TH1D>( hname.c_str(),  title.c_str(), fNPiBinsPT-1, fPiBinsPT ) );     
+     hname = "tmp_piminus_pT_DDIFF_" + osBin.str();
+     // ---> fHistoPTPiMinus.push_back( tfs->make<TH1D>( hname.c_str(), title.c_str(), fNPiBinsPT-1, fPiBinsPT ) ); 
+     fHistoPTPiMinus.push_back( new TH1D( hname.c_str(), title.c_str(), 250, 0., 2.5 ) ); 
+     hname = "tmp_piplus_pT_DDIFF_" + osBin.str();  
+     // ---> fHistoPTPiPlus.push_back( tfs->make<TH1D>( hname.c_str(),  title.c_str(), fNPiBinsPT-1, fPiBinsPT ) );     
+     fHistoPTPiPlus.push_back( new TH1D( hname.c_str(),  title.c_str(), 250, 0., 2.5 ) );     
    }
    
    // booking histos for secondary ** neutron ** integrated spectra
 
-   fHistoSecNeutron.push_back( tfs->make<TH1D>( "neutron_dNdxF",    "Integrated", 10, 0.05, 1.05 ) );	
+   // fHistoSecNeutron.push_back( tfs->make<TH1D>( "tmp_neutron_dNdxF",    "Integrated", 10, 0.05, 1.05 ) );	
+   fHistoSecNeutron.push_back( new TH1D( "tmp_neutron_dNdxF",    "Integrated", 10, 0.05, 1.05 ) );	
 
    return;
 
@@ -337,49 +401,10 @@ void artg4tk::AnalyzerNA49::endJob()
    
    if ( fHistoNSec->GetEntries() <= 0 ) return;
 
-   double stat = fHistoNSec->Integral();
-   
+   art::ServiceHandle<art::TFileService> tfs;  
+
+   double stat = fHistoNSec->Integral();   
    fHistoNSec->Scale( (1./stat), "width" );
-   
-   for ( size_t i=0; i<fHistoSecProton.size(); ++i )   
-   {
-      if ( i <1 ) fHistoSecProton[i]->Scale(1./((double)stat),"width");
-   }
-   for ( size_t i=0; i<fHistoPTProton.size(); ++i )
-   {
-      fHistoPTProton[i]->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" because it had to be E/dP3
-                                                     //         which is already taken into account as a weight 
-   }
-
-   for ( size_t i=0; i<fHistoSecAntiProton.size(); ++i )   
-   {
-      if ( i < 1 ) fHistoSecAntiProton[i]->Scale(1./((double)stat),"width");
-   }
-
-   for ( size_t i=0; i<fHistoSecPiMinus.size(); ++i )
-   {
-      if ( i < 1 ) fHistoSecPiMinus[i]->Scale(1./((double)stat),"width");
-   }
-   for ( size_t i=0; i<fHistoPTPiMinus.size(); ++i )
-   {
-      fHistoPTPiMinus[i]->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" because it had to be E/dP3
-                                                      //       which is already taken into account as a weight 
-   }
-
-   for ( size_t i=0; i<fHistoSecPiPlus.size(); ++i )
-   {
-      if ( i < 1 ) fHistoSecPiPlus[i]->Scale(1./((double)stat),"width");
-   }
-   for ( size_t i=0; i<fHistoPTPiPlus.size(); ++i )
-   {
-      fHistoPTPiPlus[i]->Scale( fXSecOnTarget/((double)stat) ); // NO scaling with "width" - see earlier comment for fHistoPTPiMinus
-   }
-
-   for ( size_t i=0; i<fHistoSecNeutron.size(); ++i )
-   {
-     if ( i < 1 ) fHistoSecNeutron[i]->Scale(1./((double)stat),"width");
-   }
-   
    
    if ( fIncludeExpData )
    {
@@ -392,10 +417,456 @@ void artg4tk::AnalyzerNA49::endJob()
 	 return;
       }
       
+      std::vector< std::pair<int,TH1*> >::iterator itr; 
+
+      // find and mark unmatched MC histos
+      // create copies to be written to the Root output file
+      // 
+      std::vector<int> unmatched;
+      
+      // protons
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecProton.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecProton[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecProton[unmatched[ium]];
+	 std::string classname = h->ClassName();
+	 TH1D* h1 = 0;
+	 if ( !(classname == "TProfile") ) 
+	 {
+	    h1 = tfs->make<TH1D>( *h );
+	 }
+	 else
+	 {
+	    h1 = tfs->make<TProfile>( *((TProfile*)h) );
+	 }
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 if ( ! ( classname == "TProfile" ) ) h1->Scale( 1./((double)stat),"width" );  
+      }
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoPTProton.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoPTProton[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoPTProton[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoPTProton[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTProton[unmatched[ium]]->GetBinCenter(ix);
+	    double bw = fHistoPTProton[unmatched[ium]]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw; // this is actually the following: 
+	                               // bin_upper_edge**2 - bin_lower_edge**2 
+				       // i.e. (bcenter+binwidth/2.)**2 - (bcenter-binwidth/2.)**2
+	    double y = fHistoPTProton[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoPTProton[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/wei );
+	    h1->SetBinError( ix, ey/wei );
+         }
+	 h1->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" here 
+	                                            // because it had to be E/dP3 - part of it is already taken into account as weight (analysis)
+		                                    // and the dPT2 contribution is done just above
+      }
+      
+      // anti-protons
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecAntiProton.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecAntiProton[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecAntiProton[unmatched[ium]];
+	 std::string classname = h->ClassName();
+	 TH1D* h1 = 0;
+	 if ( !(classname == "TProfile") )
+	 {
+	    h1 = tfs->make<TH1D>( *h );
+	 }
+	 else
+	 {
+	    h1 = tfs->make<TProfile>( *((TProfile*)h) );
+	 }
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 if ( ! ( classname == "TProfile" ) ) h1->Scale( 1./((double)stat),"width" );  
+      }
+            
+      // pi-
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecPiMinus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiMinus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecPiMinus[unmatched[ium]];
+	 std::string classname = h->ClassName();
+	 TH1D* h1 = 0;
+	 if ( !(classname == "TProfile") )
+	 {
+	    h1 = tfs->make<TH1D>( *h );
+	 }
+	 else
+	 {
+	    h1 = tfs->make<TProfile>( *((TProfile*)h) );
+	 }
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 if ( ! ( classname == "TProfile" ) ) h1->Scale( 1./((double)stat),"width" );  
+      }
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoPTPiMinus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoPTPiMinus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoPTPiMinus[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoPTPiMinus[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTPiMinus[unmatched[ium]]->GetBinCenter(ix);
+	    double bw = fHistoPTPiMinus[unmatched[ium]]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw;
+	    double y = fHistoPTPiMinus[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoPTPiMinus[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/wei );
+	    h1->SetBinError( ix, ey/wei );
+         }
+	 h1->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" here - see earlier comment
+      }
+      
+      // pi+
+      //
+      unmatched.clear();     
+      for ( size_t ih=0; ih<fHistoSecPiPlus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiPlus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecPiPlus[unmatched[ium]];
+	 std::string classname = h->ClassName();
+	 TH1D* h1 = 0;
+	 if ( !(classname == "TProfile") )
+	 {
+	    h1 = tfs->make<TH1D>( *h );
+	 }
+	 else
+	 {
+	    h1 = tfs->make<TProfile>( *((TProfile*)h) );
+	 }
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 if ( ! ( classname == "TProfile" ) ) h1->Scale( 1./((double)stat),"width" );  
+      }
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoPTPiPlus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoPTPiPlus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoPTPiPlus[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoPTPiPlus[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTPiPlus[unmatched[ium]]->GetBinCenter(ix);
+	    double bw = fHistoPTPiPlus[unmatched[ium]]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw;
+	    double y = fHistoPTPiPlus[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoPTPiPlus[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/wei ); 
+	    h1->SetBinError( ix, ey/wei );
+         }
+	 h1->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" here - see comment earlier
+      }
+      
+      rebinMC2Data( "tmp_" );
+      for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+      {
+	 if ( ! itr->second ) continue; // // NULL histo for this exp.data record (some might be skipped)
+	 std::string hname = (itr->second)->GetName();
+	 if ( hname.find("_pT") == std::string::npos )   (itr->second)->Scale( 1./((double)stat),"width"  );
+	 if ( hname.find("_pT_") != std::string::npos )
+	 {
+	    for ( int ix=1; ix<=(itr->second)->GetNbinsX(); ++ix )
+	    {
+	       double bc = (itr->second)->GetBinCenter(ix);
+	       double bw = (itr->second)->GetBinWidth(ix);
+	       double wei = 2. * bc * bw; // this is actually the following: 
+	                                  // bin_upper_edge**2 - bin_lower_edge**2 
+				          // i.e. (bcenter+binwidth/2.)**2 - (bcenter-binwidth/2.)**2
+	       double y = (itr->second)->GetBinContent(ix);
+	       double ey = (itr->second)->GetBinError(ix);
+	       (itr->second)->SetBinContent( ix, y/wei );
+	       (itr->second)->SetBinError( ix, ey/wei );
+	    }
+	    (itr->second)->Scale( fXSecOnTarget/((double)stat) );
+	 }
+      }
+            
       calculateChi2();
+      
       overlayDataMC();
       
    }
+   else // no exp.data included in the analysis
+   {
+      // secondary protons
+      //
+      for ( size_t i=0; i<fHistoSecProton.size(); ++i )   
+      {
+	 std::string classname = fHistoSecProton[i]->ClassName();
+         // std::cout << " ClassName = " << classname << std::endl;
+	 TH1D* h = 0;
+	 if ( ! (classname == "TProfile") )
+	 {
+	    /* if ( i <1 ) */ fHistoSecProton[i]->Scale(1./((double)stat),"width");
+	    h = tfs->make<TH1D>( *(fHistoSecProton[i]) );
+	 }
+	 else
+	 {
+	    h = tfs->make<TProfile>( *((TProfile*)fHistoSecProton[i]) );
+	 }
+	 std::string hname = fHistoSecProton[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecProton[i]->GetTitle() );
+      }
+      for ( size_t i=0; i<fHistoPTProton.size(); ++i )
+      {                 
+	 std::string hname = fHistoPTProton[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoPTProton[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoPTProton[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoPTProton[i]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTProton[i]->GetBinCenter(ix);
+	    double bw = fHistoPTProton[i]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw;
+	    double y = fHistoPTProton[i]->GetBinContent(ix); 
+	    double ey = fHistoPTProton[i]->GetBinError(ix); 
+	    // fHistoPTProton[i]->SetBinContent( ix, y/wei );
+	    // fHistoPTProton[i]->SetBinError( ix, ey/wei );
+	    h->SetBinContent( ix, y/wei );
+	    h->SetBinError( ix, ey/wei );
+         }
+	 h->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" here 
+	                                           // because it had to be E/dP3 - part of it is already taken into account as weight
+		                                   // and the dPT2 contribution is done below
+         // fHistoPTProton[i]->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" here 
+	                                                           // because it had to be E/dP3 - part of it is already taken into account as weight
+								   // and the dPT2 contribution is done below
+      }
+      //
+      // secondary anti-protons
+      //
+      for ( size_t i=0; i<fHistoSecAntiProton.size(); ++i )   
+      {
+	 std::string classname = fHistoSecAntiProton[i]->ClassName();
+         // std::cout << " ClassName = " << classname << std::endl;
+	 TH1D* h = 0;
+	 if ( ! (classname == "TProfile") )
+	 {
+	    /* if ( i <1 ) */ fHistoSecAntiProton[i]->Scale(1./((double)stat),"width");
+	    h = tfs->make<TH1D>( *(fHistoSecAntiProton[i]) );
+	 }
+	 else
+	 {
+	    h = tfs->make<TProfile>( *((TProfile*)fHistoSecAntiProton[i]) );
+	 }
+	 std::string hname = fHistoSecAntiProton[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecAntiProton[i]->GetTitle() );
+      }
+      //
+      // secondary pi-
+      //
+      for ( size_t i=0; i<fHistoSecPiMinus.size(); ++i )
+      {
+	 std::string classname = fHistoSecPiMinus[i]->ClassName();
+         // std::cout << " ClassName = " << classname << std::endl;
+	 TH1D* h = 0;
+	 if ( ! (classname == "TProfile") )
+	 {
+	    /* if ( i <1 ) */ fHistoSecPiMinus[i]->Scale(1./((double)stat),"width");
+	    h = tfs->make<TH1D>( *(fHistoSecPiMinus[i]) );
+	 }
+	 else
+	 {
+	    h = tfs->make<TProfile>( *((TProfile*)fHistoSecPiMinus[i]) );
+	 }
+         std::string hname = fHistoSecPiMinus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecPiMinus[i]->GetTitle() );
+      }
+      for ( size_t i=0; i<fHistoPTPiMinus.size(); ++i )
+      {
+         std::string hname = fHistoPTPiMinus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoPTPiMinus[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoPTPiMinus[i]->GetTitle() );
+         for ( int ix=1; ix<fHistoPTPiMinus[i]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTPiMinus[i]->GetBinCenter(ix);
+	    double bw = fHistoPTPiMinus[i]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw;
+	    double y = fHistoPTPiMinus[i]->GetBinContent(ix); 
+	    double ey = fHistoPTPiMinus[i]->GetBinError(ix); 
+	    // fHistoPTPiMinus[i]->SetBinContent( ix, y/wei );
+	    // fHistoPTPiMinus[i]->SetBinError( ix, ey/wei );
+	    h->SetBinContent( ix, y/wei );
+	    h->SetBinError( ix, ey/wei );
+         }
+	 h->Scale( fXSecOnTarget/((double)stat) );
+         // fHistoPTPiMinus[i]->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" because it had to be E/dP3
+                                                      //       which is already taken into account as a weight 
+      }
+      for ( size_t i=0; i<fHistoSecPiPlus.size(); ++i )
+      {
+	 std::string classname = fHistoSecPiPlus[i]->ClassName();
+         // std::cout << " ClassName = " << classname << std::endl;
+	 TH1D* h = 0;
+	 if ( ! (classname == "TProfile") )
+	 {
+	    /* if ( i <1 ) */ fHistoSecPiPlus[i]->Scale(1./((double)stat),"width");
+	    h = tfs->make<TH1D>( *(fHistoSecPiPlus[i]) );
+	 }
+	 else
+	 {
+	    h = tfs->make<TProfile>( *((TProfile*)fHistoSecPiPlus[i]) );
+	 }
+         std::string hname = fHistoSecPiPlus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecPiPlus[i]->GetTitle() );
+      }
+      for ( size_t i=0; i<fHistoPTPiPlus.size(); ++i )
+      {
+         std::string hname = fHistoPTPiPlus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoPTPiPlus[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoPTPiPlus[i]->GetTitle() );
+         for ( int ix=1; ix<fHistoPTPiPlus[i]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTPiPlus[i]->GetBinCenter(ix);
+	    double bw = fHistoPTPiPlus[i]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw;
+	    double y = fHistoPTPiPlus[i]->GetBinContent(ix); 
+	    double ey = fHistoPTPiPlus[i]->GetBinError(ix); 
+	    // fHistoPTPiPlus[i]->SetBinContent( ix, y/wei );
+	    // fHistoPTPiPlus[i]->SetBinError( ix, ey/wei );
+	    h->SetBinContent( ix, y/wei );
+	    h->SetBinError( ix, ey/wei );
+         }
+         h->Scale( fXSecOnTarget/((double)stat) );
+	 // fHistoPTPiPlus[i]->Scale( fXSecOnTarget/((double)stat) ); // NO scaling with "width" - see earlier comment for fHistoPTPiMinus
+      }
+      for ( size_t i=0; i<fHistoSecNeutron.size(); ++i )
+      {
+	 std::string classname = fHistoSecNeutron[i]->ClassName();
+         // std::cout << " ClassName = " << classname << std::endl;
+	 TH1D* h = 0;
+	 if ( ! (classname == "TProfile") )
+	 {
+	    /* if ( i <1 ) */ fHistoSecNeutron[i]->Scale(1./((double)stat),"width");
+	    h = tfs->make<TH1D>( *(fHistoSecNeutron[i]) );
+	 }
+	 else
+	 {
+	    h = tfs->make<TProfile>( *((TProfile*)fHistoSecNeutron[i]) );
+	 }
+         std::string hname = fHistoSecNeutron[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecNeutron[i]->GetTitle() );
+      }
+   }
+   
    
    return;
 
@@ -590,6 +1061,17 @@ TH1* artg4tk::AnalyzerNA49::matchExpSpectrum2MC( const int& secid,
       {
          return fHistoSecPiMinus[1];
       }
+      else if ( observable == 9 )
+      {
+          for ( size_t i=0; i<fHistoPTPiMinus.size(); ++i )
+	  {
+	     std::string htitle = fHistoPTPiMinus[i]->GetTitle();
+	     if ( htitle == xfbin ) 
+	     {
+		return fHistoPTPiMinus[i];
+	     }
+	  }
+      }
       else
       {
          return NULL;
@@ -604,6 +1086,17 @@ TH1* artg4tk::AnalyzerNA49::matchExpSpectrum2MC( const int& secid,
       else if ( observable == 5 )
       {
          return fHistoSecProton[1];
+      }
+      else if ( observable == 9 )
+      {
+          for ( size_t i=0; i<fHistoPTProton.size(); ++i )
+	  {
+	     std::string htitle = fHistoPTProton[i]->GetTitle();
+	     if ( htitle == xfbin ) 
+	     {
+		return fHistoPTProton[i];
+	     }
+	  }
       }
       else
       {
@@ -645,10 +1138,13 @@ double artg4tk::AnalyzerNA49::calculateBinWeight( const CLHEP::HepLorentzVector&
                                              double Ekin, double mass, double pT, int xFbin, double sqrt_s )
 {
    double wei = 1.;
+/*
    int pTbin = -1;
    
 // FIXME !!! Need to redo this method and make it more generic !!!
-
+// NOTE (JVY - May 3, 2018): This is now kind of obsolete because 
+//                           the dpT2 part has moved to endJob
+//
    if ( pname == "pi+" || pname == "pi-" )
    {
       for (  int ib=0; ib<fNPiBinsPT; ++ib )
@@ -673,24 +1169,28 @@ double artg4tk::AnalyzerNA49::calculateBinWeight( const CLHEP::HepLorentzVector&
    }
    
    if ( pTbin == -1 ) return wei;
+*/
    
-// NOTE: This fragment of code draws inspiration in a similar application
-//       originally implemented by Mike Kordosky (W&M/MINERvA/NuMI).
-//       Credits go to Mike !!!
+// NOTE-1: This fragment of code draws inspiration in a similar application
+//         originally implemented by Mike Kordosky (W&M/MINERvA/NuMI).
+//         Credits go to Mike !!!
 //
-   double dpT2  = 0.; // fPiBinsPT[pTbin+1]*fPiBinsPT[pTbin+1] - fPiBinsPT[pTbin]*fPiBinsPT[pTbin];
+// NOTE-2: dpT2 part is commented out for now since it's taken care of in endJob
+//
+//
+   // ---> double dpT2  = 0.; // fPiBinsPT[pTbin+1]*fPiBinsPT[pTbin+1] - fPiBinsPT[pTbin]*fPiBinsPT[pTbin];
    double pLmin = 0.; // fPiBinsXF[xFbin]*sqrt_s/2.;
    double pLmax = 0.; // fPiBinsXF[xFbin+1]*sqrt_s/2.;
 
    if ( pname == "pi+" || pname =="pi-" )
    {
-      dpT2 = fPiBinsPT[pTbin+1]*fPiBinsPT[pTbin+1] - fPiBinsPT[pTbin]*fPiBinsPT[pTbin];
+      // ---> dpT2 = fPiBinsPT[pTbin+1]*fPiBinsPT[pTbin+1] - fPiBinsPT[pTbin]*fPiBinsPT[pTbin];
       pLmin = fPiBinsXF[xFbin]*sqrt_s/2.;
       pLmax = fPiBinsXF[xFbin+1]*sqrt_s/2.;
    }
    else if ( pname == "proton" )
    {
-      dpT2 = fPBinsPT[pTbin+1]*fPBinsPT[pTbin+1] - fPBinsPT[pTbin]*fPBinsPT[pTbin];
+      // ---> dpT2 = fPBinsPT[pTbin+1]*fPBinsPT[pTbin+1] - fPBinsPT[pTbin]*fPBinsPT[pTbin];
       pLmin = fPBinsXF[xFbin]*sqrt_s/2.;
       pLmax = fPBinsXF[xFbin+1]*sqrt_s/2.;
    }
@@ -700,7 +1200,8 @@ double artg4tk::AnalyzerNA49::calculateBinWeight( const CLHEP::HepLorentzVector&
    
    double pZmin = labp.boostVector().gamma()*(labp.beta()*EPCM1 + pLmin );
    double pZmax = labp.boostVector().gamma()*(labp.beta()*EPCM2 + pLmax );
-   double dP3   = CLHEP::pi * dpT2 *(pZmax-pZmin);
+   // ---> double dP3   = CLHEP::pi * dpT2 *(pZmax-pZmin);
+   double dP3 = CLHEP::pi * (pZmax-pZmin);
 
    wei = (Ekin+mass)/dP3;
 

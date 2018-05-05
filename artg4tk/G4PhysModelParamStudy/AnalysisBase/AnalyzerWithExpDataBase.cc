@@ -5,6 +5,8 @@
 #include "TFile.h"
 #include "TCanvas.h"
 
+#include "TProfile.h"
+
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -115,8 +117,7 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
       } 
       else
       {
-         std::cout << " Problematic match for: " << fJSON2Data->GetMetaData().fTitle << std::endl;
-	 std::cout << " Histo = NULL " << std::endl;
+         std::cout << " NO match for: " << fJSON2Data->GetMetaData().fTitle << " ---> histo = NULL " << std::endl;
       }
    }
    
@@ -164,7 +165,7 @@ bool artg4tk::AnalyzerWithExpDataBase::findExpDataByBeamTarget( const int& bid,
 
 }
 
-void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data()
+void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data( const std::string& tag2rm )
 {
 
    art::ServiceHandle<art::TFileService> tfs;  
@@ -173,7 +174,8 @@ void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data()
    std::vector< std::pair<int,TH1*> >::iterator itr = fVDBRecID2MC.begin();
    for ( ; itr!=fVDBRecID2MC.end(); ++itr )
    {
-         std::map<int,std::string>::iterator itrda = fJSONRecords.find( itr->first );
+         if ( ! itr->second ) continue; // NULL histo for this exp.data record (some might be skipped)
+	 std::map<int,std::string>::iterator itrda = fJSONRecords.find( itr->first );
          TH1D* hda = 0;      
          if ( itrda != fJSONRecords.end() ) 
          {
@@ -184,6 +186,37 @@ void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data()
 	    fLogInfo << " Can NOT find ExpData by (DoSSiER) record = " << itr->first;
 	    continue;
 	 }
+	 int nbins = hda->GetNbinsX();
+	 double* xbins = new double[nbins+1];
+	 xbins[0] = hda->GetBinLowEdge(1);
+	 for ( int ib=1; ib<=nbins; ++ib )
+	 {
+	    xbins[ib] = xbins[ib-1] + hda->GetBinWidth(ib);
+	 }
+	 std::string hname = (itr->second)->GetName();
+	 size_t pos = hname.find( tag2rm );
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string(tag2rm).length() );	 
+	 std::string hname_new = "rebin_" + hname;
+	 //
+	 // NOTE (JVY): for now, do a tmp histo for rebining, then copy it bin-by-bin
+	 //             into the one "made of data", because it's not clear how to handle
+	 //             the case via TFileService machinery
+	 //
+	 TH1* tmprebin = (itr->second)->Rebin( nbins, hname_new.c_str(), xbins );
+	 TH1D* h = tfs->make<TH1D>( *hda );
+	 h->Reset();
+	 for ( int ib=1; ib<=nbins; ++ib )
+	 {
+	    h->SetBinContent( ib, tmprebin->GetBinContent(ib) );
+	    h->SetBinError( ib, tmprebin->GetBinError(ib) );
+	 }
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( (itr->second)->GetTitle() );
+	 itr->second = h;
+/* ---> initial version... 
+// ...presents kind of issue when rebinning TProfile 
+//    because there's no direct access to the bin weights (private functions only)
+//
 	 TH1D* h = tfs->make<TH1D>( *hda );
 	 int nbdata = h->GetNbinsX();
 	 double* bcont = new double[nbdata];
@@ -198,7 +231,7 @@ void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data()
 	 size_t pos = hname.find("Tmp");
 	 if ( pos != std::string::npos ) hname.erase( pos, std::string("Tmp").length() );	 
 	 h->SetName( hname.c_str() );
-	 h->SetTitle( (itr->second)->GetTitle() );
+	 h->SetTitle( (itr->second)->GetTitle() );	 
 	 for ( int ib=1; ib<=(itr->second)->GetNbinsX(); ++ib )
 	 {
 	    double xx  = (itr->second)->GetBinCenter(ib);
@@ -218,6 +251,7 @@ void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data()
 	    h->SetBinError( ib, err ); 
          }
 	 itr->second = h;
+*/
    }
 
    return; 

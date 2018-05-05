@@ -28,7 +28,7 @@ namespace artg4tk {
       bool findExpDataByBeamTarget( const int&, const double&, const int& );
       virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>&, const int& ) { return NULL; }
       
-      void rebinMC2Data(); 
+      void rebinMC2Data( const std::string& ); 
       
       void overlayDataMC();
 /*

@@ -210,7 +210,7 @@ void artg4tk::AnalyzerIAEA::endJob()
          
       // now those MC's that are matched to exp.data
       //
-      rebinMC2Data();
+      rebinMC2Data( "Tmp" );
          
       // and finally re-scale each histo to the EKin bin width
       // NOTE: scaling to the XSec and theta-interval is done earlier
