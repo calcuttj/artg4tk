@@ -19,7 +19,7 @@ services: {
   }
   TFileService :
   {
-    fileName      : "CheckPhotonHits.root"
+    fileName      : "singleCrystal.root"
   }
     DetectorHolder: {}
     ActionHolder: {}
@@ -27,8 +27,10 @@ services: {
     PhysicsListHolder: {} 
     PhysicsList: { 
 	PhysicsListName: "FTFP_BERT"
-	DumpList: false	
+	DumpList: true	
   	enableCerenkov: true
+	CerenkovStackPhotons: true
+	CerenkovTrackSecondariesFirst: true
   	enableScintillation: false
   	enableAbsorption: true   
   	enableRayleigh: false     
@@ -41,68 +43,49 @@ services: {
     GDMLDetector : 
     {
     category: "world"
-    gdmlFileName_ : "./gdml/singlecrystal_color__PbF2.gdml"
+    gdmlFileName_ : "singlecrystal_PbF2.gdml"
     }   
-
-
-
-//    writeGdml: {
-//      name: "writeGdml"
-//      gdmlFileName:"output.gdml"	
-//    }
 
 
     ExampleGeneralAction: {
       name: "exampleGeneral"
     }
-
+      myParticleGunAction: {
+      name: "myParticleGun"	
+      NParticle: 1
+      Name: "mu+"
+      Direction: [ 0,  0,  1  ]
+      Energy: 10.
+      Position: [ 0,  0,  -10.  ]
+    }
 }
 
 outputs: {
 out1: {
   module_type: RootOutput   
-  fileName: "exampleTestingout.root"
+  fileName: "singleCrystalout.root"
   }
 }
 
 physics: {
   producers: {
-     PrimaryGenerator:
-     {
-        module_type: EventGenerator
-	nparticles : 1
-	momentum: [ 0., 0., 5. ] // in GeV 
-     }
-
-     G4Default:
-     {
-        module_type: ModelParamStudyProducer
-	//
-	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
-	//       thus the ArtG4Vtx product is NOT always available;
-	//       this key below tells Art NOT to throw if the product is not put
-	//       in the art::Event 
-	//
-	errorOnFailureToPut: false
-	//
-        RNDMSeed: 12345
-	//	
-	Verbosity: 0
-	//
-	HadronicModelParameters:
-	{
-	   DefaultPhysics: true
-	}
-     }
+    artg4Main: {
+      module_type: artg4Main
+      enableVisualization: false
+      macroPath: ".:./macros"
+      visMacro: "vis.mac"
+      //afterEvent: pause
+    }
   }
   analyzers: {
    CheckPhotonHits: {   module_type: CheckPhotonHits
-		  DumpGDML: true}	
-
+		  DumpGDML: false}	
+   CheckCalorimeterHits: {   module_type: CheckCalorimeterHits
+		  DumpGDML: false}
 }
 
-  path1: [ PrimaryGenerator,G4Default ]
-  stream1:  [ out1, CheckPhotonHits ]
+  path1: [ artg4Main ]
+  stream1:  [ out1, CheckPhotonHits,CheckCalorimeterHits ]
 
   trigger_paths: [ path1 ]
   end_paths: [ stream1 ]
