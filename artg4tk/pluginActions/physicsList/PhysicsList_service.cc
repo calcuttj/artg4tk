@@ -28,7 +28,7 @@ artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p, a
   CerenkovStackPhotons_( p.get<bool>("CerenkovStackPhotons",false)),
   CerenkovMaxNumPhotons_(p.get<int>(" CerenkovMaxNumPhotons",100)),
   CerenkovMaxBetaChange_(p.get<double>("CerenkovMaxBetaChange",10.0)),
-  CerenkovTrackSecondariesFirst_( p.get<bool>("ScintillationTrackSecondariesFirst",false)),
+  CerenkovTrackSecondariesFirst_( p.get<bool>("CerenkovTrackSecondariesFirst",false)),
   enableScintillation_( p.get<bool>("enableScintillation",true)),
   ScintillationStackPhotons_( p.get<bool>("ScintillationStackPhotons",false)),
   ScintillationByParticleType_( p.get<bool>("ScintillationByParticleType",true)),
