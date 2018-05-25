@@ -15,6 +15,68 @@
 -->
 
     <define>
+      <matrix name="RINDEXAIR" coldim="2" values="1.56258*eV 1.
+					       1.59515*eV 1.
+					       1.63606*eV 1.
+					       1.67667*eV 1.
+					       1.71167*eV 1.
+                                               1.76698*eV 1.
+					       1.80023*eV 1.
+					       1.84655*eV 1.
+					       1.9016*eV  1.
+					       1.95004*eV 1.
+					       1.99407*eV 1.
+					       2.03291*eV 1.
+					       2.07329*eV 1.
+					       2.12313*eV 1.
+					       2.155*eV   1.
+					       2.20466*eV 1.
+					       2.25223*eV 1.
+					       2.30652*eV 1.
+					       2.36837*eV 1.
+					       2.43363*eV 1.
+					       2.48095*eV 1.
+					       2.54136*eV 1.
+					       2.58717*eV 1.
+					       2.65907*eV 1.
+					       2.73508*eV 1.
+					       2.80182*eV 1.
+					       2.85761*eV 1.
+					       2.93054*eV 1.
+					       2.99162*eV 1.
+					       3.04721*eV 1.
+					       3.0799*eV  1.
+					       3.1133*eV  1.
+					       3.16479*eV 1.
+					       3.20902*eV 1.
+					       3.25449*eV 1.
+					       3.30128*eV 1.
+					       3.34944*eV 1.
+					       3.39901*eV 1.
+					       3.43974*eV 1.
+					       3.49205*eV 1.
+					       3.53505*eV 1.
+					       3.57914*eV 1.
+					       3.6358*eV  1.
+					       3.68244*eV 1.
+					       3.7303*eV  1.
+					       3.79189*eV 1.
+					       3.84266*eV 1.
+					       3.90805*eV 1.
+					       3.94837*eV 1.
+					       3.97571*eV 1.
+					       4.04576*eV 1.
+					       4.07447*eV 1.
+					       4.14807*eV 1.
+					       4.19353*eV 1.
+					       4.25569*eV 1.
+					       4.33605*eV 1.
+					       4.43657*eV 1.
+					       4.50622*eV 1.
+					       4.63351*eV 1.
+					       4.76822*eV 1.
+					       4.86931*eV 1."/>
+
       <matrix name="RINDEX" coldim="2" values="1.56258*eV 1.74822
 					       1.59515*eV 1.74941
 					       1.63606*eV 1.75
@@ -76,7 +138,6 @@
 					       4.63351*eV 1.9722
 					       4.76822*eV 1.97694
 					       4.86931*eV 1.98109"/>
-
 
       <matrix name="ABSORB" coldim="2" values="1.56494*eV  4.06899*cm 
 					       1.57967*eV  4.0395*cm 
@@ -181,6 +242,7 @@
     <materials>
 
       <material Z="1.0" name="AIR">
+	<property name="RINDEX" ref="RINDEXAIR"/>
          <D value="1e-24"/>
          <atom value="1.00794"/>
       </material>
@@ -188,13 +250,13 @@
       <element name="Nitrogen" formula="N"  Z="7.">  <atom value="14.01"/>  </element>
       <element name="Fluorine" formula="F"  Z="9.">  <atom value="18.9984032"/>  </element>
       <element name="Lead"     formula="Pb" Z="82."> <atom value="207.20"/> </element>
-
+<!--
       <material name="Air">
 	<D value="1.290" unit="mg/cm3"/>
 	<fraction n="0.7" ref="Nitrogen"/>
 	<fraction n="0.3" ref="Oxygen"/>
       </material>
-
+-->
       <material name="PbF2">
 	<property name="RINDEX" ref="RINDEX"/>
         <property name="ABSLENGTH" ref="ABSORB"/>
@@ -203,25 +265,26 @@
 	<composite n="2" ref="Fluorine"/>
       </material>
       <material name="Si" Z="14.">
+	<property name="RINDEX" ref="RINDEX"/>
          <D value="2.33" />
          <atom value="28.09" />
        </material>
     </materials>
     
     <solids>
-        <box name="WorldBox" lunit="mm" x="50" y="50" z="200"/>
-        <box name="CalorimeterCell"  lunit="mm" x="25" y="25" z="100"/>
-        <box name="PhotonBox" lunit="mm" x="25" y="25" z=".3" />
-
+        <box name="WorldBox" lunit="cm" x="50" y="50" z="200"/>
+        <box name="CalorimeterCell"  lunit="mm" x="50" y="50" z="10"/>
+        <box name="PhotonBox" lunit="mm" x="50" y="50" z=".3" />
+<!--
         <opticalsurface name="surf1" model="LUT" finish="etchedtyvekair" type="dielectric_LUT" value="1.0"/>
-
+-->
     </solids>
 
     <structure>
         <volume name="CalorimeterVolume">
             <materialref ref="PbF2"/>
             <solidref ref="CalorimeterCell"/>
-            <auxiliary auxtype="SensDet" auxvalue="DRCalorimeter"/>
+            <auxiliary auxtype="SensDet" auxvalue="Calorimeter"/>
             <auxiliary auxtype="Color" auxvalue="Red"/>
         </volume>
         <volume name="PhotonVolume">
@@ -239,14 +302,14 @@
             </physvol>
             <physvol name="pPhotonVolume0">
                 <volumeref ref="PhotonVolume"/>
-                <position name="PDpos0" x="0" y="0" z="50.15"/>
+                <position name="PDpos0" x="0" y="0" z="5.15"/>
             </physvol>
             <physvol name="pPhotonVolume1">
                 <volumeref ref="PhotonVolume"/>
-                <position name="PDpos1" x="0" y="0" z="-50.15"/>
+                <position name="PDpos1" x="0" y="0" z="-5.15"/>
             </physvol>
         </volume>
-
+<!--
         <skinsurface name="skinsrf1" surfaceproperty="surf1" >
             <volumeref ref="CalorimeterVolume"/>
         </skinsurface> 
@@ -259,6 +322,7 @@
             <physvolref ref="pCalorimeterVolume"/>
             <physvolref ref="pPhotonVolume1"/>
         </bordersurface>
+-->
     </structure>
 
     <setup version="1.0" name="Default">
