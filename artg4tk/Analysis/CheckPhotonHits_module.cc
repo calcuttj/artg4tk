@@ -51,10 +51,10 @@ void artg4tk::CheckPhotonHits::beginRun(const art::Run& thisRun) {
 void artg4tk::CheckPhotonHits::beginJob() {
 
     art::ServiceHandle<art::TFileService> tfs;
-    _hnHits = tfs->make<TH1F>("hnHits", "Number of PhotonArtHits", 100, 0., 20000.);
-    _hEdep = tfs->make<TH1F>("hEdep", "energy of optical photon at detector", 100, 0., 50.);
-    _hxydet0 = tfs->make<TH2F>("hxydet0", "photon position on det 0", 100, -1250, 1250, 100, -1250, 1250);
-    _hxydet1 = tfs->make<TH2F>("hxydet1", "photon position on det 1", 100, -1250, 1250, 100, -1250, 1250);
+    _hnHits = tfs->make<TH1F>("hnHits", "Number of PhotonArtHits", 100, 0., 200.);
+    _hEdep = tfs->make<TH1F>("hEdep", "energy of optical photon at detector", 100, 0., 10.);
+    _hxydet0 = tfs->make<TH2F>("hxydet0", "photon position on det 0", 100, -25, 25, 100, -25, 25);
+    _hxydet1 = tfs->make<TH2F>("hxydet1", "photon position on det 1", 100, -25, 25, 100, -25, 25);
 } // end beginJob
 
 void artg4tk::CheckPhotonHits::analyze(const art::Event& event) {
