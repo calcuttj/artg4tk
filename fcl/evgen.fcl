@@ -32,13 +32,13 @@ services:
 
 }
 
-//outputs: 
-//{
-//out1: {
-//  module_type: RootOutput   
-//  fileName: "exampleTestingout.root"
-//  }
-//}
+outputs: 
+{
+out1: {
+  module_type: RootOutput   
+  fileName: "exampleTestingout.root"
+  }
+}
 
 physics: {
 
@@ -60,9 +60,9 @@ physics: {
   }
 
   path1: [ PrimaryGenerator ] 
-//  stream1:  [ out1, CheckHits, CheckInteractions ]
+  stream1:  [ out1 ]
 
   trigger_paths: [ path1 ]
-//  end_paths: [ stream1 ]
+  end_paths: [ stream1 ]
 
 }

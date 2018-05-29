@@ -1,6 +1,4 @@
-#include "detectorDefaults.fcl"
-process_name:processA//source: {
-
+process_name:processA
 source: {
   module_type: EmptyEvent
   maxEvents:  100
@@ -23,7 +21,6 @@ services: {
   {
     fileName      : "CheckHits.root"
   }
-  user: {
     DetectorHolder: {}
     ActionHolder: {}
     RandomNumberGenerator: {}
@@ -44,12 +41,8 @@ services: {
     GDMLDetector : 
     {
     category: "world"
-    gdmlFileName_ : "tiledsamplingcal4mmpb1mmSz.gdml"
+    gdmlFileName_ : "singlecrystal_PbF2.gdml"
     }   
-
-    // Action(s) for the simulation
-//    ClockAction: {}
-
 
     ExampleGeneralAction: {
       name: "exampleGeneral"
@@ -58,7 +51,7 @@ PrimaryEventAction: {
 //     name: "PrimaryGeneratorActionService"
 }
   }
-}
+
 
 outputs: {
 out1: {
@@ -85,14 +78,16 @@ momentum: [ 0., 0., 5. ]
 
   }
   analyzers: {
-   CheckHits: {   module_type: CheckHits
-		  hist_dir: "HistoDir"}	
+   CheckPhotonHits: {   module_type: CheckPhotonHits
+		  DumpGDML: false}	
+   CheckCalorimeterHits: {   module_type: CheckCalorimeterHits
+		  DumpGDML: false}
    CheckGenParticle: {   module_type: CheckGenParticle
                          hist_dir: "HistoDir"}
 }
 
   path1: [evtgen, artg4Main ]
-  stream1:  [ out1, CheckHits, CheckGenParticle ]
+  stream1:  [ out1, CheckPhotonHits,CheckCalorimeterHits, CheckGenParticle ]
 
   trigger_paths: [ path1 ]
   end_paths: [ stream1 ]
