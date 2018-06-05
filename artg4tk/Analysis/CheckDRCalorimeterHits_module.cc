@@ -44,7 +44,7 @@ void artg4tk::CheckDRCalorimeterHits::beginJob() {
 } // end beginJob
 
 void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
-    typedef std::vector< art::Handle<myDRCaloArtHitDataCollection> > DRHandleVector;
+    typedef std::vector< art::Handle<DRCalorimeterHitCollection> > DRHandleVector;
     //    string *proton="proton";
     //string *ETot="ETot";
     DRHandleVector allDRSims;
@@ -52,12 +52,12 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
     event.getManyByType(allDRSims);
     cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
-        const myDRCaloArtHitDataCollection & DRsims(**i);
+        const DRCalorimeterHitCollection & DRsims(**i);
         sumDRE = 0.0;
         double sumNCeren = 0.0;
         _hnDRHits->Fill(DRsims.size());
-        for (myDRCaloArtHitDataCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
-            const myDRCaloArtHitData& hit = *j;
+        for (DRCalorimeterHitCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
+            const DRCalorimeterHit& hit = *j;
             sumDRE = sumDRE + hit.Edep;
             sumNCeren = sumNCeren + hit.Nceren;
         }

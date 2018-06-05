@@ -9,99 +9,94 @@
 // artg4tk: art based Geant 4 Toolkit
 // 
 //=============================================================================
-// PhotonHit.hh: Class representing a optical photon hit
-// to be used by Geant4. For every photon hitting the PhotonSD sensitive detector 
-// position, time and energy is recorded 
+// PhotonHit.hh: persistent representation of a  
+// optical Photon hit
+// 
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
+
 #ifndef PhotonHit_h
 #define PhotonHit_h 1
-
-#include "Geant4/G4VHit.hh"
-#include "Geant4/G4THitsCollection.hh"
-#include "Geant4/G4Allocator.hh"
-#include "Geant4/G4ThreeVector.hh"
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
 
-    class PhotonHit : public G4VHit {
+    class PhotonHit {
     private:
-
-        G4int processID;
-        G4double edep;
-        G4ThreeVector pos;
-        G4double time;
+    public: // change later
+        int processID;   // distinguish between Cerenkov and Szintillation photons.  
+        double edep;
+        double xpos;
+        double ypos;
+        double zpos;
+        double time;
 
     public:
 
-        PhotonHit();
-        PhotonHit(G4int id, G4double e, G4ThreeVector p, G4double t);
-        ~PhotonHit();
-        PhotonHit(const PhotonHit&);
-        const PhotonHit& operator=(const PhotonHit&);
-        G4int operator==(const PhotonHit&) const;
-
-        inline void* operator new(size_t);
-        inline void operator delete(void*);
-
-        void Draw();
-        void Print();
-
-        void SetProcessID(G4int track) {
-            processID = track;
+        PhotonHit(){};
+        // Hide the following from Root
+#ifndef __GCCXML__
+        PhotonHit(int id, double e, double x, double y, double z, double t) :
+        processID(id),
+        edep(e),
+        xpos(x),
+        ypos(y),
+        zpos(z),
+        time(t) {
         };
+      //      ~PhotonHit();
+      //  PhotonHit(const PhotonHit&);
+      //  const PhotonHit& operator=(const PhotonHit&);
+      //  int operator==(const PhotonHit&) const;
 
-        void SetEdep(G4double de) {
-            edep = de;
-        };
+    public:
 
-        void SetPos(G4ThreeVector xyz) {
-            pos = xyz;
-        };
+                /*
+                void SetProcessID(int track) {
+                    processID = track;
+                };
 
-        void SetTime(G4double de) {
-            time = de;
-        };
+                void SetEdep(double de) {
+                    edep = de;
+                };
 
-        G4int GetProcessID() {
+                void SetPos(G4ThreeVector xyz) {
+                    pos = xyz;
+                };
+
+                void SetTime(double de) {
+                    time = de;
+                };
+        int GetProcessID() {
             return processID;
         };
 
-        G4double GetEdep() {
+        double GetEdep() {
             return edep;
         };
 
-        G4ThreeVector GetPos() {
-            return pos;
+        double GetXPos() {
+            return xpos;
         };
 
-        G4double GetTime() {
+        double GetYPos() {
+            return ypos;
+        };
+
+        double GetZPos() {
+            return zpos;
+        };
+
+        double GetTime() {
             return time;
         };
-
+*/
+#endif
     };
 
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-    typedef G4THitsCollection<PhotonHit> PhotonHitsCollection;
-
-    extern G4Allocator<PhotonHit> PhotonHitAllocator;
-
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-    inline void* PhotonHit::operator new(size_t) {
-        void *aHit;
-        aHit = (void *) PhotonHitAllocator.MallocSingle();
-        return aHit;
-    }
-
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-    inline void PhotonHit::operator delete(void *aHit) {
-        PhotonHitAllocator.FreeSingle((PhotonHit*) aHit);
-    }
-
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    typedef std::vector<PhotonHit> PhotonHitCollection;
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 #endif

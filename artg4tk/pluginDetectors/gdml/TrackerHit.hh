@@ -1,82 +1,45 @@
-//
-//               __        __ __  __  __  
-//   ____ ______/ /_____ _/ // / / /_/ /__
-//  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
-// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
-// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
-//               /____/                  
-//
-// artg4tk: art based Geant 4 Toolkit
-// 
-//=============================================================================
-// TrackerHit.hh: Class representing a tracker hit
-// to be used by Geant4. 
-// Author: Hans Wenzel (Fermilab)
-//=============================================================================
-#ifndef TrackerHit_h
-#define TrackerHit_h 1
+// Calorimeter Art Hits  
 
-#include "Geant4/G4VHit.hh"
-#include "Geant4/G4THitsCollection.hh"
-#include "Geant4/G4Allocator.hh"
-#include "Geant4/G4ThreeVector.hh"
+#ifndef TRACKERHIT_HH
+#define TRACKERHIT_HH
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include <vector>
+
 namespace artg4tk {
-class TrackerHit : public G4VHit
-{
-  public:
 
-      TrackerHit();
-     ~TrackerHit();
-      TrackerHit(const TrackerHit&);
-      const TrackerHit& operator=(const TrackerHit&);
-      G4int operator==(const TrackerHit&) const;
+    class TrackerHit {
+    public: // change later
 
-      inline void* operator new(size_t);
-      inline void  operator delete(void*);
+      double Edep;
+      double xpos;
+      double ypos;
+      double zpos;
+      double time;
 
-      void Draw();
-      void Print();
+        // Default constructor
+    public:
 
-  public:
-  
-      void SetEdep     (G4double de)      { edep = de; };
-      void SetPos      (G4ThreeVector xyz){ pos = xyz; };
-      
+        TrackerHit() {}
+        // Hide the following from Root
+#ifndef __GCCXML__
 
-      G4double GetEdep()    { return edep; };      
-      G4ThreeVector GetPos(){ return pos; };
-      
-  private:
-  
+      TrackerHit(double edep, double xp, double yp, double zp, double ti) :
+        Edep(edep),
+        xpos(xp),
+        ypos(yp),
+        zpos(zp),
+	time(ti)
+      {
+        }
 
-      G4double      edep;
-      G4ThreeVector pos;
-};
+        double GetEdep() {
+            return Edep;
+        };
+#endif
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    };
 
-typedef G4THitsCollection<TrackerHit> TrackerHitsCollection;
-
-extern G4Allocator<TrackerHit> TrackerHitAllocator;
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-inline void* TrackerHit::operator new(size_t)
-{
-  void *aHit;
-  aHit = (void *) TrackerHitAllocator.MallocSingle();
-  return aHit;
+    typedef std::vector<TrackerHit> TrackerHitCollection;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-inline void TrackerHit::operator delete(void *aHit)
-{
-  TrackerHitAllocator.FreeSingle((TrackerHit*) aHit);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-}
 #endif

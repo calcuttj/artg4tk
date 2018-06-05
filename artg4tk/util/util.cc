@@ -7,7 +7,7 @@
 #include <iomanip>
 
 #include <cstdlib>
-#include  "cetlib/exception.h"
+#include  "cetlib_except/exception.h"
 
 // Set visual attributes
 void artg4tk::setVisAtts(G4LogicalVolume* lv, bool display, const std::vector<double> & rgba, std::function<void (G4VisAttributes*)> func) {

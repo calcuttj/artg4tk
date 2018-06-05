@@ -1,0 +1,142 @@
+process_name:processB
+
+source:
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-proton3.824GeV-C-Bertini-PreCo-ProcL.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "proton3.824GeV-C-Bertini-PreCo-ProcL_IAEA.root"
+  }
+
+  RandomNumberGenerator: {}
+         
+  PhysModelConfig: 
+  {
+        Verbosity: true
+  }
+     
+  ProcLevelSimSetup:
+  {
+        HadronicModelName: "Bertini"
+	TargetNucleus: "C"
+	RNDMSeed: 51234
+  }
+
+}
+
+outputs: 
+{
+   out2: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-proton3.824GeV-C-Bertini-PreCo-add-LevDens1-ProcL.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     G4BertiniPreCoLevDens1:
+     {
+        module_type: ProcLevelMPVaryProducer
+	//
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      usePreCompound: 1
+              UnderlyingModels:
+              {
+                 PreCompound:
+                 {
+                    LevelDensity: 1. // in MeV
+                 }
+              }
+	   }
+	}
+     }
+    
+  }
+  
+  analyzers:
+  {
+  
+     BertiniDefaultIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniDefault"
+	IncludeExpData: 
+	{
+// new record ids for 3.824GeVc/ proton on C (Ishibashi data)
+	   DBRecords: [ 164978, 164979, 164980, 164981, 164982, 164983 ]
+	}
+     }
+
+     BertiniPreCoIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCo"
+	IncludeExpData: 
+	{
+// new record ids for 3.824GeVc/ proton on C (Ishibashi data)
+	   DBRecords: [ 164978, 164979, 164980, 164981, 164982, 164983 ]
+	}
+     }
+
+     BertiniPreCoLevDens1IAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCoLevDens1"
+	IncludeExpData: 
+	{
+// new record ids for 3.824GeVc/ proton on C (Ishibashi data)
+	   DBRecords: [ 164978, 164979, 164980, 164981, 164982, 164983 ]
+	}
+     }
+
+
+  }
+  
+  path1:   [ G4BertiniPreCoLevDens1 ]
+  path2:   [ BertiniDefaultIAEA, BertiniPreCoIAEA, BertiniPreCoLevDens1IAEA ]
+  stream2: [ out2 ]
+
+  trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ path2, stream2 ]
+
+}
+

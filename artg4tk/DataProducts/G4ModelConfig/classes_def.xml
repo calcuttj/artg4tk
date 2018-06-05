@@ -1,0 +1,8 @@
+<!--  -->
+<!--  $Id: Exp $     -->
+<!--  -->
+
+<lcgdict>
+ <class name="artg4tk::ArtG4tkModelConfig"/>
+ <class name="art::Wrapper<artg4tk::ArtG4tkModelConfig>"/>
+</lcgdict>

@@ -1,0 +1,121 @@
+process_name:processA
+
+source: 
+{
+  module_type: EmptyEvent
+  maxEvents:   10
+}
+
+services: 
+{
+
+   message : 
+   {
+      debugModules : ["*"]
+      suppressInfo : []    
+      destinations : 
+      {
+         LogToConsole : 
+         {
+            type : "cout"
+            threshold : "DEBUG"
+            categories : 
+	    {
+               default : { limit : 50 }
+            }
+         }
+      }
+   }
+
+   TFileService :
+   {
+      fileName: "HARPBertiniDefault.root"
+   }
+
+   RandomNumberGenerator: {}
+
+// GDML-based geometry 
+//
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world"
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/pb_target.gdml"
+   }
+
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
+        PhysicsListName: "QGSP_FTFP_BERT"
+   }
+     
+   PhysModelConfig: 
+   {
+//        Verbosity: true
+   }      
+
+}
+
+outputs: 
+{
+   outA: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-G4-Default.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	momentum: [ 0., 0., 5. ] // in GeV 
+     }
+
+     G4BertiniDefault:
+     {
+        module_type: ModelParamStudyProducer
+	//
+        RNDMSeed: 12345
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: true
+	}
+     }
+
+  }
+  
+  analyzers:
+  {
+  
+     HARPTest:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniDefault"
+     }
+  
+  }
+  
+  path1:   [ PrimaryGenerator, G4BertiniDefault ] 
+  path2:   [ HARPTest  ]
+  stream1: [ outA ]
+
+  trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ path2, stream1 ]
+//  end_paths:     [ stream1 ]
+
+
+}

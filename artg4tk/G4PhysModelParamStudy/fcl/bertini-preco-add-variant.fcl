@@ -1,0 +1,95 @@
+process_name:processB
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-Bertini-PreCo-ProcL.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  RandomNumberGenerator: {}
+         
+  PhysModelConfig: 
+  {
+        Verbosity: true
+  }
+     
+  ProcLevelSimSetup:
+  {
+        HadronicModelName: "Bertini"
+	TargetNucleus: "C"
+	RNDMSeed: 51234
+  }
+
+}
+
+outputs: 
+{
+   out1: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-Bertini-PreCo-LevDens1-ProcL.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     G4BertiniPreCoLevDens1:
+     {
+        module_type: ProcLevelMPVaryProducer
+	//
+	Verbosity: 0
+	HadronicModel:
+	{
+	   DefaultPhysics: false
+	   ModelParameters:
+	   {
+	      usePreCompound: 1
+              UnderlyingModels:
+              {
+                 PreCompound:
+                 {
+                    LevelDensity: 1. // in MeV
+                 }
+              }
+	   }
+	}
+     }
+    
+  }
+
+  analyzers:
+  {
+  }
+ 
+  path1:   [ G4BertiniPreCoLevDens1 ]
+  stream1: [ out1 ]
+  trigger_paths: [ path1 ]
+  end_paths:     [ stream1 ]
+   
+}
+

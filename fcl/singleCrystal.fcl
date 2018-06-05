@@ -1,8 +1,7 @@
-#include "detectorDefaults.fcl"
 process_name:processA
 source: {
   module_type: EmptyEvent
-  maxEvents:  100
+  maxEvents:  5
 }
 services: {
   message : {
@@ -20,17 +19,18 @@ services: {
   }
   TFileService :
   {
-    fileName      : "CheckPhotonHits.root"
+    fileName      : "singleCrystal.root"
   }
-  user: {
     DetectorHolder: {}
     ActionHolder: {}
     RandomNumberGenerator: {}
     PhysicsListHolder: {} 
     PhysicsList: { 
 	PhysicsListName: "FTFP_BERT"
-	DumpList: false	
+	DumpList: true	
   	enableCerenkov: true
+	CerenkovStackPhotons: true
+	CerenkovTrackSecondariesFirst: true
   	enableScintillation: false
   	enableAbsorption: true   
   	enableRayleigh: false     
@@ -43,15 +43,8 @@ services: {
     GDMLDetector : 
     {
     category: "world"
-    gdmlFileName_ : "./gdml/singlecrystal_color__PbF2.gdml"
+    gdmlFileName_ : "singlecrystal_PbF2.gdml"
     }   
-
-
-
-//    writeGdml: {
-//      name: "writeGdml"
-//      gdmlFileName:"output.gdml"	
-//    }
 
 
     ExampleGeneralAction: {
@@ -60,18 +53,17 @@ services: {
       myParticleGunAction: {
       name: "myParticleGun"	
       NParticle: 1
-      Name: "proton"
+      Name: "mu+"
       Direction: [ 0,  0,  1  ]
       Energy: 10.
       Position: [ 0,  0,  -10.  ]
     }
-  }
 }
 
 outputs: {
 out1: {
   module_type: RootOutput   
-  fileName: "exampleTestingout.root"
+  fileName: "singleCrystalout.root"
   }
 }
 
@@ -84,16 +76,16 @@ physics: {
       visMacro: "vis.mac"
       //afterEvent: pause
     }
-
   }
   analyzers: {
    CheckPhotonHits: {   module_type: CheckPhotonHits
-		  DumpGDML: true}	
-
+		  DumpGDML: false}	
+   CheckCalorimeterHits: {   module_type: CheckCalorimeterHits
+		  DumpGDML: false}
 }
 
   path1: [ artg4Main ]
-  stream1:  [ out1, CheckPhotonHits ]
+  stream1:  [ out1, CheckPhotonHits,CheckCalorimeterHits ]
 
   trigger_paths: [ path1 ]
   end_paths: [ stream1 ]

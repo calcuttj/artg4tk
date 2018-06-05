@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<gdml_simple_extension xmlns:gdml_simple_extension="http://www.example.org"
-		       xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"          
-		       xs:noNamespaceSchemaLocation="SimpleExtension.xsd"> 
-<!--
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
--->
+
  <!--
     //
     // PbF2 optical data from:
@@ -19,12 +15,7 @@
     // fresnel reflection.
     //
 -->
-    <extension>
-      <color name="test_color"  R="0.1"  G="0.2"  B="0.3"  A="1.0" />
-      <color name="magenta"     R="0.0"  G="1.0"  B="0.0"  A="1.0" />
-      <color name="green"       R="1.0"  G="0.0"  B="1.0"  A="1.0" />	
-      <color name="red"         R="1.0"  G="0.0"  B="0.0"  A="1.0" />	
-    </extension>
+
 
 
 
@@ -33,7 +24,8 @@
       <variable name="j" value="0"/>
       <variable name="k" value="0"/>
       <constant name="num" value="5"/>
-      <constant name="cellsize" value="5"/>
+      <constant name="cellsize" value="5.0*cm"/>
+      <constant name="spacing" value="5.0*cm"/>
       <matrix name="RINDEX" coldim="2" values="1.56258*eV 1.74822
 					       1.59515*eV 1.74941
 					       1.63606*eV 1.75
@@ -129,7 +121,7 @@
    </materials>
 
    <solids>
-       <box name="WorldBox" lunit="mm" x="cellsize*num+100" y="cellsize*num+100" z="cellsize*num+100"/>
+       <box name="WorldBox" lunit="mm" x="cellsize*num+100" y="cellsize*num+100" z="(cellsize*num)+150"/>
       <box name="CalorimeterCell"  lunit="mm" x="cellsize" y="cellsize" z="cellsize"/>
    </solids>
 
@@ -137,9 +129,8 @@
       <volume name="CalorimeterVolume">
          <materialref ref="PbF2"/>
          <solidref ref="CalorimeterCell"/>
-	 <auxiliary auxtype="SensDet" auxvalue="DRCalorimeter"/>
- 	<!-- color extension element -->	
-	<colorref ref="red"/> 
+	 <auxiliary auxtype="SensDet" auxvalue="Calorimeter"/>
+	 <auxiliary auxtype="Color" auxvalue="Red"/>
       </volume>
     
       <volume name="TOP">
@@ -148,13 +139,14 @@
          <loop for="i" from="0" to="num" step="1">
          <loop for="j" from="0" to="num" step="1">
          <loop for="k" from="0" to="num" step="1">
-            <physvol>
-	       <volumeref ref="CalorimeterVolume"/>
-               <position name="posijk" x="cellsize*(i-num/2)" y="cellsize*(j-num/2)" z="cellsize*(k-num/2)"/>
-            </physvol>
+           <physvol name="CaloCell" copynumber="i+(j*(num+1))+k*((num+1)*(num+1))" >
+	     <volumeref ref="CalorimeterVolume"/>
+             <position name="posijk" x="spacing*(i-num/2)" y="spacing*(j-num/2)" z="spacing*(k-num/2)"/>
+           </physvol>
          </loop>
 	 </loop>
          </loop>
+
       </volume>
    </structure>
 

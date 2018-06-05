@@ -17,6 +17,8 @@
 #include "Geant4/G4LogicalVolumeStore.hh"
 #include "Geant4/G4SolidStore.hh"
 
+#include "artg4tk/pluginDetectors/gdml/HadInteractionSD.hh"
+
 // #include <fstream>
 #include <string>
 #include <iostream>
@@ -204,6 +206,8 @@ G4VPhysicalVolume* ModelParamStudyGeom::ConstructTarget()
   }
   
   fLogTarget = new G4LogicalVolume( solid, fMaterial, "target_log", 0, 0, 0);
+  fLogTarget->SetSensitiveDetector( new artg4tk::HadInteractionSD("HadInteractionSD") );
+  
   fPhysTarget = new G4PVPlacement( 0, G4ThreeVector(fTargetPos[0],fTargetPos[1],fTargetPos[2]), "target_phys",
                                    fLogTarget,
 				   fSubWorld, // mother physical volume, which can be NULL

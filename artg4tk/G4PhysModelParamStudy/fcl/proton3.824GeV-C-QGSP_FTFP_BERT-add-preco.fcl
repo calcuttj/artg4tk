@@ -1,0 +1,131 @@
+process_name:processB
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-proton3.284GeV-C-G4Default.root" ]
+
+}
+
+services: 
+{
+
+   message : 
+   {
+      debugModules : ["*"]
+      suppressInfo : []    
+      destinations : 
+      {
+         LogToConsole : 
+         {
+            type : "cout"
+            threshold : "DEBUG"
+            categories : 
+	    {
+               default : { limit : 50 }
+            }
+         }
+      }
+   }
+
+   TFileService :
+   {
+      fileName: "proton3.824GeV-C-QGSP_FTFP_BERT-Bertini-PreCo-Variants_IAEA.root"
+   }
+
+   RandomNumberGenerator: {}
+
+// GDML-based geometry 
+//
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world"
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/c_target.gdml"
+   }
+
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
+        PhysicsListName: "QGSP_FTFP_BERT"
+   }
+     
+   PhysModelConfig: 
+   {
+        Verbosity: true
+   }      
+
+}
+
+outputs: 
+{
+   outB: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-proton3.284GeV-C-Bertini-PreCo.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+     G4BertiniPreCo:
+     {
+        module_type: ModelParamStudyProducer
+	//
+	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
+	//       thus the ArtG4Vtx product is NOT always available;
+	//       this key below tell Art NOT to throw if the product is not put
+	//       in the art::Event 
+	//
+	errorOnFailureToPut: false
+	//
+        RNDMSeed: 51234
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: false
+	   Bertini:
+	   {
+	      usePreCompound: 1
+	   }
+	}
+     }
+
+  }
+
+  analyzers:
+  {
+  
+     G4DefaultIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4Default"
+     }
+
+     G4BertiniPreCoIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCo"
+     }
+  
+  }
+
+  pathB:   [ G4BertiniPreCo ] 
+  pathB2:  [ G4DefaultIAEA, G4BertiniPreCoIAEA ]
+  streamB: [ outB ]
+
+  trigger_paths: [ pathB ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ pathB2, streamB ]
+
+}
+

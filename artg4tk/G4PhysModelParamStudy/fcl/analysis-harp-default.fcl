@@ -1,0 +1,65 @@
+process_name:processA
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1 // default - will take all events in the input file(s)
+  fileNames: [ "Evt-G4-Default-test1.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "G4-Default-HARP.root"
+  }
+
+  user: 
+  {
+     // None
+  }
+
+}
+
+physics: {
+
+  producers: 
+  {
+     // None
+  }
+
+  analyzers: 
+  {
+     
+     BertiniDefaultHARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniDefault"
+     }
+
+  }
+       
+  path:   [ BertiniDefaultHARP ]
+
+  trigger_paths: [ path ]
+
+}

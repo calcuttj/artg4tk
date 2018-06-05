@@ -1,0 +1,90 @@
+process_name:processC
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-proton3.824GeV-C-Bertini-PreCo-add-LevDens1-ProcL.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "IAEA-ProcL.root"
+  }
+
+//  RandomNumberGenerator: {}
+         
+}
+
+physics: {
+  analyzers:
+  {
+  
+     BertiniDefaultIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniDefault"
+	IncludeExpData: 
+	{
+// new record ids for 3.824GeVc/ proton on C (Ishibashi data)
+	   DBRecords: [ 164978, 164979, 164980, 164981, 164982, 164983 ]
+	}
+     }
+
+     BertiniPreCoIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCo"
+	IncludeExpData: 
+	{
+// new record ids for 3.824GeVc/ proton on C (Ishibashi data)
+	   DBRecords: [ 164978, 164979, 164980, 164981, 164982, 164983 ]
+	}
+     }
+
+     BertiniPreCoLevDens1IAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCoLevDens1"
+	IncludeExpData: 
+	{
+// new record ids for 3.824GeVc/ proton on C (Ishibashi data)
+	   DBRecords: [ 164978, 164979, 164980, 164981, 164982, 164983 ]
+	}
+     }
+
+
+  }
+  
+  path2:   [ BertiniDefaultIAEA, BertiniPreCoIAEA, BertiniPreCoLevDens1IAEA ]
+
+//   trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ path2 ]
+
+}

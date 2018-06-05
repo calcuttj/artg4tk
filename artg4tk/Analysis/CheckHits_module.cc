@@ -16,7 +16,6 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #include "artg4tk/Analysis/CheckHits_module.hh"
-//#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
@@ -32,22 +31,7 @@ _hNCeren(0) {
 }
 
 void artg4tk::CheckHits::beginRun(const art::Run& thisRun) {
-  /* 
-   if (_DumpGDML) {
-        std::cout << "******************************Run: " << thisRun.id() << ": looking at Run Header" << std::endl;
-        art::Handle<artg4::GdmlText> gdmlTextHandle;
-        thisRun.getByLabel("artg4tkMain", "writeGdml", gdmlTextHandle);
-        std::cout << "gdmlTextHandle:  " << gdmlTextHandle.isValid() << std::endl;
-        if (gdmlTextHandle.isValid()) {
-            artg4::GdmlText txt = *gdmlTextHandle;
-            const std::string& stringy = txt.getData();
-            art::Provenance const& prov = *gdmlTextHandle.provenance();
-            cout << "\nProvenance information for product name: " << prov.branchName() << endl;
-            cout << "Creator module label: " << prov.moduleLabel() << endl;
-            std::cout << stringy << std::endl;
-        }
-    }
-*/
+
 }
 
 void artg4tk::CheckHits::beginJob() {
@@ -61,34 +45,34 @@ void artg4tk::CheckHits::beginJob() {
 } // end beginJob
 
 void artg4tk::CheckHits::analyze(const art::Event& event) {
-    typedef std::vector< art::Handle<myCaloArtHitDataCollection> > HandleVector;
+    typedef std::vector< art::Handle<CalorimeterHitCollection> > HandleVector;
     HandleVector allSims;
     event.getManyByType(allSims);
 
     cout << "CheckHits Event:  " << event.event() << "  Nr of CaloHit collections: " << allSims.size() << endl;
     for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
-        const myCaloArtHitDataCollection & sims(**i);
+        const CalorimeterHitCollection & sims(**i);
         cout << "CaloHit collection size:  " << sims.size() << endl;
         double sumE = 0.0;
         _hnHits->Fill(sims.size());
-        for (myCaloArtHitDataCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
-            const myCaloArtHitData& hit = *j;
-            sumE = sumE + hit.Edep;
+        for (CalorimeterHitCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
+            const CalorimeterHit& hit = *j;
+            sumE = sumE + hit.GetEdep();
         }
         _hEdep->Fill(sumE / CLHEP::GeV);
     }
-    typedef std::vector< art::Handle<myDRCaloArtHitDataCollection> > DRHandleVector;
+    typedef std::vector< art::Handle<DRCalorimeterHitCollection> > DRHandleVector;
     DRHandleVector allDRSims;
     event.getManyByType(allDRSims);
     cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
-        const myDRCaloArtHitDataCollection & DRsims(**i);
+        const DRCalorimeterHitCollection & DRsims(**i);
         cout << "DRCaloHit collection size:  " << DRsims.size() << endl;
         double sumDRE = 0.0;
         double sumNCeren = 0.0;
         _hnDRHits->Fill(DRsims.size());
-        for (myDRCaloArtHitDataCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
-            const myDRCaloArtHitData& hit = *j;
+        for (DRCalorimeterHitCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
+            const DRCalorimeterHit& hit = *j;
             sumDRE = sumDRE + hit.Edep;
             sumNCeren = sumNCeren + hit.Nceren;
         }

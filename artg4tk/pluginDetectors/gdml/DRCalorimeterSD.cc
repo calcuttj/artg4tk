@@ -22,7 +22,17 @@
 #include "Geant4/G4SDManager.hh"
 #include "Geant4/G4ios.hh"
 #include "Geant4/G4VVisManager.hh"
-#include "Geant4/G4Poisson.hh"
+#include "Geant4/G4SteppingManager.hh"
+#include "Geant4/G4Cerenkov.hh"
+#include "Geant4/G4Scintillation.hh"
+#include "Geant4/G4SteppingManager.hh"
+#include "Geant4/G4EventManager.hh"
+#include "Geant4/G4Event.hh"
+#include "Geant4/G4UnitsTable.hh"
+#include "Geant4/G4SystemOfUnits.hh"
+#include "Geant4/G4PhysicalConstants.hh"
+
+//#include "Geant4/G4Poisson.hh"
 #include<iomanip>
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
@@ -31,7 +41,6 @@ namespace artg4tk {
     : G4VSensitiveDetector(name) {
         G4String HCname = name + "_HC";
         collectionName.insert(HCname);
-        CerenGenerator = new(Cerenkov);
         G4cout << collectionName.size() << "   artg4tk::DRCalorimeterSD name:  " << name << " collection Name: " << HCname << G4endl;
         HCID = -1;
     }
@@ -51,13 +60,12 @@ namespace artg4tk {
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
     void DRCalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
-        calorimeterCollection = new DRCalorimeterHitsCollection(SensitiveDetectorName, collectionName[0]);
+       drcalorimeterCollection.clear();
+       
         if (HCID < 0) {
             G4cout << "artg4tk::DRCalorimeterSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
             HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-
         }
-        HCE->AddHitsCollection(HCID, calorimeterCollection);
         // 
         TotalE = 0.0;
         EbyParticle["Fragment"] = 0.0;
@@ -66,9 +74,6 @@ namespace artg4tk {
         EbyParticle["deuteron"] = 0.0;
         EbyParticle["triton"] = 0.0;
         EbyParticle["proton"] = 0.0;
-        //   EbyParticle["p_ev"] = 0.0;
-        //   EbyParticle["p_sp"] = 0.0;
-        //   EbyParticle["p_he"] = 0.0;
         EbyParticle["neutron"] = 0.0;
         EbyParticle["e+"] = 0.0;
         EbyParticle["e-"] = 0.0;
@@ -124,14 +129,44 @@ namespace artg4tk {
     G4bool DRCalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
       G4double edep = aStep->GetTotalEnergyDeposit() / CLHEP::MeV;
         if (edep == 0.) return false;
+        if (aStep->GetTrack()->GetDynamicParticle()->GetCharge() == 0) return false;
         TotalE = TotalE + edep;
         const G4double time = aStep->GetPreStepPoint()->GetGlobalTime() / CLHEP::ns;
         const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
-        G4String thematerial = touch->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
+        //G4String thematerial = touch->GetVolume()->GetLogicalVolume()->GetMaterial()->GetName();
         //const G4ThreeVector cellpos = touch->GetTranslation();
         G4int NCerenPhotons = 0;
+
+	//    G4int photons = 0;
+    G4SteppingManager* fpSteppingManager = G4EventManager::GetEventManager()
+            ->GetTrackingManager()->GetSteppingManager();
+    G4StepStatus stepStatus = fpSteppingManager->GetfStepStatus();
+    if (stepStatus != fAtRestDoItProc) {
+        G4ProcessVector* procPost = fpSteppingManager->GetfPostStepDoItVector();
+        size_t MAXofPostStepLoops = fpSteppingManager->GetMAXofPostStepLoops();
+        for (size_t i3 = 0; i3 < MAXofPostStepLoops; i3++) {
+
+            if ((*procPost)[i3]->GetProcessName() == "Cerenkov") {
+                G4Cerenkov* proc =(G4Cerenkov*) (*procPost)[i3];
+                NCerenPhotons+=proc->GetNumPhotons();
+            }
+
+	  /*
+            if ((*procPost)[i3]->GetProcessName() == "Scintillation") {
+                G4Scintillation* proc1 = (G4Scintillation*) (*procPost)[i3];
+                photons += proc1->GetNumPhotons();
+            }
+	  */
+        }
+    }
+
+
+
+
+
+
         G4Track* theTrack = aStep->GetTrack();
-        const G4double charge = theTrack->GetDefinition()->GetPDGCharge();
+        //const G4double charge = theTrack->GetDefinition()->GetPDGCharge();
         G4String particleType = theTrack->GetDefinition()->GetParticleName();
         G4String fragment = "Fragment";
         if (theTrack->GetParticleDefinition()->GetParticleType() == "nucleus" && theTrack->GetParticleDefinition()->GetParticleSubType() == "generic") {
@@ -142,52 +177,45 @@ namespace artg4tk {
         } else {
             EbyParticle[particleType] = EbyParticle[particleType] + edep;
         }
+	if (NCerenbyParticle.find(particleType) == NCerenbyParticle.end()) {
+	  NCerenbyParticle["other"] = NCerenbyParticle["other"] +NCerenPhotons;
+	} else {
+	  NCerenbyParticle[particleType] = NCerenbyParticle[particleType] + NCerenPhotons;
+	}
 
-        G4StepPoint* pPreStepPoint = aStep->GetPreStepPoint();
-        G4StepPoint* pPostStepPoint = aStep->GetPostStepPoint();
-        G4double beta = 0.5 * (pPreStepPoint ->GetBeta() + pPostStepPoint->GetBeta());
-        G4double MeanNumberOfPhotons = CerenGenerator->GetAverageNumberOfPhotons(charge, beta, thematerial);
-        if (MeanNumberOfPhotons > 0.0) {
-            G4double step_length = aStep->GetStepLength();
-            MeanNumberOfPhotons = MeanNumberOfPhotons * step_length;
-            NCerenPhotons = (G4int) G4Poisson(MeanNumberOfPhotons);
-            TotalNCeren=TotalNCeren+NCerenPhotons;
-            if (NCerenbyParticle.find(particleType) == NCerenbyParticle.end()) {
-                NCerenbyParticle["other"] = NCerenbyParticle["other"] +NCerenPhotons;
-            } else {
-                NCerenbyParticle[particleType] = NCerenbyParticle[particleType] + NCerenPhotons;
-            }
-        } else {
-            NCerenPhotons = 0;
-        }
+
         const G4ThreeVector cellpos = touch->GetTranslation();
-        for (G4int j = 0; j < calorimeterCollection->entries(); j++) {
-            DRCalorimeterHit* aPreviousHit = (*calorimeterCollection)[j];
-            if (cellpos == aPreviousHit->GetPos()) {
-                aPreviousHit->SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit->GetEdep());
-                aPreviousHit->SetNCeren(NCerenPhotons + aPreviousHit->GetNCeren());
-                if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-                    aPreviousHit->SetEdepEM(edep + aPreviousHit->GetEdepEM());
-                } else {
-                    aPreviousHit->SetEdepnonEM(edep + aPreviousHit->GetEdepnonEM());
-                }
-                return true;
-            }
+	int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
+        for (unsigned int j = 0; j < drcalorimeterCollection.size(); j++) {
+            DRCalorimeterHit aPreviousHit = drcalorimeterCollection[j];
+	    if (ID == aPreviousHit.GetID()) {
+	      aPreviousHit.SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit.GetEdep());
+	      if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
+                aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
+	      } else {
+                aPreviousHit.Setnonem_Edep(edep + aPreviousHit.GetEdepnonEM());
+	      }
+	      return true;
+	    }
+
         }
-        DRCalorimeterHit* newHit = new DRCalorimeterHit();
-        newHit->SetEdep(edep);
-        newHit->SetNCeren(NCerenPhotons);
-        newHit->SetPos(cellpos);
-        newHit->SetTime(time);
+        DRCalorimeterHit newHit;
+        newHit.SetEdep(edep);
+        newHit.SetNceren(NCerenPhotons);
+	newHit.SetXpos(cellpos.x());
+	newHit.SetYpos(cellpos.y());
+	newHit.SetZpos(cellpos.z());
+
+        newHit.SetTime(time);
         if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-            newHit->SetEdepEM(edep);
-            newHit->SetEdepnonEM(0.0);
+            newHit.Setem_Edep(edep);
+            newHit.Setnonem_Edep(0.0);
         } else {
-            newHit->SetEdepnonEM(edep);
-            newHit->SetEdepEM(0.0);
+            newHit.Setnonem_Edep(edep);
+            newHit.Setem_Edep(0.0);
         }
 
-        calorimeterCollection->insert(newHit);
+        drcalorimeterCollection.push_back(newHit);
         return true;
     }
 

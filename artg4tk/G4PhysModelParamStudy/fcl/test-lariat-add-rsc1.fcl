@@ -1,0 +1,107 @@
+process_name:processB
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-G4-Default-piplus-2GeV.root" ]
+}
+
+services: 
+{
+
+   message : 
+   {
+      debugModules : ["*"]
+      suppressInfo : []    
+      destinations : 
+      {
+         LogToConsole : 
+         {
+            type : "cout"
+            threshold : "DEBUG"
+            categories : 
+	    {
+               default : { limit : 50 }
+            }
+         }
+      }
+   }
+
+   RandomNumberGenerator: {}
+
+// GDML-based geometry 
+//
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world"
+	// geom file can be given by absolute path or via env.var
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/lariat.gdml"
+   }
+
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
+        PhysicsListName: "QGSP_FTFP_BERT"
+   }
+     
+   PhysModelConfig: 
+   {
+//        Verbosity: true
+   }      
+
+}
+
+outputs: 
+{
+   outB: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-G4-Default-BertRsc1-piplus-2GeV.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     G4BertiniRsc1:
+     {
+        module_type: ModelParamStudyProducer
+	//
+        RNDMSeed: 51234
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: false
+	   Bertini:
+	   {
+	      RadiusScaleByRatio: 0.3546 // this brings RScale down to 1.
+	   }
+	}
+     }
+
+  }
+
+  analyzers: 
+  {
+     // None
+  }
+    
+  path1:   [ G4BertiniRsc1 ] 
+  stream1: [ outB ]
+
+  trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ stream1 ]
+
+
+}

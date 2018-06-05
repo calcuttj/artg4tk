@@ -1,0 +1,12 @@
+<!--  -->
+<!--  $Id: Exp $     -->
+<!--  -->
+
+<lcgdict>
+ <class name="BeamThinTargetConfig" classVersion="10"/>
+ <class name="art::Wrapper<BeamThinTargetConfig>"/>
+ <class name="InfoChi2" classVersion="10"/>
+ <class name="art::Wrapper<InfoChi2>"/>
+ <class name="RecordChi2" classVersion="10"/>
+ <class name="art::Wrapper<RecordChi2>"/>
+</lcgdict>

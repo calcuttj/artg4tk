@@ -1,0 +1,128 @@
+process_name:processA
+
+source: 
+{
+  module_type: EmptyEvent
+  maxEvents:   25000
+}
+
+services: 
+{
+
+   message : 
+   {
+      debugModules : ["*"]
+      suppressInfo : []    
+      destinations : 
+      {
+         LogToConsole : 
+         {
+            type : "cout"
+            threshold : "DEBUG"
+            categories : 
+	    {
+               default : { limit : 50 }
+            }
+         }
+      }
+   }
+
+   TFileService :
+   {
+      fileName: "proton3.824GeV-C-G4Default_IAEA.root"
+   }
+
+   RandomNumberGenerator: {}
+
+// GDML-based geometry 
+//
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world"
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/c_target.gdml"
+   }
+
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
+        PhysicsListName: "QGSP_FTFP_BERT"
+   }
+     
+   PhysModelConfig: 
+   {
+//        Verbosity: true
+   }      
+
+}
+
+outputs: 
+{
+   outA: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-proton3.284GeV-C-G4Default.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	momentum: [ 0., 0., 3.824 ] // in GeV (this corresponds to beam ekin=3GeV)
+     }
+
+     G4Default:
+     {
+        module_type: ModelParamStudyProducer
+	//
+	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
+	//       thus the ArtG4Vtx product is NOT always available;
+	//       this key below tell Art NOT to throw if the product is not put
+	//       in the art::Event 
+	//
+	errorOnFailureToPut: false
+	//
+        RNDMSeed: 12345
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: true
+	}
+     }
+
+  }
+  
+  analyzers:
+  {
+  
+     G4DefaultIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4Default"
+     }
+  
+  }
+  
+  path1:   [ PrimaryGenerator, G4Default ] 
+  path2:   [ G4DefaultIAEA  ]
+  stream1: [ outA ]
+
+  trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ path2, stream1 ]
+//  end_paths:     [ stream1 ]
+
+
+}

@@ -1,0 +1,101 @@
+
+process_name:processA
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1 // default - will take all events in the input file(s)
+  fileNames: [ "Evt-proton5GeV-Pb-G4Default-BertiniRScaleByRatio0.75.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "proton5GeV-Pb-QGSP_FTFP_BERT-Bertini-Variants_HARP_ITEP.root"
+  }
+
+}
+
+physics: {
+
+  producers: 
+  {
+     // None
+  }
+
+  analyzers: 
+  {
+     
+     G4DefaultHARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4Default"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+	}
+     }
+
+     G4DefaultITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4Default"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 2515, 2516, 2517, 2518, 
+	                2573 ]
+	}
+     }
+
+     G4BertiniRsc1HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4BertiniRsc1"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+	}
+     }
+
+     G4BertiniRsc1ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4BertiniRsc1"
+	IncludeExpData: 
+	{
+// new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 2515, 2516, 2517, 2518, 
+	                2573 ]
+	}
+     }
+
+  }
+       
+  end_path:   [ G4DefaultHARP, G4DefaultITEP, G4BertiniRsc1HARP, G4BertiniRsc1ITEP ]
+
+}

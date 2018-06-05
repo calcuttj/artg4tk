@@ -1,0 +1,152 @@
+
+#include "ftf-params-process-level-include.fcl"
+
+process_name:processA
+
+source: 
+{
+  module_type: EmptyEvent
+  maxEvents:   100000
+}
+
+services: 
+{
+
+  message : 
+  {
+     # debugModules : ["*"]
+     # suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           ArtReport: { 
+	      reportEvery: 100
+	      limit: 50
+	   }
+	   default : { limit : 0 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "HARP-ITEP-FTFP-ProcL-Default.root"
+  }
+
+  RandomNumberGenerator: {}
+         
+  PhysModelConfig: 
+  {
+        Verbosity: false
+  }
+     
+  ProcLevelSimSetup:
+  {
+	HadronicModelName: "FTFP"
+	TargetNucleus: "Pb"
+	RNDMSeed: 12345
+  }
+
+} #end of services
+
+outputs: 
+{
+   out1: 
+   {
+      module_type: RootOutput   
+      // fileName: "/pnfs/geant4/persistent/yarba_j/artg4tk_custom10.3.ref05_july6_2017/PBS/EvtFTFP-ProcL-Default.root"
+      fileName: "EvtFTFP-ProcL-Default.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	pdgcode:  2212
+	momentum: [ 0., 0., 5. ] // in GeV 
+     }
+
+     G4FTFPDefault : @local::G4FTFPDefault
+     G4FTFPVar1    : @local::G4FTFPVar1
+    
+  }
+  
+  analyzers:
+  {
+  
+     FTFPDefaultHARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4FTFPDefault"
+	IncludeExpData: 
+	{
+# new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+	}
+     }
+
+     FTFPVar1HARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "G4FTFPVar1"
+	IncludeExpData: 
+	{
+# new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+	}
+     }
+     
+     FTFPDefaultITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4FTFPDefault"
+	IncludeExpData: 
+	{
+# new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 2515, 2516, 2517, 2518, 
+	                2573 ]
+	}
+     }
+
+     FTFPVar1ITEP:
+     {
+        module_type: AnalyzerITEP
+	ProductLabel: "G4FTFPVar1"
+	IncludeExpData: 
+	{
+# new record ids for 5GeVc/ proton on Pb
+	   DBRecords: [ 2515, 2516, 2517, 2518, 
+	                2573 ]
+	}
+     }
+
+  }
+  
+  path1:   [ PrimaryGenerator, 
+	     G4FTFPDefault, G4FTFPVar1 ]
+  path2:   [ FTFPDefaultHARP, FTFPVar1HARP, FTFPDefaultITEP, FTFPVar1ITEP ]
+  stream1: [ out1 ]
+
+  trigger_paths: [ path1 ]
+  #
+  # NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  #       Otherwise, they will NOT be included in the exec.
+  #       If you don't have an end_path, things will magically work though... 
+  #        
+  end_paths:     [ path2, stream1 ]
+
+}

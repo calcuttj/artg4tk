@@ -1,0 +1,114 @@
+process_name:processC
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-piplus2GeV-LAr-G4Default-BertRsc1.root" ]
+}
+
+services: 
+{
+
+   message : 
+   {
+      debugModules : ["*"]
+      suppressInfo : []    
+      destinations : 
+      {
+         LogToConsole : 
+         {
+            type : "cout"
+            threshold : "DEBUG"
+            categories : 
+	    {
+               default : { limit : 50 }
+            }
+         }
+      }
+   }
+
+   RandomNumberGenerator: {}
+
+// GDML-based geometry 
+//
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world"
+	// geom file can be given by absolute path or via env.var
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/lariat.gdml"
+   }
+
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
+        PhysicsListName: "QGSP_FTFP_BERT"
+   }
+     
+   PhysModelConfig: 
+   {
+//        Verbosity: true
+   }      
+
+}
+
+outputs: 
+{
+   outC: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-piplus2GeV-LAr-G4Default-BertRsc1-BertXsc01.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     G4BertiniXsc01:
+     {
+        module_type: ModelParamStudyProducer
+	//
+	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
+	//       thus the ArtG4Vtx product is NOT always available;
+	//       this key below tell Art NOT to throw if the product is not put
+	//       in the art::Event 
+	//
+	errorOnFailureToPut: false
+	//
+        RNDMSeed: 45123
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: false
+	   Bertini:
+	   {
+	      XSecScaleByRatio: 0.1 
+	   }
+	}
+     }
+
+  }
+
+  analyzers: 
+  {
+     // None
+  }
+    
+  path1:   [ G4BertiniXsc01 ] 
+  stream1: [ outC ]
+
+  trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ stream1 ]
+
+
+}

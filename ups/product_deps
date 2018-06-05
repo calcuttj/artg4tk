@@ -2,8 +2,8 @@
 
 # The *parent* line must the first non-commented line and defines this product and version
 # The version should be of the form vxx_yy_zz (e.g. v01_02_03)
-parent artg4tk v0_01_00
-defaultqual e7
+parent artg4tk v07_00_00
+defaultqual e15
 
 # These optional lines define the installed directories where headers,
 # libraries, and executables will be found.
@@ -32,16 +32,19 @@ fcldir  product_dir     fcl
 # Add the dependent product and version
 
 product          version
-geant4          v4_10_1_p02
-art             v1_15_01
-cetbuildtools   v4_12_05       -       only_for_build
+art             v2_11_02
+geant4          v4_10_3_p01d
+larcoreobj      v1_24_00
+cetbuildtools   v7_03_02       -       only_for_build
 end_product_list
 
 # We now define allowed qualifiers and the corresponding qualifiers for the depdencies.
 # Make a table by adding columns before "notes".
-qualifier        art        geant4        notes
-e7:debug         e7:debug   e7:debug
-e7:prof          e7:prof    e7:prof
+qualifier        art               geant4      larcoreobj  notes
+e15:debug        e15:debug         e15:debug   e15:debug
+e15:prof         e15:prof          e15:prof    e15:prof
+c2:debug         c2:debug          c2:debug    c2:debug
+c2:prof          c2:prof           c2:prof     c2:prof
 end_qualifier_list
 
 # Preserve tabs and formatting in emacs and vi / vim:

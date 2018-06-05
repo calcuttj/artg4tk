@@ -1,0 +1,120 @@
+process_name:processA
+
+source: 
+{
+  module_type: EmptyEvent
+  maxEvents:   100000
+}
+
+services: 
+{
+
+   message : 
+   {
+      debugModules : ["*"]
+      suppressInfo : []    
+      destinations : 
+      {
+         LogToConsole : 
+         {
+            type : "cout"
+            threshold : "DEBUG"
+            categories : 
+	    {
+               default : { limit : 50 }
+            }
+         }
+      }
+   }
+
+   RandomNumberGenerator: {}
+
+// GDML-based geometry 
+//
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world"
+	// geom file can be given by absolute path or via env.var
+	gdmlFileName_: "$MRB_SOURCE/artg4tk/gdml/lariat.gdml"
+   }
+
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
+        PhysicsListName: "QGSP_FTFP_BERT"
+   }
+     
+   PhysModelConfig: 
+   {
+//        Verbosity: true
+   }      
+
+}
+
+outputs: 
+{
+   outA: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-piplus2GeV-LAr-G4Default.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	pdgcode: 211
+	mass: 0.1395679
+	momentum: [ 0., 0., 2.0 ] // in GeV
+	// momentum_sigma: [ 0., 0., 0.3 ]
+	vertex: [ 23.75, 0., -40.54646 ] // in cm
+     }
+
+     G4Default:
+     {
+        module_type: ModelParamStudyProducer
+	//
+	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
+	//       thus the ArtG4Vtx product is NOT always available;
+	//       this key below tell Art NOT to throw if the product is not put
+	//       in the art::Event 
+	//
+	errorOnFailureToPut: false
+	//
+        RNDMSeed: 12345
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: true
+	}
+     }
+
+  }
+
+  analyzers: 
+  {
+     // None
+  }
+    
+  path1:   [ PrimaryGenerator, G4Default ] 
+  stream1: [ outA ]
+
+  trigger_paths: [ path1 ]
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ stream1 ]
+
+
+}

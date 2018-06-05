@@ -25,14 +25,14 @@ class G4HCofThisEvent;
 namespace artg4tk {
 class CalorimeterSD : public G4VSensitiveDetector {
 public:
-    CalorimeterSD(G4String);
-    ~CalorimeterSD();
-
-    void Initialize(G4HCofThisEvent*);
-    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-
+  CalorimeterSD(G4String);
+  ~CalorimeterSD();
+  
+  void Initialize(G4HCofThisEvent*);
+  G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+  const CalorimeterHitCollection& GetHits() const { return calorimeterCollection; }
 private:
-    CalorimeterHitsCollection* calorimeterCollection;
+    CalorimeterHitCollection calorimeterCollection;
     G4int HCID;
 
 };
