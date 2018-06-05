@@ -59,6 +59,13 @@ IF (NOT G4INSTALL)
 MESSAGE ( STATUS "Looking for UPS product geant4" )
 find_ups_geant4(v4_10_3_p03b)
 #
+find_ups_product(xerces_c v3_2_0)
+find_ups_product(art v2_10_03)
+find_ups_product(canvas v3_02_02)
+find_ups_product(fhiclcpp v4_06_05)
+find_ups_product(messagefacility v2_01_06)
+find_ups_product(larcoreobj)
+#
 # Enable visualization using OpenGL in x windows
 #
 add_definitions(-DG4_STORE_TRAJECTORY -DG4VERBOSE -DG4UI_USE -DG4VIS_USE -DG4UI_USE_TCSH -DG4INTY_USE_XT -DG4VIS_USE_OPENGLX -DG4VIS_USE_OPENGL)
@@ -149,15 +156,6 @@ MESSAGE ( STATUS "OpenGL option disabled" )
 ENDIF()
 
 ENDIF()
-#
-find_ups_product(xerces_c v3_2_0)
-find_ups_product(art v2_10_03)
-find_ups_product(canvas v3_02_02)
-find_ups_product(fhiclcpp v4_06_05)
-find_ups_product(messagefacility v2_01_06)
-find_ups_product(larcoreobj v1_23_00)
-find_ups_product(larcore v06_19_02)
-find_ups_product(nutools v2_21_03)
 # We need xerces_c for a geant library
 #find_library( XERCESCLIB  NAMES xerces-c PATHS $ENV{XERCESCROOT}/lib NO_DEFAULT_PATH )
 
