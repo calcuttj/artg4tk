@@ -57,13 +57,13 @@ set( G4INSTALL $ENV{G4INSTALL} )
 IF (NOT G4INSTALL) 
 # FIXME: this will need to be updated !!!
 MESSAGE ( STATUS "Looking for UPS product geant4" )
-find_ups_geant4(v4_10_3_p03b)
+find_ups_geant4()
 #
-find_ups_product(xerces_c v3_2_0)
-find_ups_product(art v2_10_03)
-find_ups_product(canvas v3_02_02)
-find_ups_product(fhiclcpp v4_06_05)
-find_ups_product(messagefacility v2_01_06)
+find_ups_product(xerces_c)
+find_ups_product(art)
+find_ups_product(canvas)
+find_ups_product(fhiclcpp)
+find_ups_product(messagefacility)
 find_ups_product(larcoreobj)
 #
 # Enable visualization using OpenGL in x windows
