@@ -123,7 +123,7 @@ void artg4tk::EventGenerator::produce( art::Event& event ){
   gens->reserve(_nparticles);
 
   // Product Id of the data product to be created; needed for persistent pointers.
-  art::ProductID gensID(getProductID<GenParticleCollection>());
+  // unused art::ProductID gensID(getProductID<GenParticleCollection>());
 
   // All particles will be produced at the origin. <--- NOT ANYMORE...
 //  static CLHEP::Hep3Vector origin(0.,0.,0);

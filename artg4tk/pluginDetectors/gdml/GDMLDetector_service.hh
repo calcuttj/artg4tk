@@ -66,8 +66,8 @@ namespace artg4tk {
     private:
 
         // Private overriden methods
-        virtual std::vector<G4LogicalVolume*> doBuildLVs();
-        virtual std::vector<G4VPhysicalVolume*> doPlaceToPVs(std::vector<G4LogicalVolume*>);
+        virtual std::vector<G4LogicalVolume*> doBuildLVs() override;
+        virtual std::vector<G4VPhysicalVolume*> doPlaceToPVs(std::vector<G4LogicalVolume*>) override;
         // We need to add something to the art event, so we need these two methods:
 
         // Tell Art what we'll produce
