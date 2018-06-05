@@ -3,7 +3,7 @@
 #include "artg4tk/util/StringIDs.hh"
 
 #ifndef __GCCXML__
-#include "cetlib/exception.h"
+#include "cetlib_except/exception.h"
 #endif
 
 // C'tor
