@@ -52,19 +52,19 @@ cet_report_compiler_flags()
 
 find_ups_product(cetbuildtools v7_00_02)
 #
-set( G4INSTALL $ENV{G4INSTALL} )
-#
-IF (NOT G4INSTALL) 
-# FIXME: this will need to be updated !!!
-MESSAGE ( STATUS "Looking for UPS product geant4" )
-find_ups_geant4()
-#
 find_ups_product(xerces_c)
 find_ups_product(art)
 find_ups_product(canvas)
 find_ups_product(fhiclcpp)
 find_ups_product(messagefacility)
 find_ups_product(larcoreobj)
+#
+set( G4INSTALL $ENV{G4INSTALL} )
+#
+IF (NOT G4INSTALL) 
+# FIXME: this will need to be updated !!!
+MESSAGE ( STATUS "Looking for UPS product geant4" )
+find_ups_geant4()
 #
 # Enable visualization using OpenGL in x windows
 #
