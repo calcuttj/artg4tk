@@ -1,8 +1,4 @@
 #
-# Do NOT use WERROR, or all warnings will be treated as errors !!!
-#
-cet_set_compiler_flags( DIAGS CAUTIOUS EXTRA_FLAGS -pedantic )
-#
 add_subdirectory( G4Components )
 add_subdirectory( G4Services )
 #
