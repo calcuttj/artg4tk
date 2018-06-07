@@ -42,8 +42,6 @@
 #include "artg4tk/pluginDetectors/gdml/PhotonHit.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerSD.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
-#include "artg4tk/pluginDetectors/gdml/SimEnergyDepositSD.hh"
-#include "artg4tk/pluginDetectors/gdml/SimEnergyDepositHit.hh"
 //
 #include "artg4tk/pluginDetectors/gdml/InteractionSD.hh"
 #include "artg4tk/pluginDetectors/gdml/myInteractionArtHitData.hh"
@@ -193,14 +191,6 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
                     std::cout << "Attaching sensitive Detector: " << (*vit).value
                             << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
                     DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
-		} else if ((*vit).value == "SimEnergyDeposit") {
-                    G4String name = ((*iter).first)->GetName() + "_SimEnergyDeposit";
-		    SimEnergyDepositSD * aSimEnergyDepositSD = new SimEnergyDepositSD(name);
-                    SDman->AddNewDetector(aSimEnergyDepositSD);
-                    ((*iter).first)->SetSensitiveDetector(aSimEnergyDepositSD);
-                    std::cout << "Attaching sensitive Detector: " << (*vit).value
-                            << " to Volume:  " << ((*iter).first)->GetName() << std::endl;
-                    DetectorList.push_back(std::make_pair((*iter).first->GetName(), (*vit).value));
                 } else if ((*vit).value == "Interaction") {
                     G4String name = ((*iter).first)->GetName() + "_Interaction";
                     InteractionSD* aInteractionSD = new InteractionSD(name);
@@ -275,9 +265,6 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer)
         } else if ((*cii).second == "Tracker") {
             std::string identifier = myName() + (*cii).first;
             producer -> produces<TrackerHitCollection>(identifier);
-	} else if ((*cii).second == "SimEnergyDeposit") {
-            std::string identifier = myName() + (*cii).first;
-            producer -> produces<SimEnergyDepositHitCollection>(identifier);
         } else if ((*cii).second == "Interaction") {
             std::string identifier = myName() + (*cii).first;
             producer -> produces<myInteractionArtHitDataCollection>(identifier);
@@ -388,16 +375,6 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
 	}
 
 
-	else if ( (*cii).second == "SimEnergyDeposit") {
-	  G4SDManager* sdman = G4SDManager::GetSDMpointer();
-	  SimEnergyDepositSD* sedsd = dynamic_cast<SimEnergyDepositSD*>(sdman->FindSensitiveDetector(sdname));
-	  art::ServiceHandle<artg4tk::DetectorHolderService> detectorHolder;
-	  art::Event & e = detectorHolder -> getCurrArtEvent();
-	  const SimEnergyDepositHitCollection& sedhits = sedsd->GetHits();
-	  std::unique_ptr<SimEnergyDepositHitCollection> hits(new SimEnergyDepositHitCollection(sedhits)); 
-	  std::string identifier=myName()+(*cii).first;
-	  e.put(std::move(hits), identifier);
-	} 
 	else if ( (*cii).second == "PhotonDetector") {
 	  G4SDManager* sdman = G4SDManager::GetSDMpointer();
 	  PhotonSD* phsd = dynamic_cast<PhotonSD*>(sdman->FindSensitiveDetector(sdname));
