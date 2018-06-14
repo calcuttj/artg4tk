@@ -42,7 +42,6 @@ find_ups_product(art)
 find_ups_product(canvas)
 find_ups_product(fhiclcpp)
 find_ups_product(messagefacility)
-find_ups_product(larcoreobj)
 find_ups_geant4()
 
 # macros for dictionary and simple_plugin
@@ -53,7 +52,6 @@ include(BuildPlugins)
 # Build these directories
 add_subdirectory( artg4tk )
 add_subdirectory( fcl )
-add_subdirectory( gdml )
 
 
 # ups - table and config files

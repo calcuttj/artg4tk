@@ -17,10 +17,6 @@
     <class name="artg4tk::TrackerHit"/>
     <class name="std::vector< artg4tk::TrackerHit >"/>
     <class name="art::Wrapper< std::vector< artg4tk::TrackerHit> >"/>
-    <!-- For SimEnergyDepositHit -->
-    <class name="artg4tk::SimEnergyDepositHit"/>
-    <class name="std::vector< artg4tk::SimEnergyDepositHit >"/>
-    <class name="art::Wrapper< std::vector< artg4tk::SimEnergyDepositHit> >"/>
     <!-- For InteractionArtHit -->
     <class name="artg4tk::myInteractionArtHitData"/>
     <class name="std::vector< artg4tk::myInteractionArtHitData >"/>
