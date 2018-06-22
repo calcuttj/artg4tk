@@ -37,6 +37,8 @@
 //#include "TFile.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TNtuple.h"
+#include "TDirectory.h"
 //#include "TDirectory.h"
 // Other includes.
 #include "CLHEP/Units/SystemOfUnits.h"
@@ -57,12 +59,7 @@ public:
 
 private:
 
-    bool _DumpGDML; // enable/disable dumping of GDML geometry information
-    TH1F* _hnHits;  // number of PhotonHits
-    TH1F* _hEdep;   // energy of optical photons
-    TH2F* _hxydet0; // position of photons det 0
-    TH2F* _hxydet1; // position of photons det 1
-    
+    TNtuple* _ntuple;
 };
 
 #endif	/* CHECKHITS_MODULE_HH */

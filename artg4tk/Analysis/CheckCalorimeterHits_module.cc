@@ -37,9 +37,10 @@ void artg4tk::CheckCalorimeterHits::beginJob() {
     art::ServiceHandle<art::TFileService> tfs;
     _hnHits = tfs->make<TH1F>("hnHits", "Number of CaloArtHits", 300, 0, 0);
     _hEdep = tfs->make<TH1F>("hEdep", "total Energy deposition in CaloArtHits", 2000, 0, 0);
-    _haEdep = tfs->make<TH1F>("haEdep", "z of  Energy deposition in CaloArtHits", 200,-500.,500.);
-    _ntuple = tfs->make<TNtuple>("ntuple","Demo ntuple",
-			  "Event:Edep:em_Edep:nonem_Edep:xpos:ypos:zpos:time");
+    _haEdep = tfs->make<TH1F>("haEdep", "z of  Energy deposition in CaloArtHits", 200, -500., 500.);
+    _ntuple = tfs->make<TNtuple>("ntuple", "Demo ntuple",
+            "Event:ID:Edep:em_Edep:nonem_Edep:xpos:ypos:zpos:time");
+
 } // end beginJob
 
 void artg4tk::CheckCalorimeterHits::analyze(const art::Event& event) {
@@ -55,15 +56,16 @@ void artg4tk::CheckCalorimeterHits::analyze(const art::Event& event) {
         for (CalorimeterHitCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
             const CalorimeterHit& hit = *j;
             sumE = sumE + hit.GetEdep();
-	    _haEdep->Fill( hit.GetZpos(),hit.GetEdep());
-	    _ntuple->Fill(event.event(),
-			  hit.GetEdep(),
-			  hit.GetEdepEM(),
-			  hit.GetEdepnonEM(),
-			  hit.GetXpos(),
-			  hit.GetYpos(),
-			  hit.GetZpos(),
-			  hit.GetTime());
+            _haEdep->Fill(hit.GetZpos(), hit.GetEdep());
+            _ntuple->Fill(event.event(),
+                    hit.GetID(),
+                    hit.GetEdep(),
+                    hit.GetEdepEM(),
+                    hit.GetEdepnonEM(),
+                    hit.GetXpos(),
+                    hit.GetYpos(),
+                    hit.GetZpos(),
+                    hit.GetTime());
         }
         _hEdep->Fill(sumE / CLHEP::GeV);
     }
