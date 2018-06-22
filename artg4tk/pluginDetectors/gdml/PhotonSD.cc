@@ -36,8 +36,8 @@ artg4tk::PhotonSD::PhotonSD(G4String name)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void artg4tk::PhotonSD::Initialize(G4HCofThisEvent* HCE) {
-  hitCollection.clear();
-   //hitCollection = new PhotonHitsCollection(SensitiveDetectorName, collectionName[0]);
+    hitCollection.clear();
+    //hitCollection = new PhotonHitsCollection(SensitiveDetectorName, collectionName[0]);
     if (HCID < 0) {
         G4cout << "artg4tk::PhotonSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
@@ -54,19 +54,19 @@ artg4tk::PhotonSD::~PhotonSD() {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool artg4tk::PhotonSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
-
+    int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
     G4Track* theTrack = aStep->GetTrack();
-                 
+
     // we only deal with optical Photons:
     if (theTrack->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()) {
         return false;
     }
     G4double theEdep = theTrack->GetTotalEnergy();
     const G4VProcess * thisProcess = theTrack->GetCreatorProcess();
-    
+
     G4String processname;
-    if(thisProcess !=NULL)
-         processname = thisProcess->GetProcessName();
+    if (thisProcess != NULL)
+        processname = thisProcess->GetProcessName();
     else
         processname = "No Process";
     G4int theCreationProcessid;
@@ -77,13 +77,14 @@ G4bool artg4tk::PhotonSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     } else {
         theCreationProcessid = -1;
     }
-    PhotonHit newHit =  PhotonHit(theCreationProcessid,
-				  theEdep,
-				  aStep->GetPostStepPoint()->GetPosition().x(),
-				  aStep->GetPostStepPoint()->GetPosition().y(),
-				  aStep->GetPostStepPoint()->GetPosition().z(),
-				  theTrack->GetGlobalTime()
-				  );
+    PhotonHit newHit = PhotonHit(ID,
+            theCreationProcessid,
+            theEdep,
+            aStep->GetPostStepPoint()->GetPosition().x(),
+            aStep->GetPostStepPoint()->GetPosition().y(),
+            aStep->GetPostStepPoint()->GetPosition().z(),
+            theTrack->GetGlobalTime()
+            );
     hitCollection.push_back(newHit);
     theTrack->SetTrackStatus(fStopAndKill);
     return true;

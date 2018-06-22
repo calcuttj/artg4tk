@@ -24,7 +24,7 @@ namespace artg4tk {
 
     class PhotonHit {
     private:
-    public: // change later
+        int ID;          // copy number of Photodetector
         int processID;   // distinguish between Cerenkov and Szintillation photons.  
         double edep;
         double xpos;
@@ -33,65 +33,75 @@ namespace artg4tk {
         double time;
 
     public:
-
         PhotonHit(){};
         // Hide the following from Root
 #ifndef __GCCXML__
-        PhotonHit(int id, double e, double x, double y, double z, double t) :
-        processID(id),
+        PhotonHit(int id,int pid, double e, double x, double y, double z, double t) :
+        ID(id),
+        processID(pid),
         edep(e),
         xpos(x),
         ypos(y),
         zpos(z),
         time(t) {
-        };
-      //      ~PhotonHit();
-      //  PhotonHit(const PhotonHit&);
-      //  const PhotonHit& operator=(const PhotonHit&);
-      //  int operator==(const PhotonHit&) const;
+        }
 
-    public:
+        void SetTime(double time) {
+            this->time = time;
+        }
 
-                /*
-                void SetProcessID(int track) {
-                    processID = track;
-                };
-
-                void SetEdep(double de) {
-                    edep = de;
-                };
-
-                void SetPos(G4ThreeVector xyz) {
-                    pos = xyz;
-                };
-
-                void SetTime(double de) {
-                    time = de;
-                };
-        int GetProcessID() {
-            return processID;
-        };
-
-        double GetEdep() {
-            return edep;
-        };
-
-        double GetXPos() {
-            return xpos;
-        };
-
-        double GetYPos() {
-            return ypos;
-        };
-
-        double GetZPos() {
-            return zpos;
-        };
-
-        double GetTime() {
+        double GetTime() const {
             return time;
+        }
+
+        void SetZpos(double zpos) {
+            this->zpos = zpos;
+        }
+
+        double GetZpos() const {
+            return zpos;
+        }
+
+        void SetYpos(double ypos) {
+            this->ypos = ypos;
+        }
+
+        double GetYpos() const {
+            return ypos;
+        }
+
+        void SetXpos(double xpos) {
+            this->xpos = xpos;
+        }
+
+        double GetXpos() const {
+            return xpos;
+        }
+
+        void SetEdep(double edep) {
+            this->edep = edep;
+        }
+
+        double GetEdep() const {
+            return edep;
+        }
+
+        void SetProcessID(int processID) {
+            this->processID = processID;
+        }
+
+        int GetProcessID() const {
+            return processID;
+        }
+
+        void SetID(int ID) {
+            this->ID = ID;
+        }
+
+        int GetID() const {
+            return ID;
         };
-*/
+
 #endif
     };
 
