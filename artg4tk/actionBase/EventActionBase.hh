@@ -53,6 +53,11 @@ namespace artg4tk {
     // Destructor
     virtual ~EventActionBase();
 
+    // Tell Art what this detector will put into the event. You do not need to
+    // call this yourself.
+    void callArtProduces(art::EDProducer * producer) {
+      doCallArtProduces(producer);
+    }
 
     // h3. The interesting methods. 
     // All of these are defined to do nothing by default. Users can override 
@@ -63,6 +68,9 @@ namespace artg4tk {
 
     // Called at the end of each event
     virtual void endOfEventAction(const G4Event *) {}
+
+    // Tell Art what you will put into the event.
+    virtual void doCallArtProduces(art::EDProducer *) {}
 
   };
 }
