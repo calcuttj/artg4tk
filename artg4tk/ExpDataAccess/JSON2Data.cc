@@ -256,7 +256,7 @@ void JSON2Data::ParseMetaData( const std::string& jstr )
    assert( !fBeams.empty() ); 
    assert( !fObservables.empty() );
    assert( !fReferences.empty() );
-   assert( !fDaraTypes.empty() );
+   assert( !fDataTypes.empty() );
    
    ClearMetaData();
    
