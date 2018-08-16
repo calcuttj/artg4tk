@@ -35,8 +35,6 @@ public:
 
 private:
     PhotonHitCollection hitCollection;
-    G4int HCID;
-
 };
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

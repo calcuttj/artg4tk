@@ -30,10 +30,10 @@
  artg4tk::TrackerSD::TrackerSD(G4String name)
 : G4VSensitiveDetector(name) {
    trackerCollection.clear();
-    G4String HCname =  name + "_HC";
-    collectionName.insert(HCname);
-        G4cout << collectionName.size() << "   TrackerSD name:  " << name << " collection Name: " << HCname << G4endl;
-    HCID = -1;
+   //    G4String HCname =  name + "_HC";
+   // collectionName.insert(HCname);
+   //      G4cout << collectionName.size() << "   TrackerSD name:  " << name << " collection Name: " << HCname << G4endl;
+   // HCID = -1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -46,10 +46,11 @@ artg4tk::TrackerSD::~TrackerSD() {
 
 void  artg4tk::TrackerSD::Initialize(G4HCofThisEvent* HCE) {
    trackerCollection.clear();
-    if (HCID < 0) {
+   /*if (HCID < 0) {
         G4cout << "artg4tk::TrackerSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     }
+   */
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

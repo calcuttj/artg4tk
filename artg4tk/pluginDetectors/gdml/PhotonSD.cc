@@ -27,22 +27,12 @@
 
 artg4tk::PhotonSD::PhotonSD(G4String name)
 : G4VSensitiveDetector(name) {
-    G4String HCname = name + "_HC";
-    collectionName.insert(HCname);
-    G4cout << collectionName.size() << "   PhotonSD name:  " << name << " collection Name: " << HCname << G4endl;
-    HCID = -1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void artg4tk::PhotonSD::Initialize(G4HCofThisEvent* HCE) {
     hitCollection.clear();
-    //hitCollection = new PhotonHitsCollection(SensitiveDetectorName, collectionName[0]);
-    if (HCID < 0) {
-        G4cout << "artg4tk::PhotonSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
-        HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-    }
-    //    HCE->AddHitsCollection(HCID, photonCollection);
 }
 
 

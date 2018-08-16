@@ -79,12 +79,12 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
         _hDREdep->Fill(sumDRE / CLHEP::GeV);
         _hNCeren->Fill(sumNCeren);
     }
-    typedef std::vector< art::Handle<myParticleEContribArtData> > EdepHandleVector;
+    typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
     EdepHandleVector allEdeps;
     event.getManyByType(allEdeps);
 
     for (EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
-        const myParticleEContribArtData & Edeps(**i);
+        const ByParticle & Edeps(**i);
         cout << "Edep collection size:  " << Edeps.size() << endl;
         for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
             std::cout << "Particle: " << it->first << "   " << it->second << " % " << std::endl;

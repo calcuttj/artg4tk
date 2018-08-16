@@ -22,7 +22,8 @@
     <class name="std::vector< artg4tk::myInteractionArtHitData >"/>
     <class name="art::Wrapper< std::vector< artg4tk::myInteractionArtHitData> >"/>
     <!-- For Energy/NCeren contribution by particle -->
-    <class name="art::Wrapper< artg4tk::myParticleEContribArtData >"/> 
+    <class name="artg4tk::ByParticle"/>
+     <class name="art::Wrapper< artg4tk::ByParticle >"/> 
  <!--
     <class name="art::Wrapper< artg4tk::myParticleNCerenContribArtData >"/> 
     -->

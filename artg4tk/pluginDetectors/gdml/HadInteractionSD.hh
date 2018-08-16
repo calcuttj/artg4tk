@@ -46,8 +46,6 @@ public:
 private:
     ArtG4tkVtx     fFirstInter;
     bool           fStopAfter1stInt;
-//    G4int HCID;
-
 };
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

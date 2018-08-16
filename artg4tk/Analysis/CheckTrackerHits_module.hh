@@ -31,7 +31,7 @@
 // artg4tk includes:
 //#include "artg4tk/pluginDetectors/gdml/myCaloArtHitData.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
-#include "artg4tk/pluginDetectors/gdml/myParticleEContribArtData.hh"
+#include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
 // Root includes.
 #include "TFile.h"

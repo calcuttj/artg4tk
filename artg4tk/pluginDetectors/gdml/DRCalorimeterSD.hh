@@ -24,6 +24,7 @@
 #include "Geant4/G4Material.hh" 
 #include "Geant4/G4MaterialPropertyVector.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
+#include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
 class G4Step;
 class G4HCofThisEvent;
 //class Cerenkov;
@@ -31,27 +32,38 @@ class G4HCofThisEvent;
 namespace artg4tk {
 
     class DRCalorimeterSD : public G4VSensitiveDetector {
+    private:
+        DRCalorimeterHitCollection drcalorimeterCollection;
+        ByParticle EbyParticle; // Energy deposited by particle type
+        double TotalE;
+        ByParticle NCerenbyParticle;
+        double TotalNCeren;
     public:
         DRCalorimeterSD(G4String);
         ~DRCalorimeterSD();
-
         void Initialize(G4HCofThisEvent*);
         void EndOfEvent(G4HCofThisEvent*);
         G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-      const DRCalorimeterHitCollection& GetHits() const { return drcalorimeterCollection; }
-    private:
-      DRCalorimeterHitCollection drcalorimeterCollection;
-      G4int HCID;	
-      std::map<std::string,double> EbyParticle; // Energy deposited by particle type
-      double TotalE;
-      std::map<std::string,double> NCerenbyParticle; //  Cerenkov contribution by particle type
-      double TotalNCeren;
-      
-    public:
-      std::map<std::string,double> GetEbyParticle(){return EbyParticle;};
-      double GetTotalE(){return TotalE;}
-      std::map<std::string,double> GetNCerenbyParticle(){return NCerenbyParticle;};
-      double GetTotalNCeren(){return TotalNCeren;}
+
+        const DRCalorimeterHitCollection& GetHits() const {
+            return drcalorimeterCollection;
+        }
+
+        const ByParticle GetEbyParticle() {
+            return EbyParticle;
+        };
+
+        const ByParticle GetNCerenbyParticle() {
+            return NCerenbyParticle;
+        };
+
+        double GetTotalE() {
+            return TotalE;
+        }
+
+        double GetTotalNCeren() {
+            return TotalNCeren;
+        }
     };
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

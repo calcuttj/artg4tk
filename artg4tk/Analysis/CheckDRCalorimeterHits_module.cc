@@ -64,12 +64,12 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
         _hDREdep->Fill(sumDRE / CLHEP::GeV);
         _hNCeren->Fill(sumNCeren);
     }
-    typedef std::vector< art::Handle<myParticleEContribArtData> > EdepHandleVector;
+    typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
     EdepHandleVector allEdeps;
     event.getManyByType(allEdeps);
        cout << "number of Edep collections size:  " << allEdeps.size() << endl;
     for (EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
-        const myParticleEContribArtData & Edeps(**i);
+        const ByParticle & Edeps(**i);
 	bool Edep=false;	
 	double ETot = 0.0;
         double EProton = 0.0;

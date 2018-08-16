@@ -24,10 +24,6 @@
 
 artg4tk::CalorimeterSD::CalorimeterSD(G4String name)
 : G4VSensitiveDetector(name) {
-    G4String HCname = name + "_HC";
-    collectionName.insert(HCname);
-    G4cout << collectionName.size() << "   artg4tk::CalorimeterSD name:  " << name << " collection Name: " << HCname << G4endl;
-    HCID = -1;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -39,12 +35,7 @@ artg4tk::CalorimeterSD::~CalorimeterSD() {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void artg4tk::CalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
-
   calorimeterCollection.clear();
-    if (HCID < 0) {
-        G4cout << "artg4tk::CalorimeterSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
-        HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

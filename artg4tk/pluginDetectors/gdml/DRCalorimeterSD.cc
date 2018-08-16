@@ -16,6 +16,7 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterSD.hh"
+
 #include "Geant4/G4HCofThisEvent.hh"
 #include "Geant4/G4Step.hh"
 #include "Geant4/G4ThreeVector.hh"
@@ -39,10 +40,7 @@ namespace artg4tk {
 
     DRCalorimeterSD::DRCalorimeterSD(G4String name)
     : G4VSensitiveDetector(name) {
-        G4String HCname = name + "_HC";
-        collectionName.insert(HCname);
-        G4cout << collectionName.size() << "   artg4tk::DRCalorimeterSD name:  " << name << " collection Name: " << HCname << G4endl;
-        HCID = -1;
+
     }
 
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -53,19 +51,18 @@ namespace artg4tk {
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
     void DRCalorimeterSD::EndOfEvent(G4HCofThisEvent*) {
-        //for (std::map<std::string,double>::iterator it=EbyParticle.begin(); it!=EbyParticle.end(); ++it) {
-        //    std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalE << " % " << std::endl;
-        //}
+        for (std::map<std::string, double>::iterator it = EbyParticle.begin(); it != EbyParticle.end(); ++it) {
+            std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalE << " % " << std::endl;
+        }
+        for (std::map<std::string, double>::iterator it = NCerenbyParticle.begin(); it != NCerenbyParticle.end(); ++it) {
+            std::cout << "Particle: " << it->first << "   " << 100.0 * it->second / TotalNCeren << " % " << std::endl;
+        }
     }
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
     void DRCalorimeterSD::Initialize(G4HCofThisEvent* HCE) {
-       drcalorimeterCollection.clear();
-       
-        if (HCID < 0) {
-            G4cout << "artg4tk::DRCalorimeterSD::Initialize:  " << SensitiveDetectorName << "   " << collectionName[0] << G4endl;
-            HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-        }
+        drcalorimeterCollection.clear();
+
         // 
         TotalE = 0.0;
         EbyParticle["Fragment"] = 0.0;
@@ -100,7 +97,8 @@ namespace artg4tk {
         EbyParticle["anti_xi0"] = 0.0;
         EbyParticle["other"] = 0.0; // Just in case 
         //
-        TotalNCeren=0.0;
+
+        TotalNCeren = 0.0;
         NCerenbyParticle["e+"] = 0.0;
         NCerenbyParticle["e-"] = 0.0;
         NCerenbyParticle["kaon+"] = 0.0;
@@ -122,12 +120,13 @@ namespace artg4tk {
         NCerenbyParticle["anti_omega-"] = 0.0;
         NCerenbyParticle["anti_sigma+"] = 0.0;
         NCerenbyParticle["other"] = 0.0; // Just in case
+
     }
 
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
     G4bool DRCalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
-      G4double edep = aStep->GetTotalEnergyDeposit() / CLHEP::MeV;
+        G4double edep = aStep->GetTotalEnergyDeposit() / CLHEP::MeV;
         if (edep == 0.) return false;
         if (aStep->GetTrack()->GetDynamicParticle()->GetCharge() == 0) return false;
         TotalE = TotalE + edep;
@@ -137,34 +136,21 @@ namespace artg4tk {
         //const G4ThreeVector cellpos = touch->GetTranslation();
         G4int NCerenPhotons = 0;
 
-	//    G4int photons = 0;
-    G4SteppingManager* fpSteppingManager = G4EventManager::GetEventManager()
-            ->GetTrackingManager()->GetSteppingManager();
-    G4StepStatus stepStatus = fpSteppingManager->GetfStepStatus();
-    if (stepStatus != fAtRestDoItProc) {
-        G4ProcessVector* procPost = fpSteppingManager->GetfPostStepDoItVector();
-        size_t MAXofPostStepLoops = fpSteppingManager->GetMAXofPostStepLoops();
-        for (size_t i3 = 0; i3 < MAXofPostStepLoops; i3++) {
+        //    G4int photons = 0;
+        G4SteppingManager* fpSteppingManager = G4EventManager::GetEventManager()
+                ->GetTrackingManager()->GetSteppingManager();
+        G4StepStatus stepStatus = fpSteppingManager->GetfStepStatus();
+        if (stepStatus != fAtRestDoItProc) {
+            G4ProcessVector* procPost = fpSteppingManager->GetfPostStepDoItVector();
+            size_t MAXofPostStepLoops = fpSteppingManager->GetMAXofPostStepLoops();
+            for (size_t i3 = 0; i3 < MAXofPostStepLoops; i3++) {
 
-            if ((*procPost)[i3]->GetProcessName() == "Cerenkov") {
-                G4Cerenkov* proc =(G4Cerenkov*) (*procPost)[i3];
-                NCerenPhotons+=proc->GetNumPhotons();
+                if ((*procPost)[i3]->GetProcessName() == "Cerenkov") {
+                    G4Cerenkov* proc = (G4Cerenkov*) (*procPost)[i3];
+                    NCerenPhotons += proc->GetNumPhotons();
+                }
             }
-
-	  /*
-            if ((*procPost)[i3]->GetProcessName() == "Scintillation") {
-                G4Scintillation* proc1 = (G4Scintillation*) (*procPost)[i3];
-                photons += proc1->GetNumPhotons();
-            }
-	  */
         }
-    }
-
-
-
-
-
-
         G4Track* theTrack = aStep->GetTrack();
         //const G4double charge = theTrack->GetDefinition()->GetPDGCharge();
         G4String particleType = theTrack->GetDefinition()->GetParticleName();
@@ -177,34 +163,35 @@ namespace artg4tk {
         } else {
             EbyParticle[particleType] = EbyParticle[particleType] + edep;
         }
-	if (NCerenbyParticle.find(particleType) == NCerenbyParticle.end()) {
-	  NCerenbyParticle["other"] = NCerenbyParticle["other"] +NCerenPhotons;
-	} else {
-	  NCerenbyParticle[particleType] = NCerenbyParticle[particleType] + NCerenPhotons;
-	}
+
+        if (NCerenbyParticle.find(particleType) == NCerenbyParticle.end()) {
+            NCerenbyParticle["other"] = NCerenbyParticle["other"] + NCerenPhotons;
+        } else {
+            NCerenbyParticle[particleType] = NCerenbyParticle[particleType] + NCerenPhotons;
+        }
 
 
         const G4ThreeVector cellpos = touch->GetTranslation();
-	int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
+        int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
         for (unsigned int j = 0; j < drcalorimeterCollection.size(); j++) {
             DRCalorimeterHit aPreviousHit = drcalorimeterCollection[j];
-	    if (ID == aPreviousHit.GetID()) {
-	      aPreviousHit.SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit.GetEdep());
-	      if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
-                aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
-	      } else {
-                aPreviousHit.Setnonem_Edep(edep + aPreviousHit.GetEdepnonEM());
-	      }
-	      return true;
-	    }
+            if (ID == aPreviousHit.GetID()) {
+                aPreviousHit.SetEdep(aStep->GetTotalEnergyDeposit() + aPreviousHit.GetEdep());
+                if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
+                    aPreviousHit.Setem_Edep(edep + aPreviousHit.GetEdepEM());
+                } else {
+                    aPreviousHit.Setnonem_Edep(edep + aPreviousHit.GetEdepnonEM());
+                }
+                return true;
+            }
 
         }
         DRCalorimeterHit newHit;
         newHit.SetEdep(edep);
         newHit.SetNceren(NCerenPhotons);
-	newHit.SetXpos(cellpos.x());
-	newHit.SetYpos(cellpos.y());
-	newHit.SetZpos(cellpos.z());
+        newHit.SetXpos(cellpos.x());
+        newHit.SetYpos(cellpos.y());
+        newHit.SetZpos(cellpos.z());
 
         newHit.SetTime(time);
         if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {

@@ -33,8 +33,6 @@ public:
   const CalorimeterHitCollection& GetHits() const { return calorimeterCollection; }
 private:
     CalorimeterHitCollection calorimeterCollection;
-    G4int HCID;
-
 };
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

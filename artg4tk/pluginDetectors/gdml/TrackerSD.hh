@@ -34,7 +34,7 @@ namespace artg4tk {
       const TrackerHitCollection& GetHits() const { return trackerCollection; }
     private:
       TrackerHitCollection trackerCollection;
-      G4int HCID;
+      //G4int HCID;
     };
 
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
