@@ -41,8 +41,6 @@ namespace artg4tk {
     bool ScintillationByParticleType_; // enable/disable calculation of scintillation photons by particle type
     bool ScintillationTrackInfo_;      // Activate/Inactivate scintillation track info
     bool ScintillationTrackSecondariesFirst_; //the option to track secondaries before finishing their parent track
-    //    double ScintillationYieldFactor_;
-    //double ScintillationExcitationRatio_;
     bool enableAbsorption_;           // enable/disable Absorption process 
     bool enableRayleigh_;             // enable/disable Rayleigh scattering process
     bool enableMieHG_;                // enable/disable Mie scattering process
