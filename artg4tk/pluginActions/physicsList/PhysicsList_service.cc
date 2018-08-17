@@ -18,7 +18,7 @@
 
 artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p, art::ActivityRegistry &) :
   PhysicsListName_( p.get<std::string>("PhysicsListName","FTFP_BERT")),
-  DumpList_( p.get<bool>("DumpList",true)),
+  DumpList_( p.get<bool>("DumpList",false)),
   enableNeutronLimit_(p.get<bool>("enableNeutronLimit",true)),  
   NeutronTimeLimit_(p.get<double>("NeutronTimeLimit",10.*microsecond)),
   NeutronKinELimit_(p.get<double>("NeutronKinELimit",0.0)),
@@ -40,7 +40,8 @@ artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p, a
   enableBoundary_( p.get<bool>("enableBoundary",false)),
   enableWLS_( p.get<bool>("enableWLS",false)),
   BoundaryInvokeSD_( p.get<bool>("BoundaryInvokeSD",false)),
-  WLSProfile_( p.get<std::string>(" WLSProfile","delta"))
+  verbositylevel_( p.get<int>("Verbosity",0)),
+  WLSProfile_( p.get<std::string>("WLSProfile","delta"))
 {}
 
 G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
@@ -84,7 +85,8 @@ G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
  	opticalPhysics->Configure(kAbsorption,enableAbsorption_);   
   	opticalPhysics->Configure(kRayleigh,enableRayleigh_);     
  	opticalPhysics->Configure(kMieHG,enableMieHG_);        
-  	opticalPhysics->Configure(kBoundary,enableBoundary_);     
+  	opticalPhysics->Configure(kBoundary,enableBoundary_);
+      	opticalPhysics->SetVerboseLevel(verbositylevel_);
 	opticalPhysics->Configure(kWLS,enableWLS_);
       }
     if (enableNeutronLimit_)

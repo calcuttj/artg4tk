@@ -1,7 +1,7 @@
 process_name:processA
 source: {
   module_type: EmptyEvent
-  maxEvents:  5
+  maxEvents:  10
 }
 services: {
   message : {
@@ -37,6 +37,7 @@ services: {
   	enableMieHG: false       
   	enableBoundary: false    
   	enableWLS: false
+	Verbosity: 0
 }
 
     // Detector(s) for the simulation
@@ -44,6 +45,7 @@ services: {
     {
     category: "world"
     gdmlFileName_ : "eic_CrystalCal_PbF2.gdml"
+    CheckOverlaps: false 
     }   
 
 

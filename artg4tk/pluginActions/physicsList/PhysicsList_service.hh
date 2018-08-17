@@ -27,6 +27,7 @@ namespace artg4tk {
     bool enableStepLimit_;     // enable/register step limit physics construct
                                // Note the that the limit is a material property 
                                // the values is set in the gdml file
+
     //-----------------------------------------------------------------------------------
     bool enableOptical_;              // enable/register optical physics construct
     // the following variables are ignored in case optical is false:
@@ -48,7 +49,9 @@ namespace artg4tk {
     bool enableBoundary_;             // enable/disable Boundary process
     bool enableWLS_;                  // enable/disable Wave Length Shifting process
     bool BoundaryInvokeSD_;
+    int verbositylevel_;              // set the verbosity level of optical processes
     std::string WLSProfile_;          // Set the WLS time profile (delta or exponential)
+
   };
   
 }

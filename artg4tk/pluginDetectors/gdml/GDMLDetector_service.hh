@@ -58,7 +58,11 @@ namespace artg4tk {
 
     class GDMLDetectorService : public artg4tk::DetectorBase {
     private:
-        std::vector<std::pair<std::string,std::string> > DetectorList;
+      std::string gdmlFileName_;  // name of the gdml file 
+      bool checkoverlaps_;        // enable/disable check of overlaps
+      // A message logger for this action
+      mf::LogInfo logInfo_;
+      std::vector<std::pair<std::string,std::string> > DetectorList;
     public:
         GDMLDetectorService(fhicl::ParameterSet const&, art::ActivityRegistry&);
         virtual ~GDMLDetectorService();
@@ -76,9 +80,8 @@ namespace artg4tk {
         // Actually produce
         virtual void doFillEventWithArtHits(G4HCofThisEvent * hc) override;
 
-        std::string gdmlFileName_;
-        // A message logger for this action
-        mf::LogInfo logInfo_;
+ 
+
     };
 }
 using artg4tk::GDMLDetectorService;
