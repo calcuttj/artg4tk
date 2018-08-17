@@ -60,6 +60,7 @@ namespace artg4tk {
     private:
       std::string gdmlFileName_;  // name of the gdml file 
       bool checkoverlaps_;        // enable/disable check of overlaps
+      bool dumpMP_;               // enable/disable dump of material properties
       // A message logger for this action
       mf::LogInfo logInfo_;
       std::vector<std::pair<std::string,std::string> > DetectorList;

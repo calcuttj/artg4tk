@@ -57,6 +57,7 @@
 #include "Geant4/G4UserLimits.hh"
 #include "Geant4/G4UnitsTable.hh"
 #include "Geant4/G4StepLimiter.hh"
+#include "Geant4/G4RegionStore.hh"
 // C++ includes
 #include <vector>
 #include <map>
@@ -79,13 +80,13 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p, art::ActivityRegistry &)
 : artg4tk::DetectorBase(p,
-p.get<string>("name", "GDMLDetectorService"),
-p.get<string>("category", "World"),
-p.get<string>("mother_category", "")),
-gdmlFileName_( p.get<std::string>("gdmlFileName_","")),
-checkoverlaps_( p.get<bool>("CheckOverlaps",false)),
-logInfo_("GDMLDetectorService") {
-
+			p.get<string>("name", "GDMLDetectorService"),
+			p.get<string>("category", "World"),
+			p.get<string>("mother_category", "")),
+  gdmlFileName_( p.get<std::string>("gdmlFileName_","")),
+  checkoverlaps_( p.get<bool>("CheckOverlaps",false)),
+  dumpMP_( p.get<bool>("DumpMaterialProperties",false)),
+  logInfo_("GDMLDetectorService") {
 
 }
 
@@ -186,7 +187,29 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
             }
         }
     }
-    G4cout << *(G4Material::GetMaterialTable());
+    if (dumpMP_)
+      {
+	G4cout << *(G4Material::GetMaterialTable());
+	/*
+	G4Region* region = G4RegionStore::GetInstance()->GetRegion("DefaultRegionForTheWorld", false);
+	std::vector<G4Material*>::const_iterator mItr = region->GetMaterialIterator();
+	size_t nMaterial = region->GetNumberOfMaterials();
+	G4cout << nMaterial << G4endl;
+	for (size_t iMate = 0; iMate < nMaterial; iMate++) {
+	  G4cout << (*mItr)->GetName() << G4endl;
+	  G4MaterialPropertiesTable* mt = (*mItr)->GetMaterialPropertiesTable();
+	  if (mt != nullptr) {
+            mt->DumpTable();
+	    //            if (mt->GetProperty("SLOWCOMPONENT", true) != nullptr) {
+	    //  mt->GetProperty("SLOWCOMPONENT", true)->SetSpline(true);
+            //    std::cout << "Scint " << mt->GetProperty("SLOWCOMPONENT", true)->GetVectorLength()<< std::endl;
+            //}
+        }
+        mItr++;
+    }
+    G4cout << G4endl;
+*/
+}
     std::cout << "List SD Tree: " << std::endl;
     SDman->ListTree();
     std::cout << " Collection Capacity:  " << SDman->GetCollectionCapacity() << std::endl;

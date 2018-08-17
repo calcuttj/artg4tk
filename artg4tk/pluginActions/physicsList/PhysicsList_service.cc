@@ -67,8 +67,9 @@ G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
   std::cout << " Name of Physics list: "<< physName<<std::endl;
   if (factory.IsReferencePhysList(physName)) {
     phys = factory.GetReferencePhysList(physName);
+    phys->SetVerboseLevel(verbositylevel_);
   }
-    std::cout << phys->GetPhysicsTableDirectory() << std::endl;
+
     if (enableOptical_)
       {
 	G4OpticalPhysics* opticalPhysics = (G4OpticalPhysics*) phys->GetPhysics("Optical");
@@ -96,6 +97,7 @@ G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
       }
     if (DumpList_)
       {
+	std::cout << phys->GetPhysicsTableDirectory() << std::endl;
 	phys->DumpList();
 	phys->DumpCutValuesTable();
       }
