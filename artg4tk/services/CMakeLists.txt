@@ -1,5 +1,6 @@
-# services CMakeLists
-
-art_make( SERVICE_LIBRARIES  "${XERCESCLIB}" "${G4_LIB_LIST}" )
+art_make(SERVICE_LIBRARIES
+  ${G4_LIB_LIST}
+  ${MF_MESSAGELOGGER}
+  ${ART_PERSISTENCY_PROVENANCE})
 
 install_headers()
