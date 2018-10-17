@@ -1,4 +1,9 @@
-# Use the magic that is @art_make@ to construct the shared object files for
-# this whole directory. 
-#art_make( MODULE_LIBRARIES  ${G4_LIB_LIST} ${XERXESCLIB})
-art_make( MODULE_LIBRARIES  art_Framework_Services_Optional_TFileService_service ${G4_LIB_LIST} ${XERXESCLIB})
+art_make(MODULE_LIBRARIES
+  ${ART_FRAMEWORK_SERVICES_OPTIONAL_TFILESERVICE_SERVICE}
+  ${ART_FRAMEWORK_SERVICES_OPTIONAL}
+  ${ART_FRAMEWORK_SERVICES_REGISTRY}
+  ${G4_LIB_LIST}
+  ${ROOT_HIST}
+  ${ROOT_TREE}
+  ${CLHEP}
+  artg4tk_DataProducts_EventGenerators)
