@@ -56,12 +56,17 @@ public:
     virtual void analyze(const art::Event& event);
 
 private:
-
-    TH1F* _hnDRHits;// number of DRCaloHits
-    TH1F* _hDREdep;// total energy deposition in DRCaloHits
-    TH1F* _hNCeren;// total number of Cerenkovphotons in DRCaloHits
-    TH2F* _hEdepvsproton;
-    TNtuple* _ntuple;
+  std::map<std::string,TH1F*> mapofhistos;
+  std::vector<TH1F*> vecofhistosthin;
+  std::vector<TH1F*> vecofhistosthick;
+  std::vector<double> edepthin;
+  std::vector<double> edepthick;
+  TH1F* _hnDRHits;// number of DRCaloHits
+  TH1F* _hDREdep;// total energy deposition in DRCaloHits
+  TH1F* _hNCeren;// total number of Cerenkovphotons in DRCaloHits
+  //  TH1F* _hEdepvsproton;
+  TH2F* _hEdepvsNCeren;
+  TNtuple* _ntuple;
 };
 
 #endif	/* CHECKDRCALORIMETERHITS_MODULE_HH */

@@ -73,8 +73,8 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
         _hnDRHits->Fill(DRsims.size());
         for (DRCalorimeterHitCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
             const DRCalorimeterHit& hit = *j;
-            sumDRE = sumDRE + hit.Edep;
-            sumNCeren = sumNCeren + hit.Nceren;
+            sumDRE = sumDRE + hit.GetEdep();
+            sumNCeren = sumNCeren + hit.GetNceren();
         }
         _hDREdep->Fill(sumDRE / CLHEP::GeV);
         _hNCeren->Fill(sumNCeren);
