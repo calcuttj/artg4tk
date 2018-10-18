@@ -19,7 +19,7 @@ services: {
   }
   TFileService :
   {
-    fileName      : "eic_Crystal_PbF2.root"
+    fileName      : "eic_Crystal_PbF2_elec.root"
   }
     DetectorHolder: {}
     ActionHolder: {}
@@ -55,7 +55,7 @@ services: {
       myParticleGunAction: {
       name: "myParticleGun"	
       NParticle: 1
-      Name: "pi+"
+      Name: "e-"
       Direction: [ 0,  0,  1  ]
       Energy: 10.
       Position: [ 1,  1,  -10.  ]
