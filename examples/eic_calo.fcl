@@ -1,7 +1,7 @@
 process_name:processA
 source: {
   module_type: EmptyEvent
-  maxEvents:  100
+  maxEvents:  1000
 }
 services: {
   message : {
@@ -57,8 +57,8 @@ services: {
       NParticle: 1
       Name: "pi+"
       Direction: [ 0,  0,  1  ]
-      Energy: 10.
-      Position: [ 1,  1,  -10.  ]
+      Energy: 5.
+      Position: [ 0,  0,  -10.  ]
     }
 }
 

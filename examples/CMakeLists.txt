@@ -1,7 +1,7 @@
 # testGeometry/ fcl cmakelists
 
 # install all *.fcl *.gdml *.xml *.xsd files in this directory
-file(GLOB fcl_files *.fcl *.gdml *.xml *.xsd)
+file(GLOB fcl_files *.fcl *.gdml *.xml *.xsd *.C)
 install( FILES ${fcl_files}
          DESTINATION ${product}/${version}/${PROJECT_NAME}/examples )
 

@@ -106,7 +106,7 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
 	ncerenthick.push_back(0.0);
       }
     event.getManyByType(allDRSims);
-    cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
+    //cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
       art::Handle<DRCalorimeterHitCollection> ih = *i;
        auto const* prov  = ih.provenance();
@@ -172,7 +172,7 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
       art::Handle<ByParticle> ih = *i;
        auto const* prov  = ih.provenance();
        string instancename = prov->productInstanceName();
-       if(instancename.find("NCeren")!= std::string::npos) cout << "Cerenkov Collection"<<endl;
+       //       if(instancename.find("NCeren")!= std::string::npos) cout << "Cerenkov Collection"<<endl;
        if(instancename.find("Edep")!= std::string::npos) 
 	 {
 	   const ByParticle & Edeps(**i);

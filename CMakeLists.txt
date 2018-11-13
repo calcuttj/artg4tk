@@ -54,7 +54,6 @@ include(BuildPlugins)
 add_subdirectory( artg4tk )
 add_subdirectory( fcl )
 add_subdirectory( examples )
-add_subdirectory( gdml )
 
 # ups - table and config files
 

@@ -293,13 +293,13 @@
         <volume name="CalorimeterVolumethin">
             <materialref ref="PbF2"/>
             <solidref ref="CalorimeterCellthin"/>
-            <auxiliary auxtype="SensDet" auxvalue="Calorimeter"/>
+            <auxiliary auxtype="SensDet" auxvalue="DRCalorimeter"/>
 	    <colorref ref="magenta"/> 
         </volume>
         <volume name="CalorimeterVolumethick">
             <materialref ref="PbF2"/>
             <solidref ref="CalorimeterCellthick"/>
-            <auxiliary auxtype="SensDet" auxvalue="Calorimeter"/>
+            <auxiliary auxtype="SensDet" auxvalue="DRCalorimeter"/>
 	    <colorref ref="magenta"/> 
         </volume>
         <volume name="PhotonVolumethin">
