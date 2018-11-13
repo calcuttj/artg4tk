@@ -29,7 +29,7 @@
 // artg4 includes:
 #include "artg4tk/services/DetectorHolder_service.hh"
 // artg4tk includes:
-#include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
+//#include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
 // Root includes.
@@ -67,6 +67,7 @@ private:
   //  TH1F* _hEdepvsproton;
   TH2F* _hEdepvsNCeren;
   TNtuple* _ntuple;
+  TNtuple* _ntuple2;
 };
 
 #endif	/* CHECKDRCALORIMETERHITS_MODULE_HH */

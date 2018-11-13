@@ -26,7 +26,8 @@ _hnDRHits(0),
 _hDREdep(0),
 _hNCeren(0),
 _hEdepvsNCeren(0),
-_ntuple(0) {
+_ntuple(0),
+_ntuple2(0){
 }
 
 void artg4tk::CheckDRCalorimeterHits::beginRun(const art::Run& thisRun) {
@@ -39,7 +40,9 @@ void artg4tk::CheckDRCalorimeterHits::beginJob() {
     _hDREdep = tfs->make<TH1F>("hDREdep", "total Energy deposition in DRCaloArtHits", 100, 0., 11.);
     _hNCeren = tfs->make<TH1F>("hNCeren", "total number of Cerenkov Photons in DRCaloArtHits", 100, 0., 10000.);
     _hEdepvsNCeren= tfs->make<TH2F>("hEdepvsNCeren","Edep vs. NCeren",100,0,11,100,0,10000.);
-    _ntuple = tfs->make<TNtuple>("ntuple","proton percentage",			  "EVIS:PPERC");
+    //_ntuple = tfs->make<TNtuple>("ntuple","deposit by layer",			  "EVIS:PPERC");
+    _ntuple = tfs->make<TNtuple>("ntuple", "Demo ntuple","Event:Edep0:Edep1:Edep2:Edep3:Edep4:Edep5:Edep6:Edep7:Edep8:Edep9");
+    _ntuple2 = tfs->make<TNtuple>("ntuple2", "Demo ntuple","Event:Nceren0:Nceren1:Nceren2:Nceren3:Nceren4:Nceren5:Nceren6:Nceren7:Nceren8:Nceren9");
     mapofhistos["Fragment"] = tfs->make<TH1F>("hFragment","Fragment percentage", 100, 0., 100.);
     mapofhistos["He3"] = tfs->make<TH1F>("hHe3","He3 percentage", 100, 0., 100.);
     mapofhistos["alpha"] = tfs->make<TH1F>("halpha","alpha percentage", 100, 0., 100.);
@@ -93,10 +96,14 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
 
     std::vector<double> edepthin;
     std::vector<double> edepthick;
+    std::vector<double> ncerenthin;
+    std::vector<double> ncerenthick;
     for (unsigned int ijk=0;ijk<numz;ijk++)
       {
 	edepthin.push_back(0.0);
 	edepthick.push_back(0.0);
+	ncerenthin.push_back(0.0);
+	ncerenthick.push_back(0.0);
       }
     event.getManyByType(allDRSims);
     cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
@@ -117,9 +124,11 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
 	 if(iname.find("thin")!= std::string::npos)
 	   {
 	     edepthin[lay]=edepthin[lay]+hit.GetEdep();
+	     ncerenthin[lay]=ncerenthin[lay]+hit.GetNceren();
 	   } else
 	   {
 	     edepthick[lay]=edepthick[lay]+hit.GetEdep();
+	     ncerenthick[lay]=ncerenthick[lay]+hit.GetNceren();
 	   }
        }
     }
@@ -131,7 +140,29 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
 	vecofhistosthin[ijk]->Fill(edepthin[ijk] / CLHEP::GeV);
 	vecofhistosthick[ijk]->Fill(edepthick[ijk] / CLHEP::GeV);
       }
-    typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
+     _ntuple->Fill(event.event(),
+		 edepthin[0],
+		 edepthin[1],
+		 edepthin[2],
+		 edepthin[3],
+		 edepthin[4],
+		 edepthin[5],
+		 edepthin[6],
+		 edepthin[7],
+		 edepthin[8],
+		 edepthin[9]);
+     _ntuple2->Fill(event.event(),
+		 ncerenthin.at(0),
+		 ncerenthin.at(1),
+		 ncerenthin.at(2),
+		 ncerenthin.at(3),
+		 ncerenthin.at(4),
+		 ncerenthin.at(5),
+		 ncerenthin.at(6),
+		 ncerenthin.at(7),
+		 ncerenthin.at(8),
+		 ncerenthin.at(9));     
+     typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
     EdepHandleVector allEdeps;
     event.getManyByType(allEdeps);
     bool first=true;
