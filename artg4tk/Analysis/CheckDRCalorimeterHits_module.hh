@@ -57,6 +57,7 @@ public:
 
 private:
   std::map<std::string,TH1F*> mapofhistos;
+  std::map<std::string,TH1F*> ncmapofhistos;
   std::vector<TH1F*> vecofhistosthin;
   std::vector<TH1F*> vecofhistosthick;
   std::vector<double> edepthin;

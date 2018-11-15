@@ -74,6 +74,28 @@ void artg4tk::CheckDRCalorimeterHits::beginJob() {
     mapofhistos["anti_lambda"] = tfs->make<TH1F>("hlambdabar","anti_lambda percentage", 100, 0., 100.);
     mapofhistos["anti_xi0"] = tfs->make<TH1F>("hxi0bar","anti_xi0 percentage", 100, 0., 100.);
     mapofhistos["other"] = tfs->make<TH1F>("hother","other percentage", 100, 0., 100.); // Just in case 
+    //
+    ncmapofhistos["deuteron"] = tfs->make<TH1F>("NCeren_deuteron","deuteronp ercentage", 100, 0., 100.);
+    ncmapofhistos["triton"] = tfs->make<TH1F>("NCeren_triton","triton percentage", 100, 0., 100.);
+    ncmapofhistos["He3"] = tfs->make<TH1F>("NCeren_He3","He3 percentage", 100, 0., 100.);
+    ncmapofhistos["proton"] = tfs->make<TH1F>("NCeren_proton","proton percentage", 100, 0., 100.);
+    ncmapofhistos["e+"] = tfs->make<TH1F>("NCeren_e+","e+ percentage", 100, 0., 100.);
+    ncmapofhistos["e-"] = tfs->make<TH1F>("NCeren_e-","e- percentage", 100, 0., 100.);
+    ncmapofhistos["mu+"] = tfs->make<TH1F>("NCeren_mu+","mu+ percentage", 100, 0., 100.);
+    ncmapofhistos["mu-"] = tfs->make<TH1F>("NCeren_mu-","mu- percentage", 100, 0., 100.);
+    ncmapofhistos["pi+"] = tfs->make<TH1F>("NCeren_pi+","pi+ percentage", 100, 0., 100.);
+    ncmapofhistos["pi-"] = tfs->make<TH1F>("NCeren_pi-","pi- percentage", 100, 0., 100.);
+    ncmapofhistos["kaon+"] = tfs->make<TH1F>("NCeren_kaon+","kaon+ percentage", 100, 0., 100.);
+    ncmapofhistos["kaon-"] = tfs->make<TH1F>("NCeren_kaon-","kaon- percentage", 100, 0., 100.);
+    ncmapofhistos["sigma+"] = tfs->make<TH1F>("NCeren_sigma+","sigma+ percentage", 100, 0., 100.);
+    ncmapofhistos["sigma-"] = tfs->make<TH1F>("NCeren_sigma-","sigma- percentage", 100, 0., 100.);
+    ncmapofhistos["xi-"] = tfs->make<TH1F>("NCeren_xi-","xi- percentage", 100, 0., 100.);
+    ncmapofhistos["anti_sigma+"] = tfs->make<TH1F>("NCeren_anti_sigma+","anti_sigma+ percentage", 100, 0., 100.);
+    ncmapofhistos["anti_sigma-"] = tfs->make<TH1F>("NCeren_anti_sigma-","anti_sigma- percentage", 100, 0., 100.);
+    ncmapofhistos["anti_proton"] = tfs->make<TH1F>("NCeren_anti_proton","anti_proton percentage", 100, 0., 100.);
+    ncmapofhistos["anti_xi-"] = tfs->make<TH1F>("NCeren_anti_xi-","anti_xi- percentage", 100, 0., 100.);
+    ncmapofhistos["anti_omega-"] = tfs->make<TH1F>("NCeren_anti_omega-","anti_omega- percentage", 100, 0., 100.);
+    ncmapofhistos["other"] = tfs->make<TH1F>("NCeren_other","other percentage", 100, 0., 100.); // Just in case 
     const unsigned int numz=10;
     for (unsigned int jj=0;jj<numz;jj++)
       {
@@ -167,37 +189,56 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
     event.getManyByType(allEdeps);
     bool first=true;
     ByParticle addup;
+    ByParticle addupnc;
     double junkie=0.0;
     for ( EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
       art::Handle<ByParticle> ih = *i;
-       auto const* prov  = ih.provenance();
-       string instancename = prov->productInstanceName();
-       //       if(instancename.find("NCeren")!= std::string::npos) cout << "Cerenkov Collection"<<endl;
-       if(instancename.find("Edep")!= std::string::npos) 
-	 {
-	   const ByParticle & Edeps(**i);
-	   if (first){
-	     addup = Edeps;
-	     junkie = Edeps.at("Etot");
-	     first=false;
-	   } 
-	   else 
+      auto const* prov  = ih.provenance();
+      string instancename = prov->productInstanceName();
+      if(instancename.find("NCeren")!= std::string::npos) {
+	const ByParticle & Edeps(**i);
+	if (first){
+	  addupnc = Edeps;
+	  junkie = Edeps.at("NCerentot");
+	  first=false;
+	} 
+	else 
+	  {
+	    junkie = junkie+ Edeps.at("NCerentot");
+	    for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
+	      addupnc[it->first]=addupnc[it->first]+it->second;
+	    }
+	  }
+      }
+      else if(instancename.find("Edep")!= std::string::npos) 
 	     {
-	        junkie = junkie+ Edeps.at("Etot");
-	       for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
-		 addup[it->first]=addup[it->first]+it->second;
-	       }
+	       std::cout << ":::::::::::::::::::::::::::::"<<std::endl;
+	       const ByParticle & Edeps(**i);
+	       if (first){
+		 addup = Edeps;
+		 junkie = Edeps.at("Etot");
+		 first=false;
+	       } 
+	       else 
+		 {
+		   junkie = junkie+ Edeps.at("Etot");
+		   for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
+		     addup[it->first]=addup[it->first]+it->second;
+		   }
+		 }
+	       /*
+		 for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
+		 
+		 if (mapofhistos.find(it->first) != mapofhistos.end()) mapofhistos[it->first]->Fill((100.*it->second)/junkie);
+		 }
+	       */
 	     }
-	   /*
-	   for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
-	     
-	     if (mapofhistos.find(it->first) != mapofhistos.end()) mapofhistos[it->first]->Fill((100.*it->second)/junkie);
-	   }
-	   */
-	 }
     }
     for (std::map<std::string, double>::const_iterator it = addup.begin(); it != addup.end(); ++it) {
       if (mapofhistos.find(it->first) != mapofhistos.end()) mapofhistos[it->first]->Fill((100.*it->second)/junkie);
+    }
+    for (std::map<std::string, double>::const_iterator it = addupnc.begin(); it != addupnc.end(); ++it) {
+      if (ncmapofhistos.find(it->first) != ncmapofhistos.end()) ncmapofhistos[it->first]->Fill((100.*it->second)/junkie);
     }
 } // end analyze
 
