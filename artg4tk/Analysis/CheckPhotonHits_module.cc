@@ -41,20 +41,21 @@ void artg4tk::CheckPhotonHits::analyze(const art::Event & event) {
     std::map<int, int> photonsperdet;
     HandleVector allSims;
     event.getManyByType(allSims);
-    cout << "CheckPhotonHits Event:  " << event.event() << "  Nr of PhotonHit collections: " << allSims.size() << endl;
+    //    cout << "CheckPhotonHits Event:  " << event.event() << "  Nr of PhotonHit collections: " << allSims.size() << endl;
     int section = 0;
     for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
         photonsperdet.clear();
         const PhotonHitCollection & sims(**i);
-        cout << "PhotonHit collection size:  " << sims.size() << endl;
+	//        cout << "PhotonHit collection size:  " << sims.size() << endl;
         for (PhotonHitCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
             const PhotonHit& hit = *j;
-            std::cout << "Section: "<< section<<
+            /*std::cout << "Section: "<< section<<
                     "  ID: " << hit.GetID() << 
                     "  x: " << hit.GetXpos() << 
                     "  Y: " << hit.GetYpos() << 
                     " z: " << hit.GetZpos() <<
                     std::endl;
+	    */
             if (photonsperdet.find(hit.GetID()) == photonsperdet.end()) // new Detector
             {
                 photonsperdet.insert(std::make_pair(hit.GetID(), 1));

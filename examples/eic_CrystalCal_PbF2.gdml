@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+<gdml_simple_extension xmlns:gdml_simple_extension="http://www.example.org"
+		       xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"          
+		       xs:noNamespaceSchemaLocation="SimpleExtension.xsd"> 
  <!--
     //
     // PbF2 optical data from:
@@ -14,6 +16,11 @@
     //
 -->
 
+    <extension>
+      <color name="test_color"  R="0.1"  G="0.2"  B="0.3"  A="1.0" />
+      <color name="magenta"     R="0.0"  G="1.0"  B="0.0"  A="1.0" />
+      <color name="green"       R="1.0"  G="0.0"  B="1.0"  A="1.0" />	
+    </extension>
     <define>
       <variable name="i" value="0"/>
       <variable name="j" value="0"/>
@@ -287,52 +294,70 @@
             <materialref ref="PbF2"/>
             <solidref ref="CalorimeterCellthin"/>
             <auxiliary auxtype="SensDet" auxvalue="DRCalorimeter"/>
-            <auxiliary auxtype="Color" auxvalue="Red"/>
+	    <colorref ref="magenta"/> 
         </volume>
         <volume name="CalorimeterVolumethick">
             <materialref ref="PbF2"/>
             <solidref ref="CalorimeterCellthick"/>
             <auxiliary auxtype="SensDet" auxvalue="DRCalorimeter"/>
-            <auxiliary auxtype="Color" auxvalue="Red"/>
+	    <colorref ref="magenta"/> 
         </volume>
         <volume name="PhotonVolumethin">
             <materialref ref="Si" />
             <solidref ref="PhotonBox" />
             <auxiliary auxtype="SensDet" auxvalue="PhotonDetector"/>
-            <auxiliary auxtype="Color" auxvalue="Yellow"/>
+	    <colorref ref="green"/> 
         </volume>
         <volume name="PhotonVolumethick">
             <materialref ref="Si" />
             <solidref ref="PhotonBox" />
             <auxiliary auxtype="SensDet" auxvalue="PhotonDetector"/>
-            <auxiliary auxtype="Color" auxvalue="Yellow"/>
+	    <colorref ref="green"/> 
         </volume>
         <volume name="TOP">
             <materialref ref="AIR"/>
             <solidref ref="WorldBox"/>
             <loop for="i" from="0" to="num" step="1">
               <loop for="j" from="0" to="num" step="1">
-		<loop for="k" from="0" to="numz" step="1">
+		<loop for="k" from="0" to="numz" step="2">
 		  <physvol name="CaloCellthin" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
 		    <volumeref ref="CalorimeterVolumethin"/>
 		    <position name="posijk"  lunit="cm" x="cellsize*(i-num/2)" y="cellsize*(j-num/2)" z="spacing1*(k-numz/2)"/>
 		  </physvol>
-
 		  <physvol name="pPhotonVolume" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
                     <volumeref ref="PhotonVolumethin"/>
 		    <position name="pposijk" lunit="cm" x="cellsize*(i-num/2)" y="cellsize*(j-num/2)" z="spacing1*(k-numz/2)+.515"/>
 		  </physvol>
-
 		  <physvol name="CaloCellthick" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
 		    <volumeref ref="CalorimeterVolumethick"/>
 		    <position name="posijkthick" x="cellsize*(i-num/2)" y="cellsize*(j-num/2)" z="spacing1*(numz+1)+(spacing2*k)"/>
 		  </physvol>
-
 		  <physvol name="ptPhotonVolume" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
                     <volumeref ref="PhotonVolumethick"/>
 		    <position name="ptposijk"  x="cellsize*(i-num/2)" y="cellsize*(j-num/2)" z="spacing1*(numz+1)+(spacing2*k)+spacing3"/>
 		  </physvol>
-
+		</loop>
+	      </loop>
+            </loop>
+            <loop for="i" from="0" to="num" step="1">
+              <loop for="j" from="0" to="num" step="1">
+		<loop for="k" from="1" to="numz" step="2">
+		  <physvol name="CaloCellthin" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
+		    <volumeref ref="CalorimeterVolumethin"/>
+		    <position name="posijk"  lunit="cm" x="0.1+cellsize*(i-num/2)" y="0.1+cellsize*(j-num/2)" z="spacing1*(k-numz/2)"/>
+		  </physvol>
+		  <physvol name="pPhotonVolume" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
+                    <volumeref ref="PhotonVolumethin"/>
+		    <position name="pposijk" lunit="cm" x="0.1+cellsize*(i-num/2)" y="0.1+cellsize*(j-num/2)" z="spacing1*(k-numz/2)+.515"/>
+		  </physvol>
+		  <physvol name="CaloCellthick" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
+		    <volumeref ref="CalorimeterVolumethick"/>
+		    <position name="posijkthick" x="0.1+cellsize*(i-num/2)" y="0.1+cellsize*(j-num/2)" z="spacing1*(numz+1)+(spacing2*k)"/>
+		  </physvol>
+		  <physvol name="ptPhotonVolume" copynumber="i+(j*(num+1))+k*((numz+1)*(numz+1))" >
+                    <volumeref ref="PhotonVolumethick"/>
+		    <position name="ptposijk"  x="0.1+cellsize*(i-num/2)" y="0.1+cellsize*(j-num/2)" z="spacing1*(numz+1)+(spacing2*k)+spacing3"/>
+		  </physvol>
 		</loop>
 	      </loop>
             </loop>

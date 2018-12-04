@@ -27,6 +27,7 @@ cet_cmake_env()
 
 cet_set_compiler_flags(DIAGS CAUTIOUS
 WERROR
+  NO_UNDEFINED
 EXTRA_FLAGS -pedantic
 )
 
@@ -52,7 +53,7 @@ include(BuildPlugins)
 # Build these directories
 add_subdirectory( artg4tk )
 add_subdirectory( fcl )
-
+add_subdirectory( examples )
 
 # ups - table and config files
 
@@ -62,9 +63,3 @@ add_subdirectory(ups)
 # packaging utility
 
 include(UseCPack)
-
-
-
-
-
-

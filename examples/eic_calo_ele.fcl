@@ -1,7 +1,7 @@
 process_name:processA
 source: {
   module_type: EmptyEvent
-  maxEvents:  1000
+  maxEvents:  100
 }
 services: {
   message : {
@@ -19,7 +19,7 @@ services: {
   }
   TFileService :
   {
-    fileName      : "eic_Crystal_PbF2.root"
+    fileName      : "eic_Crystal_PbF2_elec.root"
   }
     DetectorHolder: {}
     ActionHolder: {}
@@ -55,10 +55,10 @@ services: {
       myParticleGunAction: {
       name: "myParticleGun"	
       NParticle: 1
-      Name: "pi+"
+      Name: "e-"
       Direction: [ 0,  0,  1  ]
-      Energy: 5.
-      Position: [ 0,  0,  -10.  ]
+      Energy: 10.
+      Position: [ 1,  1,  -10.  ]
     }
 }
 

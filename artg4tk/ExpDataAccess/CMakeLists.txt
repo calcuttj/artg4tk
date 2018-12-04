@@ -10,6 +10,6 @@ else()
   message(FATAL_ERROR "Could not find curl")
 endif()
 
-art_make( LIB_LIBRARIES  ${CURL_LIBRARIES} )
+art_make(LIB_LIBRARIES ${CURL_LIBRARIES} ${ROOT_CORE} ${ROOT_HIST} ${MF_MESSAGELOGGER})
 
 # install_headers()

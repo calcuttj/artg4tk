@@ -15,87 +15,236 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #include "artg4tk/Analysis/CheckDRCalorimeterHits_module.hh"
-//#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
+#include "art/Framework/Principal/Provenance.h"
 
 artg4tk::CheckDRCalorimeterHits::CheckDRCalorimeterHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),
 _hnDRHits(0),
 _hDREdep(0),
 _hNCeren(0),
-_hEdepvsproton(0),
-_ntuple(0) {
+_hEdepvsNCeren(0),
+_ntuple(0),
+_ntuple2(0){
 }
 
 void artg4tk::CheckDRCalorimeterHits::beginRun(const art::Run& thisRun) {
-         std::cout << "******************************Run: " << thisRun.id() << ": looking at Run Header" << std::endl;
+  //  std::cout << "******************************Run: " << thisRun.id() << ": looking at Run Header" << std::endl;
 }
 
 void artg4tk::CheckDRCalorimeterHits::beginJob() {
     art::ServiceHandle<art::TFileService> tfs;
     _hnDRHits = tfs->make<TH1F>("hnDRHits", "Number of DRCaloArtHits", 100, 0., 20000.);
     _hDREdep = tfs->make<TH1F>("hDREdep", "total Energy deposition in DRCaloArtHits", 100, 0., 11.);
-    _hNCeren = tfs->make<TH1F>("hNCeren", "total number of Cerenkov Photons in DRCaloArtHits", 100, 0., 1000000.);
-    _hEdepvsproton = tfs->make<TH2F>("hEdepvsproton", "Etot vs proton percentage", 100, 0., 60.,100,0.,11.);
-   _ntuple = tfs->make<TNtuple>("ntuple","proton percentage",
-			  "EVIS:PPERC");
+    _hNCeren = tfs->make<TH1F>("hNCeren", "total number of Cerenkov Photons in DRCaloArtHits", 100, 0., 10000.);
+    _hEdepvsNCeren= tfs->make<TH2F>("hEdepvsNCeren","Edep vs. NCeren",100,0,11,100,0,10000.);
+    //_ntuple = tfs->make<TNtuple>("ntuple","deposit by layer",			  "EVIS:PPERC");
+    _ntuple = tfs->make<TNtuple>("ntuple", "Demo ntuple","Event:Edep0:Edep1:Edep2:Edep3:Edep4:Edep5:Edep6:Edep7:Edep8:Edep9");
+    _ntuple2 = tfs->make<TNtuple>("ntuple2", "Demo ntuple","Event:Nceren0:Nceren1:Nceren2:Nceren3:Nceren4:Nceren5:Nceren6:Nceren7:Nceren8:Nceren9");
+    mapofhistos["Fragment"] = tfs->make<TH1F>("hFragment","Fragment percentage", 100, 0., 100.);
+    mapofhistos["He3"] = tfs->make<TH1F>("hHe3","He3 percentage", 100, 0., 100.);
+    mapofhistos["alpha"] = tfs->make<TH1F>("halpha","alpha percentage", 100, 0., 100.);
+    mapofhistos["deuteron"] = tfs->make<TH1F>("hdeuteron","deuteron percentage", 100, 0., 100.);
+    mapofhistos["triton"] = tfs->make<TH1F>("htriton","triton percentage", 100, 0., 100.);
+    mapofhistos["proton"] = tfs->make<TH1F>("hproton","proton percentage", 100, 0., 100.);
+    mapofhistos["neutron"] = tfs->make<TH1F>("hneutron","neutron percentage", 100, 0., 100.);
+    mapofhistos["e+"] = tfs->make<TH1F>("he+","positron percentage", 100, 0., 100.);
+    mapofhistos["e-"] = tfs->make<TH1F>("he-","electron percentage", 100, 0., 100.);
+    mapofhistos["pi+"] = tfs->make<TH1F>("hpiplus","piplus percentage", 100, 0., 100.);
+    mapofhistos["pi-"] = tfs->make<TH1F>("hpiminus","piminus percentage", 100, 0., 100.);
+    mapofhistos["gamma"] = tfs->make<TH1F>("hgamma","gamma percentage", 100, 0., 100.);
+    mapofhistos["mu+"] = tfs->make<TH1F>("hmu+","mu+ percentage", 100, 0., 100.);
+    mapofhistos["mu-"] = tfs->make<TH1F>("hmu-","mu- percentage", 100, 0., 100.);
+    mapofhistos["sigma+"] = tfs->make<TH1F>("hsigma+","sigma+ percentage", 100, 0., 100.);
+    mapofhistos["sigma-"] = tfs->make<TH1F>("hsigma-","sigma- percentage", 100, 0., 100.);
+    mapofhistos["kaon+"] = tfs->make<TH1F>("hkaon+","kaon+ percentage", 100, 0., 100.);
+    mapofhistos["kaon-"] = tfs->make<TH1F>("hkaon-","kaon- percentage", 100, 0., 100.);
+    mapofhistos["kaon0L"] = tfs->make<TH1F>("hkaon0L","kaon0 percentage", 100, 0., 100.);
+    mapofhistos["kaon0S"] = tfs->make<TH1F>("hkaon0S","Kspercentage", 100, 0., 100.);
+    mapofhistos["lambda"] = tfs->make<TH1F>("hlambda","lambda percentage", 100, 0., 100.);
+    mapofhistos["xi-"] = tfs->make<TH1F>("hximinus","ximinu percentage", 100, 0., 100.);
+    mapofhistos["anti_neutron"] = tfs->make<TH1F>("hneutronbar","neutronbar percentage", 100, 0., 100.);
+    mapofhistos["anti_sigma-"] = tfs->make<TH1F>("hsigmaminusbar","anti_sigma- percentage", 100, 0., 100.);
+    mapofhistos["anti_proton"] = tfs->make<TH1F>("hpar","pbar percentage", 100, 0., 100.);
+    mapofhistos["anti_xi-"] = tfs->make<TH1F>("hantiximinus","anti_xi-percentage", 100, 0., 100.);
+    mapofhistos["anti_omega-"] = tfs->make<TH1F>("hantiomegaminus","anti_omega- percentage", 100, 0., 100.);
+    mapofhistos["anti_sigma+"] = tfs->make<TH1F>("hantisigmaplus","anti_sigma+percentage", 100, 0., 100.);
+    mapofhistos["anti_lambda"] = tfs->make<TH1F>("hlambdabar","anti_lambda percentage", 100, 0., 100.);
+    mapofhistos["anti_xi0"] = tfs->make<TH1F>("hxi0bar","anti_xi0 percentage", 100, 0., 100.);
+    mapofhistos["other"] = tfs->make<TH1F>("hother","other percentage", 100, 0., 100.); // Just in case 
+    //
+    ncmapofhistos["deuteron"] = tfs->make<TH1F>("NCeren_deuteron","deuteronp ercentage", 100, 0., 100.);
+    ncmapofhistos["triton"] = tfs->make<TH1F>("NCeren_triton","triton percentage", 100, 0., 100.);
+    ncmapofhistos["He3"] = tfs->make<TH1F>("NCeren_He3","He3 percentage", 100, 0., 100.);
+    ncmapofhistos["proton"] = tfs->make<TH1F>("NCeren_proton","proton percentage", 100, 0., 100.);
+    ncmapofhistos["e+"] = tfs->make<TH1F>("NCeren_e+","e+ percentage", 100, 0., 100.);
+    ncmapofhistos["e-"] = tfs->make<TH1F>("NCeren_e-","e- percentage", 100, 0., 100.);
+    ncmapofhistos["mu+"] = tfs->make<TH1F>("NCeren_mu+","mu+ percentage", 100, 0., 100.);
+    ncmapofhistos["mu-"] = tfs->make<TH1F>("NCeren_mu-","mu- percentage", 100, 0., 100.);
+    ncmapofhistos["pi+"] = tfs->make<TH1F>("NCeren_pi+","pi+ percentage", 100, 0., 100.);
+    ncmapofhistos["pi-"] = tfs->make<TH1F>("NCeren_pi-","pi- percentage", 100, 0., 100.);
+    ncmapofhistos["kaon+"] = tfs->make<TH1F>("NCeren_kaon+","kaon+ percentage", 100, 0., 100.);
+    ncmapofhistos["kaon-"] = tfs->make<TH1F>("NCeren_kaon-","kaon- percentage", 100, 0., 100.);
+    ncmapofhistos["sigma+"] = tfs->make<TH1F>("NCeren_sigma+","sigma+ percentage", 100, 0., 100.);
+    ncmapofhistos["sigma-"] = tfs->make<TH1F>("NCeren_sigma-","sigma- percentage", 100, 0., 100.);
+    ncmapofhistos["xi-"] = tfs->make<TH1F>("NCeren_xi-","xi- percentage", 100, 0., 100.);
+    ncmapofhistos["anti_sigma+"] = tfs->make<TH1F>("NCeren_anti_sigma+","anti_sigma+ percentage", 100, 0., 100.);
+    ncmapofhistos["anti_sigma-"] = tfs->make<TH1F>("NCeren_anti_sigma-","anti_sigma- percentage", 100, 0., 100.);
+    ncmapofhistos["anti_proton"] = tfs->make<TH1F>("NCeren_anti_proton","anti_proton percentage", 100, 0., 100.);
+    ncmapofhistos["anti_xi-"] = tfs->make<TH1F>("NCeren_anti_xi-","anti_xi- percentage", 100, 0., 100.);
+    ncmapofhistos["anti_omega-"] = tfs->make<TH1F>("NCeren_anti_omega-","anti_omega- percentage", 100, 0., 100.);
+    ncmapofhistos["other"] = tfs->make<TH1F>("NCeren_other","other percentage", 100, 0., 100.); // Just in case 
+    const unsigned int numz=10;
+    for (unsigned int jj=0;jj<numz;jj++)
+      {
+	std::string histonamethin= "Edep_thin_lay"+std::to_string(jj);
+	std::string histonamethick= "Edep_thick_lay"+std::to_string(jj);
+	cout<<histonamethin<<endl;
+	cout<<histonamethin.c_str()<<endl;
+	vecofhistosthin.push_back(tfs->make<TH1F>(histonamethin.c_str(),histonamethin.c_str(), 100, 0., 2.));
+        vecofhistosthick.push_back(tfs->make<TH1F>(histonamethick.c_str(),histonamethick.c_str(), 100, 0., 2.));
+      }
 } // end beginJob
 
 void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
     typedef std::vector< art::Handle<DRCalorimeterHitCollection> > DRHandleVector;
-    //    string *proton="proton";
-    //string *ETot="ETot";
     DRHandleVector allDRSims;
     double sumDRE=0;
+    double sumNCeren = 0.0;
+    unsigned int numz=10;
+    //unsigned int numy=6;
+
+    std::vector<double> edepthin;
+    std::vector<double> edepthick;
+    std::vector<double> ncerenthin;
+    std::vector<double> ncerenthick;
+    for (unsigned int ijk=0;ijk<numz;ijk++)
+      {
+	edepthin.push_back(0.0);
+	edepthick.push_back(0.0);
+	ncerenthin.push_back(0.0);
+	ncerenthick.push_back(0.0);
+      }
     event.getManyByType(allDRSims);
-    cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
+    //cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
-        const DRCalorimeterHitCollection & DRsims(**i);
-        sumDRE = 0.0;
-        double sumNCeren = 0.0;
-        _hnDRHits->Fill(DRsims.size());
-        for (DRCalorimeterHitCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
-            const DRCalorimeterHit& hit = *j;
-            sumDRE = sumDRE + hit.Edep;
-            sumNCeren = sumNCeren + hit.Nceren;
-        }
-        _hDREdep->Fill(sumDRE / CLHEP::GeV);
-        _hNCeren->Fill(sumNCeren);
+      art::Handle<DRCalorimeterHitCollection> ih = *i;
+       auto const* prov  = ih.provenance();
+       string iname = prov->productInstanceName();
+       const DRCalorimeterHitCollection & DRsims(**i);
+       _hnDRHits->Fill(DRsims.size());
+       for (DRCalorimeterHitCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
+	 const DRCalorimeterHit& hit = *j;
+	 unsigned int lay = (int)(hit.GetID()/(numz*numz));
+	 //unsigned int jj = (int)(((hit.GetID()-kk*(numz*numz)))/numy);
+	 //unsigned int ii = (int)(hit.GetID()-kk*(numz*numz)-jj*numy);		    
+	 //cout << "ID:  "<<hit.GetID()<<"  Layer:  "<< kk<<"  Column:  " << jj<< "  row:  "<< ii<<endl;	    
+	 sumDRE = sumDRE + hit.GetEdep();
+	 sumNCeren = sumNCeren + hit.GetNceren();
+	 if(iname.find("thin")!= std::string::npos)
+	   {
+	     edepthin[lay]=edepthin[lay]+hit.GetEdep();
+	     ncerenthin[lay]=ncerenthin[lay]+hit.GetNceren();
+	   } else
+	   {
+	     edepthick[lay]=edepthick[lay]+hit.GetEdep();
+	     ncerenthick[lay]=ncerenthick[lay]+hit.GetNceren();
+	   }
+       }
     }
-    typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
+    _hDREdep->Fill(sumDRE / CLHEP::GeV);
+    _hNCeren->Fill(sumNCeren);
+    _hEdepvsNCeren->Fill(sumDRE / CLHEP::GeV,sumNCeren);
+   for (unsigned int ijk=0;ijk<numz;ijk++)
+      {
+	vecofhistosthin[ijk]->Fill(edepthin[ijk] / CLHEP::GeV);
+	vecofhistosthick[ijk]->Fill(edepthick[ijk] / CLHEP::GeV);
+      }
+     _ntuple->Fill(event.event(),
+		 edepthin[0],
+		 edepthin[1],
+		 edepthin[2],
+		 edepthin[3],
+		 edepthin[4],
+		 edepthin[5],
+		 edepthin[6],
+		 edepthin[7],
+		 edepthin[8],
+		 edepthin[9]);
+     _ntuple2->Fill(event.event(),
+		 ncerenthin.at(0),
+		 ncerenthin.at(1),
+		 ncerenthin.at(2),
+		 ncerenthin.at(3),
+		 ncerenthin.at(4),
+		 ncerenthin.at(5),
+		 ncerenthin.at(6),
+		 ncerenthin.at(7),
+		 ncerenthin.at(8),
+		 ncerenthin.at(9));     
+     typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
     EdepHandleVector allEdeps;
     event.getManyByType(allEdeps);
-       cout << "number of Edep collections size:  " << allEdeps.size() << endl;
-    for (EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
-        const ByParticle & Edeps(**i);
-	bool Edep=false;	
-	double ETot = 0.0;
-        double EProton = 0.0;
-        cout << "Edep collection size:  " << Edeps.size() << endl;
-	//cout << "Edep total:  "<< Edeps[ETot]<<"  Edep proton:  "<< Edeps[proton]<<endl;
-        for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
-            std::cout << "Particle: " << it->first << "   " << it->second << " % " << std::endl;
-	    if (it->first=="proton")  EProton=  it->second;
-	    if (it->first=="ETot") {
-	      ETot =   0.001*it->second;
-	      Edep=true;
-	    }
-	}
-	if (Edep)
+    bool first=true;
+    ByParticle addup;
+    ByParticle addupnc;
+    double junkie=0.0;
+    for ( EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
+      art::Handle<ByParticle> ih = *i;
+      auto const* prov  = ih.provenance();
+      string instancename = prov->productInstanceName();
+      if(instancename.find("NCeren")!= std::string::npos) {
+	const ByParticle & Edeps(**i);
+	if (first){
+	  addupnc = Edeps;
+	  junkie = Edeps.at("NCerentot");
+	  first=false;
+	} 
+	else 
 	  {
-	    cout << "proton:  "<<EProton<<" Total: " << ETot<<endl;
-	    _hEdepvsproton->Fill(EProton,ETot);
-	    _ntuple->Fill(ETot,EProton);
+	    junkie = junkie+ Edeps.at("NCerentot");
+	    for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
+	      addupnc[it->first]=addupnc[it->first]+it->second;
+	    }
 	  }
+      }
+      else if(instancename.find("Edep")!= std::string::npos) 
+	     {
+	       std::cout << ":::::::::::::::::::::::::::::"<<std::endl;
+	       const ByParticle & Edeps(**i);
+	       if (first){
+		 addup = Edeps;
+		 junkie = Edeps.at("Etot");
+		 first=false;
+	       } 
+	       else 
+		 {
+		   junkie = junkie+ Edeps.at("Etot");
+		   for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
+		     addup[it->first]=addup[it->first]+it->second;
+		   }
+		 }
+	       /*
+		 for (std::map<std::string, double>::const_iterator it = Edeps.begin(); it != Edeps.end(); ++it) {
+		 
+		 if (mapofhistos.find(it->first) != mapofhistos.end()) mapofhistos[it->first]->Fill((100.*it->second)/junkie);
+		 }
+	       */
+	     }
+    }
+    for (std::map<std::string, double>::const_iterator it = addup.begin(); it != addup.end(); ++it) {
+      if (mapofhistos.find(it->first) != mapofhistos.end()) mapofhistos[it->first]->Fill((100.*it->second)/junkie);
+    }
+    for (std::map<std::string, double>::const_iterator it = addupnc.begin(); it != addupnc.end(); ++it) {
+      if (ncmapofhistos.find(it->first) != ncmapofhistos.end()) ncmapofhistos[it->first]->Fill((100.*it->second)/junkie);
     }
 } // end analyze
 
 void artg4tk::CheckDRCalorimeterHits::endJob() {
 
 }// end endJob
-
 using artg4tk::CheckDRCalorimeterHits;
 
 DEFINE_ART_MODULE(CheckDRCalorimeterHits)

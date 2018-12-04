@@ -8,8 +8,8 @@
 namespace artg4tk {
 
     class DRCalorimeterHit {
-    public: // change later
-      int    ID;
+    private: 
+      unsigned int    ID;
       double Edep;
       double em_Edep;
       double nonem_Edep;
@@ -43,7 +43,7 @@ namespace artg4tk {
         double GetEdep() {
             return Edep;
         };
-      void SetID(int id)      { ID = id; };
+      void SetID(unsigned int id)      { ID = id; };
       void SetEdep(double de)      { Edep = de; };
       void Setem_Edep(double de)      { em_Edep = de; };
       void Setnonem_Edep(double de)      { nonem_Edep = de; }; 
@@ -53,11 +53,11 @@ namespace artg4tk {
       void SetZpos(double z){ xpos = z; };
       void SetTime(double t){ time = t; };
 
-      int    GetID()   const  { return ID; };  
+      unsigned int    GetID()   const  { return ID; };  
       double GetEdep() const   { return Edep; }; 
       double GetEdepEM() const   { return em_Edep; }; 
       double GetEdepnonEM()  const  { return nonem_Edep; };
-      int    GetNCeren() const { return Nceren;};
+      int    GetNceren() const { return Nceren;};
       double GetXpos()   const { return xpos; };
       double GetYpos()   const { return ypos; };
       double GetZpos()   const { return zpos; };

@@ -29,7 +29,7 @@
 // artg4 includes:
 #include "artg4tk/services/DetectorHolder_service.hh"
 // artg4tk includes:
-#include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
+//#include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
 // Root includes.
@@ -56,12 +56,19 @@ public:
     virtual void analyze(const art::Event& event);
 
 private:
-
-    TH1F* _hnDRHits;// number of DRCaloHits
-    TH1F* _hDREdep;// total energy deposition in DRCaloHits
-    TH1F* _hNCeren;// total number of Cerenkovphotons in DRCaloHits
-    TH2F* _hEdepvsproton;
-    TNtuple* _ntuple;
+  std::map<std::string,TH1F*> mapofhistos;
+  std::map<std::string,TH1F*> ncmapofhistos;
+  std::vector<TH1F*> vecofhistosthin;
+  std::vector<TH1F*> vecofhistosthick;
+  std::vector<double> edepthin;
+  std::vector<double> edepthick;
+  TH1F* _hnDRHits;// number of DRCaloHits
+  TH1F* _hDREdep;// total energy deposition in DRCaloHits
+  TH1F* _hNCeren;// total number of Cerenkovphotons in DRCaloHits
+  //  TH1F* _hEdepvsproton;
+  TH2F* _hEdepvsNCeren;
+  TNtuple* _ntuple;
+  TNtuple* _ntuple2;
 };
 
 #endif	/* CHECKDRCALORIMETERHITS_MODULE_HH */
