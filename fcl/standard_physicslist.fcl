@@ -1,0 +1,14 @@
+    standard_physicslist: { 
+	PhysicsListName: "FTFP_BERT"
+	DumpList: true	
+  	enableCerenkov: true
+	CerenkovStackPhotons: false
+	CerenkovTrackSecondariesFirst: false
+  	enableScintillation: false
+  	enableAbsorption: true   
+  	enableRayleigh: false     
+  	enableMieHG: false       
+  	enableBoundary: false    
+  	enableWLS: false
+	Verbosity: 0
+}
