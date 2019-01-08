@@ -141,7 +141,8 @@ namespace artg4tk {
 
 // Constructor - set parameters
 artg4tk::artg4tkMain::artg4tkMain(fhicl::ParameterSet const & p)
-  : runManager_(),
+  : art::EDProducer(p),
+    runManager_(),
     session_(0),
     UI_(0),
 	seed_(p.get<long>("seed", -1)),
