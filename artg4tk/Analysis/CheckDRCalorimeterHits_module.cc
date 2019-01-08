@@ -8,20 +8,23 @@
 //
 // artg4tk: art based Geant 4 Toolkit
 // 
-//=============================================================================
+//===============================================================================
 // CheckDRCalorimeterHits_module.cc: Analyzer module that demonstrates access to 
 // DRCalorimeter hits and makes some histograms
 // 
 // Author: Hans Wenzel (Fermilab)
-//=============================================================================
+//===============================================================================
 #include "artg4tk/Analysis/CheckDRCalorimeterHits_module.hh"
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Provenance.h"
+#include "fhiclcpp/ParameterSetID.h"
+#include "fhiclcpp/ParameterSet.h"
 
 artg4tk::CheckDRCalorimeterHits::CheckDRCalorimeterHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),
+pstl(p.get<fhicl::ParameterSet>("pstl")),
 _hnDRHits(0),
 _hDREdep(0),
 _hNCeren(0),
@@ -31,7 +34,6 @@ _ntuple2(0){
 }
 
 void artg4tk::CheckDRCalorimeterHits::beginRun(const art::Run& thisRun) {
-  //  std::cout << "******************************Run: " << thisRun.id() << ": looking at Run Header" << std::endl;
 }
 
 void artg4tk::CheckDRCalorimeterHits::beginJob() {
@@ -40,7 +42,6 @@ void artg4tk::CheckDRCalorimeterHits::beginJob() {
     _hDREdep = tfs->make<TH1F>("hDREdep", "total Energy deposition in DRCaloArtHits", 100, 0., 11.);
     _hNCeren = tfs->make<TH1F>("hNCeren", "total number of Cerenkov Photons in DRCaloArtHits", 100, 0., 10000.);
     _hEdepvsNCeren= tfs->make<TH2F>("hEdepvsNCeren","Edep vs. NCeren",100,0,11,100,0,10000.);
-    //_ntuple = tfs->make<TNtuple>("ntuple","deposit by layer",			  "EVIS:PPERC");
     _ntuple = tfs->make<TNtuple>("ntuple", "Demo ntuple","Event:Edep0:Edep1:Edep2:Edep3:Edep4:Edep5:Edep6:Edep7:Edep8:Edep9");
     _ntuple2 = tfs->make<TNtuple>("ntuple2", "Demo ntuple","Event:Nceren0:Nceren1:Nceren2:Nceren3:Nceren4:Nceren5:Nceren6:Nceren7:Nceren8:Nceren9");
     mapofhistos["Fragment"] = tfs->make<TH1F>("hFragment","Fragment percentage", 100, 0., 100.);
@@ -106,6 +107,8 @@ void artg4tk::CheckDRCalorimeterHits::beginJob() {
 	vecofhistosthin.push_back(tfs->make<TH1F>(histonamethin.c_str(),histonamethin.c_str(), 100, 0., 2.));
         vecofhistosthick.push_back(tfs->make<TH1F>(histonamethick.c_str(),histonamethick.c_str(), 100, 0., 2.));
       }
+    std::cout << " artg4tk::CheckDRCalorimeterHits: The name of the used reference physics list is: "<< pstl.get<std::string>("PhysicsListName")<<std::endl;
+
 } // end beginJob
 
 void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
@@ -114,8 +117,6 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
     double sumDRE=0;
     double sumNCeren = 0.0;
     unsigned int numz=10;
-    //unsigned int numy=6;
-
     std::vector<double> edepthin;
     std::vector<double> edepthick;
     std::vector<double> ncerenthin;
@@ -128,11 +129,19 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
 	ncerenthick.push_back(0.0);
       }
     event.getManyByType(allDRSims);
-    //cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
       art::Handle<DRCalorimeterHitCollection> ih = *i;
        auto const* prov  = ih.provenance();
        string iname = prov->productInstanceName();
+       string pname = prov->processName ();
+       std::cout<<"iname:  "<< iname<<std::endl;
+       std::cout<<"pname:  "<< pname<<std::endl;
+       fhicl::ParameterSet ps =  prov->parameterSet ();
+       std::vector< std::string > names=  ps.get_names (); 
+       
+       for (vector<string>::iterator t=names.begin(); t!=names.end(); ++t) {
+	 std::cout<<*t<<std::endl;
+       }
        const DRCalorimeterHitCollection & DRsims(**i);
        _hnDRHits->Fill(DRsims.size());
        for (DRCalorimeterHitCollection::const_iterator j = DRsims.begin(); j != DRsims.end(); ++j) {
@@ -195,6 +204,7 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
       art::Handle<ByParticle> ih = *i;
       auto const* prov  = ih.provenance();
       string instancename = prov->productInstanceName();
+      
       if(instancename.find("NCeren")!= std::string::npos) {
 	const ByParticle & Edeps(**i);
 	if (first){
@@ -212,7 +222,6 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
       }
       else if(instancename.find("Edep")!= std::string::npos) 
 	     {
-	       std::cout << ":::::::::::::::::::::::::::::"<<std::endl;
 	       const ByParticle & Edeps(**i);
 	       if (first){
 		 addup = Edeps;

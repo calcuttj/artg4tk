@@ -1,7 +1,8 @@
+#include "standard_physicslist.fcl"
 process_name:processA
 source: {
   module_type: EmptyEvent
-  maxEvents:  1000
+  maxEvents:  2
 }
 services: {
   message : {
@@ -25,20 +26,7 @@ services: {
     ActionHolder: {}
     RandomNumberGenerator: {}
     PhysicsListHolder: {} 
-    PhysicsList: { 
-	PhysicsListName: "FTFP_BERT"
-	DumpList: true	
-  	enableCerenkov: true
-	CerenkovStackPhotons: false
-	CerenkovTrackSecondariesFirst: false
-  	enableScintillation: false
-  	enableAbsorption: true   
-  	enableRayleigh: false     
-  	enableMieHG: false       
-  	enableBoundary: false    
-  	enableWLS: false
-	Verbosity: 0
-}
+    PhysicsList: @local::standard_physicslist
 
     // Detector(s) for the simulation
     GDMLDetector : 
@@ -74,6 +62,8 @@ physics: {
     artg4Main: {
       module_type: artg4Main
       enableVisualization: false
+      uiAtEndEvent: false
+      uiAtBeginRun: false
       macroPath: ".:./macros"
       visMacro: "vis.mac"
       //afterEvent: pause
@@ -83,7 +73,8 @@ physics: {
    CheckPhotonHits: {   module_type: CheckPhotonHits
 		  DumpGDML: false}	
    CheckDRCalorimeterHits: {   module_type: CheckDRCalorimeterHits
-		  DumpGDML: false}
+		  DumpGDML: false
+                  pstl: @local::standard_physicslist}
 }
 
   path1: [ artg4Main ]
