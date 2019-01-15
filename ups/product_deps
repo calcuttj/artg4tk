@@ -34,7 +34,7 @@ gdmldir product_dir 	gdml
 # Add the dependent product and version
 
 product          version
-art             v3_00_00
+art             v3_01_00
 geant4          v4_10_3_p03c
 cetbuildtools   v7_04_00       -       only_for_build
 end_product_list
