@@ -54,6 +54,7 @@ namespace artg4tk {
 }
 
 artg4tk::EventGenerator::EventGenerator( fhicl::ParameterSet const& pset ):
+  EDProducer{pset},
   _nparticles(pset.get<int>("nparticles",1)),
   fPDG(pset.get<int>("pdgcode",2212)),
   fMass(pset.get<double>("mass",0.938272)), // mass in GeV !!!

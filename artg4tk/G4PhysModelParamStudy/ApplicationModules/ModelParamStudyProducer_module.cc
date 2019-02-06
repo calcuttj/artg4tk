@@ -1,4 +1,3 @@
-
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
@@ -95,7 +94,8 @@ namespace artg4tk {
 }
 
 artg4tk::ModelParamStudyProducer::ModelParamStudyProducer( const fhicl::ParameterSet& p )
-   : fLogInfo("ModelParamStudyProducer")
+  : EDProducer{p}
+  , fLogInfo("ModelParamStudyProducer")
 {
     
    fVerbosity       = p.get<int>("Verbosity",0);
