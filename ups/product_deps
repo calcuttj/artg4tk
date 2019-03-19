@@ -3,7 +3,7 @@
 # The *parent* line must the first non-commented line and defines this product and version
 # The version should be of the form vxx_yy_zz (e.g. v01_02_03)
 parent artg4tk v09_02_01
-defaultqual e15
+defaultqual e17
 
 # These optional lines define the installed directories where headers,
 # libraries, and executables will be found.
@@ -44,8 +44,6 @@ end_product_list
 qualifier        art               geant4        notes
 e17:debug        e17:debug         e17:debug
 e17:prof         e17:prof          e17:prof
-e15:debug        e15:debug         e15:debug
-e15:prof         e15:prof          e15:prof
 c2:debug         c2:debug          c2:debug
 c2:prof          c2:prof           c2:prof
 end_qualifier_list
