@@ -26,9 +26,9 @@ include(CetCMakeEnv)
 cet_cmake_env()
 
 cet_set_compiler_flags(DIAGS CAUTIOUS
-WERROR
+  WERROR
   NO_UNDEFINED
-EXTRA_FLAGS -pedantic -Wl,--no-allow-shlib-undefined
+  EXTRA_FLAGS -pedantic
 )
 
 cet_report_compiler_flags()
