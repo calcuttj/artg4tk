@@ -1,6 +1,13 @@
-art_make(SERVICE_LIBRARIES
-   ${MF_MESSAGELOGGER}
-  artg4tk_services_ActionHolder_service
-  artg4tk_actionBase
-  ${G4_LIB_LIST}
-  ${CLHEP})
+art_make(
+  SERVICE_LIBRARIES
+    art_Framework_Services_Registry
+    artg4tk_actionBase
+    artg4tk_services_ActionHolder_service
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    canvas
+    cetlib_except
+    clhep
+    fhiclcpp
+    MF_MessageLogger
+)

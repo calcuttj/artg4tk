@@ -1,3 +1,7 @@
-art_make(LIB_LIBRARIES ${CANVAS} ${CLHEP})
+art_make(
+  LIB_LIBRARIES
+    canvas
+    clhep
+)
 
-install_headers() 
+install_headers()

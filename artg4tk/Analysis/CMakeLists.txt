@@ -1,10 +1,21 @@
-art_make(MODULE_LIBRARIES
-  ${ART_FRAMEWORK_SERVICES_OPTIONAL_TFILESERVICE_SERVICE}
-  ${ART_FRAMEWORK_SERVICES_OPTIONAL}
-  ${ART_FRAMEWORK_SERVICES_REGISTRY}
-  ${ART_PERSISTENCY_PROVENANCE}
-  ${G4_LIB_LIST}
-  ${ROOT_HIST}
-  ${ROOT_TREE}
-  ${CLHEP}
-  artg4tk_DataProducts_EventGenerators)
+art_make(
+  MODULE_LIBRARIES
+    art_Framework_Core
+    art_Framework_Principal
+    art_Framework_Services_Optional
+    art_Framework_Services_Optional_TFileService_service
+    art_Framework_Services_Registry
+    artg4tk_DataProducts_EventGenerators
+    art_Persistency_Provenance
+    art_Utilities
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    canvas
+    cetlib_except
+    clhep
+    ${ROOT_CORE}
+    fhiclcpp
+    ${G4ZLIB}
+    ${ROOT_HIST}
+    ${ROOT_TREE}
+)

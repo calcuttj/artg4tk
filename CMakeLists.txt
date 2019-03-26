@@ -1,65 +1,40 @@
-# ======================================================================
-#  artg4tk main build file
-#
-#  . mrb slp   # Run if you have local products to set up
-#  . mrbsetenv     # Needed to set up local development products
-#  mrb b       # Build
-#  mrb t       # Test (if applicable)
-#  mrb i       # Install to local products
-#  art -c <fhicl_file>  # Run!
-#
-# ======================================================================
-
-# use cmake 3.7 or later
-cmake_minimum_required (VERSION 3.7)
+cmake_minimum_required(VERSION 3.7)
 
 project(artg4tk)
 
-# cetbuildtools contains our cmake modules
 find_package(cetbuildtools REQUIRED)
-
-list(APPEND CMAKE_MODULE_PATH
-  $ENV{CANVAS_ROOT_IO_DIR}/Modules
-  $ENV{ART_DIR}/Modules)
 
 include(CetCMakeEnv)
 cet_cmake_env()
 
-cet_set_compiler_flags(DIAGS CAUTIOUS
-  WERROR
-  NO_UNDEFINED
-  EXTRA_FLAGS -pedantic
-)
+cet_set_compiler_flags(DIAGS CAUTIOUS WERROR NO_UNDEFINED EXTRA_FLAGS -pedantic)
+
+#if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined,--no-allow-shlib-undefined,--as-needed")
+#set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULELINKER_FLAGS} -Wl,--no-undefined,--no-allow-shlib-undefined,--as-needed")
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined,--no-allow-shlib-undefined,--as-needed")
+#endif()
 
 cet_report_compiler_flags()
 
-# Locate some UPS areas and setup include paths
-# These are needed for Art stuff
-
-find_ups_product(cetbuildtools)
-#
-find_ups_product(xerces_c)
 find_ups_product(art)
+find_ups_boost()
 find_ups_product(canvas)
+find_ups_product(canvas_root_io)
+find_ups_product(cetlib_except)
+find_ups_product(clhep)
 find_ups_product(fhiclcpp)
-find_ups_product(messagefacility)
 find_ups_geant4()
+find_ups_product(messagefacility)
 
-# macros for dictionary and simple_plugin
+list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules)
+
 include(ArtDictionary)
 include(ArtMake)
 include(BuildPlugins)
-
-# Build these directories
-add_subdirectory( artg4tk )
-add_subdirectory( fcl )
-add_subdirectory( examples )
-
-# ups - table and config files
-
-add_subdirectory(ups)
-
-
-# packaging utility
-
 include(UseCPack)
+
+add_subdirectory(artg4tk)
+add_subdirectory(examples)
+add_subdirectory(fcl)
+add_subdirectory(ups)

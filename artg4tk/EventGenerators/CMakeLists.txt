@@ -1,3 +1,14 @@
-art_make(MODULE_LIBRARIES
-  artg4tk_DataProducts_EventGenerators
-  ${ART_PERSISTENCY_PROVENANCE})
+art_make(
+  MODULE_LIBRARIES
+    art_Framework_Core
+    art_Framework_Principal
+    artg4tk_DataProducts_EventGenerators
+    art_Persistency_Provenance
+    art_Utilities
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    canvas
+    cetlib_except
+    clhep
+    fhiclcpp
+)
