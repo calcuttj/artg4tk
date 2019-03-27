@@ -1,1 +1,17 @@
-simple_plugin(PrimaryEventAction "service" ${G4_LIB_LIST} art_Framework_Principal artg4tk_actionBase ${CLHEP})
+art_make(
+  SERVICE_LIBRARIES
+    art_Framework_Principal
+    art_Framework_Services_Registry
+    artg4tk_actionBase
+    artg4tk_services_ActionHolder_service
+    art_Persistency_Provenance
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    canvas
+    cetlib_except
+    clhep
+    fhiclcpp
+    ${G4GLOBAL}
+    ${G4PARTICLES}
+    MF_MessageLogger
+)

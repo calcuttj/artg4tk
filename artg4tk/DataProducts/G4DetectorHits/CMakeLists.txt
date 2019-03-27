@@ -1,3 +1,6 @@
-art_make(LIB_LIBRARIES ${G4_LIB_LIST})
+art_make(
+  LIB_LIBRARIES
+    ${G4PARTICLES}
+)
 
-install_headers() 
+install_headers()

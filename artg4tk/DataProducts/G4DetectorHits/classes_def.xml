@@ -1,7 +1,3 @@
-<!--  -->
-<!--  $Id: Exp $     -->
-<!--  -->
-
 <lcgdict>
  <class name="artg4tk::ArtG4tkVtx"/>
  <class name="artg4tk::ArtG4tkParticle"/>

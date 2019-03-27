@@ -1,9 +1,8 @@
-#
-find_library( ROOMULIB NAMES plotutils PATHS $ENV{ROOMU_SYS}/lib NO_DEFAULT_PATH )
-## ---> MESSAGE( STATUS "ROOMULIB: ${ROOMULIB}" )
-#
-include_directories($ENV{ROOMU_SYS})
-#
-art_make( LIB_LIBRARIES "${ROOMULIB}" )
+find_library(ROOMULIB NAMES plotutils PATHS $ENV{ROOMU_SYS}/lib NO_DEFAULT_PATH)
 
-# install_headers()
+include_directories($ENV{ROOMU_SYS})
+
+art_make(
+  LIB_LIBRARIES
+    ${ROOMULIB}
+)
