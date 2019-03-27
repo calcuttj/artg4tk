@@ -4,6 +4,8 @@ project(artg4tk)
 
 find_package(cetbuildtools REQUIRED)
 
+list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules)
+
 include(CetCMakeEnv)
 cet_cmake_env()
 
@@ -27,14 +29,14 @@ find_ups_product(fhiclcpp)
 find_ups_geant4()
 find_ups_product(messagefacility)
 
-list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules)
-
 include(ArtDictionary)
 include(ArtMake)
 include(BuildPlugins)
-include(UseCPack)
 
 add_subdirectory(artg4tk)
 add_subdirectory(examples)
 add_subdirectory(fcl)
 add_subdirectory(ups)
+
+# packaging utility - must be included last
+include(UseCPack)
