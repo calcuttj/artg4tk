@@ -15,7 +15,7 @@
 
 #include "art/Framework/Principal/Event.h"
 //
-#include "art/Framework/Services/Optional/TFileService.h"
+#include "art_root_io/TFileService.h"
 //
 // Run/Eevent data products
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"        // Event data product
