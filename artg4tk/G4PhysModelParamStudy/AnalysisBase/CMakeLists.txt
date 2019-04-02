@@ -8,7 +8,7 @@ execute_process(
 
 art_make(
   LIB_LIBRARIES
-    art_Framework_Services_Optional_TFileService_service
+    art_root_io_TFileService_service
     artg4tk_ExpDataAccess
     artg4tk_G4PhysModelParamStudy_AnalysisProducts
     artg4tk_G4PhysModelParamStudy_AnalysisProducts_dict
