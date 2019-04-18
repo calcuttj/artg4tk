@@ -3,4 +3,3 @@
 #include <map>
 #include <string>
 #include <vector>
-template class art::Wrapper<artg4tk::ArtG4tkModelConfig>;
