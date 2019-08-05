@@ -16,12 +16,8 @@
 #include "artg4tk/pluginDetectors/gdml/PhotonSD.hh"
 #include "Geant4/G4VProcess.hh"
 #include "Geant4/G4OpticalPhoton.hh"
-#include "Geant4/G4HCofThisEvent.hh"
 #include "Geant4/G4Step.hh"
 #include "Geant4/G4ThreeVector.hh"
-#include "Geant4/G4SDManager.hh"
-#include "Geant4/G4ios.hh"
-#include "Geant4/G4VVisManager.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -79,4 +75,3 @@ G4bool artg4tk::PhotonSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     theTrack->SetTrackStatus(fStopAndKill);
     return true;
 }
-

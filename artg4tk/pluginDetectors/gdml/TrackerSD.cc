@@ -12,18 +12,12 @@
 // TrackerSD.cc: Class representing a sensitive tracking detector
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
+
 #include "artg4tk/pluginDetectors/gdml/TrackerSD.hh"
-#include "Geant4/G4HCofThisEvent.hh"
 #include "Geant4/G4Step.hh"
 #include "Geant4/G4ThreeVector.hh"
-#include "Geant4/G4SDManager.hh"
-#include "Geant4/G4ios.hh"
-#include "Geant4/G4VVisManager.hh"
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4EventManager.hh"
-#include "Geant4/G4VSolid.hh"
-#include "Geant4/G4UnitsTable.hh"
 #include "Geant4/G4SystemOfUnits.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //namespace artg4tk {
 
@@ -68,4 +62,3 @@ G4bool  artg4tk::TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*) {
     trackerCollection.push_back(newHit);
     return true;
 }
-

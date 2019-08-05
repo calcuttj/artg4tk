@@ -2,21 +2,22 @@
 
 #include "artg4tk/pluginActions/physicsList/PhysicsList_service.hh"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
-//#include "Geant4/G4PhysListFactory.hh"
+#include "fhiclcpp/ParameterSet.h"
+
 #include "Geant4/G4PhysListFactoryAlt.hh"  
 #include "Geant4/G4VModularPhysicsList.hh"
 #include "Geant4/G4PhysicsConstructorRegistry.hh"
 #include "Geant4/G4PhysListRegistry.hh"
+
 // geant 4 physics constructors:
 #include "Geant4/G4OpticalPhysics.hh"
 #include "Geant4/G4NeutronTrackingCut.hh"
-#include "Geant4/G4StepLimiter.hh"
 #include "Geant4/G4SystemOfUnits.hh"
 
 #include <fstream>
 #include <memory>
 
-artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p, art::ActivityRegistry &) :
+artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p) :
   PhysicsListName_( p.get<std::string>("PhysicsListName","FTFP_BERT")),
   DumpList_( p.get<bool>("DumpList",false)),
   enableNeutronLimit_(p.get<bool>("enableNeutronLimit",true)),  

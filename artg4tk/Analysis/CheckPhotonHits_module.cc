@@ -14,11 +14,44 @@
 // 
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#include "artg4tk/Analysis/CheckPhotonHits_module.hh"
-#include "art/Framework/Core/EDAnalyzer.h"
-#include "art/Framework/Core/ModuleMacros.h"
-#include "art/Framework/Principal/Event.h"
+
+// C++ includes.
+#include <iostream>
 #include <map>
+
+// art Framework includes.
+#include "art/Framework/Core/EDAnalyzer.h"
+#include "art/Framework/Principal/Event.h"
+#include "art/Framework/Principal/Handle.h"
+#include "art_root_io/TFileService.h"
+#include "art/Framework/Core/ModuleMacros.h"
+#include "art/Framework/Principal/fwd.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
+
+// artg4tk includes:
+#include "artg4tk/pluginDetectors/gdml/PhotonHit.hh"
+
+// Root includes.
+#include "TNtuple.h"
+
+using namespace std;
+namespace artg4tk {
+    class CheckPhotonHits;
+}
+
+class artg4tk::CheckPhotonHits : public art::EDAnalyzer {
+public:
+
+    explicit CheckPhotonHits(fhicl::ParameterSet const& p);
+    virtual void beginJob();
+    virtual void beginRun(const art::Run& Run);
+    virtual void endJob();
+    virtual void analyze(const art::Event& event);
+
+private:
+
+    TNtuple* _ntuple;
+};
 
 artg4tk::CheckPhotonHits::CheckPhotonHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),

@@ -47,17 +47,13 @@
 //
 // Geant 4 includes:
 #include "Geant4/G4SDManager.hh"
-#include "Geant4/G4VUserDetectorConstruction.hh"
 #include "Geant4/G4GDMLParser.hh"
-#include "Geant4/globals.hh"
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4LogicalVolumeStore.hh"
 #include "Geant4/G4VPhysicalVolume.hh"
 #include "Geant4/G4PhysicalVolumeStore.hh"
 #include "Geant4/G4UserLimits.hh"
-#include "Geant4/G4UnitsTable.hh"
-#include "Geant4/G4StepLimiter.hh"
-#include "Geant4/G4RegionStore.hh"
+
 // C++ includes
 #include <vector>
 #include <map>
@@ -78,7 +74,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return split(s, delim, elems);
 }
 
-artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p, art::ActivityRegistry &)
+artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p)
 : artg4tk::DetectorBase(p,
 			p.get<string>("name", "GDMLDetectorService"),
 			p.get<string>("category", "World"),

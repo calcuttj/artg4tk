@@ -1,12 +1,12 @@
 // Common materials used throughout the simulation
 
 #include "artg4tk/services/Dummy_service.hh"
+#include "art/Framework/Core/EDProducer.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 #include <iostream>
 
-artg4tk::DummyService::DummyService(fhicl::ParameterSet const &, 
-				  art::ActivityRegistry &)
+artg4tk::DummyService::DummyService(fhicl::ParameterSet const &)
 {
   std::cout << "DummyService has been constructed!" << std::endl;
 }

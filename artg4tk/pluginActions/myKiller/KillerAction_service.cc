@@ -29,18 +29,14 @@
 //=============================================================================
 
 #include "artg4tk/pluginActions/myKiller/KillerAction_service.hh"
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
 
 // G4 includes
-#include "Geant4/globals.hh"
-#include "Geant4/G4Step.hh"
 #include "Geant4/G4Track.hh"
 #include "Geant4/G4VProcess.hh"
+
 using std::string;
 
-artg4tk::KillerActionService::KillerActionService(fhicl::ParameterSet const & p,
-        art::ActivityRegistry &)
+artg4tk::KillerActionService::KillerActionService(fhicl::ParameterSet const & p)
 : StackingActionBase(p.get<string>("name", "myKillerAction")),
 killPi0(p.get<bool>("killPi0")),
 killeta(p.get<bool>("killeta")),
@@ -77,4 +73,3 @@ artg4tk::KillerActionService::~KillerActionService() {
 }
 using artg4tk::KillerActionService;
 DEFINE_ART_SERVICE(KillerActionService)
-

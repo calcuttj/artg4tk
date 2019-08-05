@@ -26,8 +26,8 @@
 #ifndef ARTG4_DETECTOR_CONSTRUCTION_HH
 #define ARTG4_DETECTOR_CONSTRUCTION_HH
 
-#include "Geant4/G4VPhysicalVolume.hh"
 #include "Geant4/G4VUserDetectorConstruction.hh"
+class G4VPhysicalVolume;
 
 namespace artg4tk {
 

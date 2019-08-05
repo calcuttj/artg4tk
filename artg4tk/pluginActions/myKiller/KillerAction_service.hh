@@ -34,8 +34,7 @@
 #define KILLERACTION_SERVICE_HH
 
 // Includes for general action service
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
+#include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
@@ -48,8 +47,7 @@ namespace artg4tk {
     class KillerActionService
     : public artg4tk::StackingActionBase {
     public:
-        KillerActionService(fhicl::ParameterSet const&,
-                art::ActivityRegistry&);
+      KillerActionService(fhicl::ParameterSet const&);
         virtual ~KillerActionService();
         virtual bool killNewTrack(const G4Track* aTrack) override;
     private:

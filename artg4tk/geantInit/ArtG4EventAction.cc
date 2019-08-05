@@ -10,13 +10,15 @@
 // Other local includes
 #include "artg4tk/services/ActionHolder_service.hh"
 #include "artg4tk/services/DetectorHolder_service.hh"
-#include "artg4tk/Core/DetectorBase.hh"
 
-// Art
+// art
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 
 // C++
 #include <map>
+
+// G4 includes
+#include "Geant4/G4Event.hh"
 
 using std::map;
 using std::string;

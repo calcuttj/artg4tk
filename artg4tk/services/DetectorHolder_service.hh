@@ -23,15 +23,14 @@
 #define DETECTOR_HOLDER_SERVICE_HH
 
 // Includes
+#include "art/Framework/Services/Registry/ServiceMacros.h"
 #include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
-#include "art/Framework/Core/EDProducer.h"
-
-
-//#include "artg4tk/Core/DetectorBase.hh"
+namespace art {
+  class EDProducer;
+  class Event;
+}
 
 #include <map>
-#include <vector>
 
 class G4HCofThisEvent;
 class G4VPhysicalVolume;
@@ -45,7 +44,7 @@ namespace artg4tk {
   public:
     
     // Constructor for GeometryHolder
-    DetectorHolderService(fhicl::ParameterSet const&, art::ActivityRegistry&);
+    DetectorHolderService(fhicl::ParameterSet const&);
     
     // This registers the passed detector with the service. 
     void registerDetector(DetectorBase * const db);

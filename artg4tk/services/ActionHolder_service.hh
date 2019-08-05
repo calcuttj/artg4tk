@@ -17,11 +17,13 @@
 #define ACTION_HOLDER_SERVICE_HH
 
 // Includes
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
-#include "art/Framework/Core/EDProducer.h"
-#include "art/Framework/Principal/Event.h"
-#include "art/Framework/Principal/Run.h"
+#include "fhiclcpp/fwd.h"
+#include "art/Framework/Services/Registry/ServiceMacros.h"
+namespace art {
+  class EDProducer;
+  class Event;
+  class Run;
+}
 
 #include <map>
 
@@ -30,11 +32,10 @@ class G4Event;
 class G4Track;
 class G4Step;
 
-#include "artg4tk/actionBase/ActionBase.hh"
-
 // Everything for the Art G4 simulation goes in the @artg4tk@ namespace
 namespace artg4tk {
   
+  class ActionBase;
   class RunActionBase;
   class EventActionBase;
   class TrackingActionBase;
@@ -45,7 +46,7 @@ namespace artg4tk {
   class ActionHolderService {
   public:
     // Constructor for ActionHolderService
-    ActionHolderService(fhicl::ParameterSet const &, art::ActivityRegistry&);
+    ActionHolderService(fhicl::ParameterSet const &);
 
     // This method registers the passed action object with the service
     void registerAction(RunActionBase * const action);

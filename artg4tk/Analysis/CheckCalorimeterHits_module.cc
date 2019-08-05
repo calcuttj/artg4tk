@@ -15,10 +15,43 @@
 // 
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#include "artg4tk/Analysis/CheckCalorimeterHits_module.hh"
+
 #include "art/Framework/Core/EDAnalyzer.h"
-#include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
+#include "art/Framework/Principal/Handle.h"
+#include "art_root_io/TFileService.h"
+#include "art/Framework/Core/ModuleMacros.h"
+#include "art/Framework/Principal/fwd.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
+#include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
+
+#include "CLHEP/Units/SystemOfUnits.h"
+
+#include "TH1F.h"
+#include "TNtuple.h"
+
+using namespace std;
+namespace artg4tk {
+    class CheckCalorimeterHits;
+}
+
+class artg4tk::CheckCalorimeterHits : public art::EDAnalyzer {
+public:
+
+    explicit CheckCalorimeterHits(fhicl::ParameterSet const& p);
+    virtual void beginJob();
+    virtual void beginRun(const art::Run& Run);
+    virtual void endJob();
+    virtual void analyze(const art::Event& event);
+
+private:
+
+  bool _DumpGDML; // enable/disable dumping of GDML geometry information
+  TH1F* _hnHits; // number of CaloHits
+  TH1F* _hEdep; // total energy deposition in CaloHits
+  TH1F* _haEdep; //  average energy deposition in CaloHits
+  TNtuple* _ntuple;
+};
 
 artg4tk::CheckCalorimeterHits::CheckCalorimeterHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),

@@ -35,25 +35,23 @@
 #define EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
 
 // art Includes:
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
+#include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
-#include "art/Framework/Core/EDProducer.h"
-// artg4tk includes:
-#include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
-// Geant 4 includes:
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4ParticleGun.hh"
 
+// artg4tk includes
+#include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
+
+// Geant 4 includes
+class G4Event;
+class G4ParticleGun;
 
 namespace artg4tk {
 
     class myParticleGunActionService
     : public artg4tk::PrimaryGeneratorActionBase {
     public:
-        myParticleGunActionService(fhicl::ParameterSet const&,
-                art::ActivityRegistry&);
+        myParticleGunActionService(fhicl::ParameterSet const&);
         virtual ~myParticleGunActionService();
         virtual void initialize() override;
         // To generate primaries, we need to overload the GeneratePrimaries

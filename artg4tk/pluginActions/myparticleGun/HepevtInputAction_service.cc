@@ -28,25 +28,22 @@
 // Authors: Tasha Arvanitis, Adam Lyon
 // Date: August 2012
 //=============================================================================
-// art includes:
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-// artg4tk includes:
+
+// Framework includes
+#include "fhiclcpp/ParameterSet.h"
+
+// artg4tk includes
 #include "artg4tk/pluginActions/myparticleGun/HepevtInputAction_service.hh"
-#include "artg4tk/services/ActionHolder_service.hh"
-// Geant 4  includes:
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4GeneralParticleSource.hh"
-#include "Geant4/G4ParticleTable.hh"
-#include "Geant4/G4ParticleDefinition.hh"
-#include "Geant4/globals.hh"
+
+// Geant4 includes
+#include "Geant4/G4VPrimaryGenerator.hh"
 #include "Geant4/G4HEPEvtInterface.hh"
 
 
 using std::string;
 
 artg4tk::HepevtInputActionService::
-HepevtInputActionService(fhicl::ParameterSet const & p,
-        art::ActivityRegistry &)
+HepevtInputActionService(fhicl::ParameterSet const & p)
 : PrimaryGeneratorActionBase(p.get<string>("name", "HepevtInput")),
 HEPEvt_(0),
 fileName_(p.get<std::string>("FileName")),

@@ -15,12 +15,51 @@
 // 
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#include "artg4tk/Analysis/CheckTrackerHits_module.hh"
-//#include "artg4tk/pluginActions/writeGdml/gdmlText.hh"
+
+// art Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
-#include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
-#include <math.h>  
+#include "art/Framework/Principal/Handle.h"
+#include "art_root_io/TFileService.h"
+#include "art/Framework/Core/ModuleMacros.h"
+#include "art/Framework/Principal/Run.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
+
+// artg4tk includes:
+#include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
+
+// Root includes.
+#include "TH1F.h"
+
+// Other includes.
+#include "CLHEP/Units/SystemOfUnits.h"
+
+// C++ includes
+#include <math.h>
+
+using namespace std;
+namespace artg4tk {
+    class CheckTrackerHits;
+}
+
+class artg4tk::CheckTrackerHits : public art::EDAnalyzer {
+public:
+
+    explicit CheckTrackerHits(fhicl::ParameterSet const& p);
+    virtual void beginJob();
+    virtual void beginRun(const art::Run& Run);
+    virtual void endJob();
+    virtual void analyze(const art::Event& event);
+
+private:
+
+
+  TH1F* _hnHits; // number of TrackerHits
+  TH1F* _hEdep; // total energy deposition
+  TH1F* _hrEdep; // radius of Energy deposition
+  TH1F* _hzEdep;//   z  position of Energy deposition
+};
+
 artg4tk::CheckTrackerHits::CheckTrackerHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),
 _hnHits(0),

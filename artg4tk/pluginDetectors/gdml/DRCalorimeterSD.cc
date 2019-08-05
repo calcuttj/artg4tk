@@ -16,21 +16,13 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterSD.hh"
-#include "Geant4/G4HCofThisEvent.hh"
 #include "Geant4/G4Step.hh"
 #include "Geant4/G4ThreeVector.hh"
-#include "Geant4/G4SDManager.hh"
-#include "Geant4/G4ios.hh"
-#include "Geant4/G4VVisManager.hh"
 #include "Geant4/G4Cerenkov.hh"
-#include "Geant4/G4Scintillation.hh"
 #include "Geant4/G4SteppingManager.hh"
 #include "Geant4/G4EventManager.hh"
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4UnitsTable.hh"
 #include "Geant4/G4SystemOfUnits.hh"
-#include "Geant4/G4PhysicalConstants.hh"
-#include<iomanip>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
 
@@ -192,4 +184,3 @@ namespace artg4tk {
     }  // end of process Hits
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

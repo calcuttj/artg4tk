@@ -16,17 +16,14 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #ifndef DRCalorimeterSD_h
-#define DRCalorimeterSD_h 1
-#include <vector>
-#include <map>
+#define DRCalorimeterSD_h
+
 #include "Geant4/G4VSensitiveDetector.hh"
-#include "Geant4/G4PhysicsOrderedFreeVector.hh"
-#include "Geant4/G4Material.hh" 
-#include "Geant4/G4MaterialPropertyVector.hh"
 #include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
 class G4Step;
 class G4HCofThisEvent;
+
 //class Cerenkov;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
@@ -69,4 +66,3 @@ namespace artg4tk {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-

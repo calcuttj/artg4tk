@@ -3,8 +3,7 @@
 #ifndef PHYSICSLIST_SERVICE_HH
 #define PHYSICSLIST_SERVICE_HH
 
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
+#include "fhiclcpp/fwd.h"
 
 #include "artg4tk/services/PhysicsListServiceBase.hh"
 
@@ -15,7 +14,7 @@ namespace artg4tk {
   class PhysicsListService : public artg4tk::PhysicsListServiceBase {
     
   public:
-    PhysicsListService(fhicl::ParameterSet const &, art::ActivityRegistry &);
+    PhysicsListService(fhicl::ParameterSet const &);
     virtual ~PhysicsListService() {};
     virtual G4VUserPhysicsList* makePhysicsList() override;  
   private:

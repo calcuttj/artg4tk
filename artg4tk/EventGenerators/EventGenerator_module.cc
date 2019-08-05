@@ -9,15 +9,11 @@
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
-#include "art/Framework/Services/Registry/ServiceHandle.h"
 
-//#include "CLHEP/Random/RandFlat.h"
 #include "CLHEP/Random/RandGaussQ.h"
 
-#include <iostream>
 #include <cmath>
 #include <memory>
-
 #include <vector>
 
 namespace artg4tk {

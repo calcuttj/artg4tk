@@ -12,9 +12,6 @@
 // Art
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 
-// C++
-#include <map>
-
 // Called after the creation of a track and before it's actually simulated
 void artg4tk::ArtG4TrackingAction::PreUserTrackingAction(const G4Track* currTrack)
 {

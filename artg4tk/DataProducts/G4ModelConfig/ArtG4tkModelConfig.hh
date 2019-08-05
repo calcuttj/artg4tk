@@ -1,19 +1,11 @@
 #ifndef ArtG4tkModelConfig_H
 #define ArtG4tkModelConfig_H
 
+#include "fhiclcpp/fwd.h"
+
+#include <map>
 #include<string>
 #include <vector>
-#include <map>
-
-#include <ostream>
-
-// NOTE(JVY): Do NOT directly include "fhiclcpp/ParameterSet.h" because
-//            genreflex will have hiccups with something in PSet !!! 
-//
-namespace fhicl
-{
-class ParameterSet;
-}
 
 namespace artg4tk {
 

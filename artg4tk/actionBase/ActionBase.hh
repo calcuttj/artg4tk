@@ -9,10 +9,12 @@
 #define ACTION_BASE_HH
 
 #include <string>
-#include <iostream>
-#include "art/Framework/Core/EDProducer.h"
-#include "art/Framework/Principal/Event.h"
-#include "art/Framework/Principal/Run.h"
+
+namespace art {
+  class EDProducer;
+  class Event;
+  class Run;
+}
 
 // Declarations of types we use as input parameters
 

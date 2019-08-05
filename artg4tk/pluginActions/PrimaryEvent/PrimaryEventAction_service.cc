@@ -1,22 +1,23 @@
 #include "artg4tk/pluginActions/PrimaryEvent/PrimaryEventAction_service.hh"
+
+#include "art/Framework/Principal/Event.h"
+#include "art/Framework/Principal/Handle.h"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
+#include "fhiclcpp/ParameterSet.h"
+
 #include "artg4tk/services/ActionHolder_service.hh"
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
 #include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"
-// Geant4  includes
 
+// Geant4  includes
 #include "Geant4/G4Event.hh"
-#include "Geant4/G4ParticleTable.hh"
-#include "Geant4/G4HEPEvtInterface.hh"
 
 #include <iostream>
-#include <cmath>
 
 using std::string;
 
 artg4tk::PrimaryEventActionService::
-PrimaryEventActionService(fhicl::ParameterSet const & p,
-        art::ActivityRegistry &)
+PrimaryEventActionService(fhicl::ParameterSet const & p)
 : PrimaryGeneratorActionBase(p.get<string>("name", "PrimaryEventActionService")),
 // Initialize our message logger
 logInfo_("PrimaryEventActionService") {

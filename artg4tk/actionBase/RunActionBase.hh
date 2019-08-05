@@ -23,14 +23,11 @@
 #define RUN_ACTION_BASE_HH
 
 #include <string>
-#include <iostream>
 
 #include "artg4tk/actionBase/ActionBase.hh"
 
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/ActionHolder_service.hh"
-#include "art/Framework/Principal/Run.h"
-
 
 // Declarations of types we use as input parameters
 class G4Run;

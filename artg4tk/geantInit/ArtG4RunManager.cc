@@ -17,7 +17,6 @@
 
 // Includes from G4.
 #include "Geant4/G4UImanager.hh"
-#include "Geant4/G4ScoringManager.hh"
 #include "Geant4/G4Timer.hh"
 #include "Geant4/G4Run.hh"
 

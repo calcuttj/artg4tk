@@ -29,23 +29,21 @@
 // }
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-// art includes:
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-// artg4tk includes:
+
+// art includes
+#include "fhiclcpp/ParameterSet.h"
+
+// artg4tk includes
 #include "artg4tk/pluginActions/myparticleGun/myParticleGunAction_service.hh"
-#include "artg4tk/services/ActionHolder_service.hh"
-// Geant 4  includes:
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4GeneralParticleSource.hh"
+
+// Geant4 includes
+#include "Geant4/G4ParticleGun.hh"
 #include "Geant4/G4ParticleTable.hh"
-#include "Geant4/G4ParticleDefinition.hh"
-#include "Geant4/globals.hh"
 
 using std::string;
 
 artg4tk::myParticleGunActionService::
-myParticleGunActionService(fhicl::ParameterSet const & p,
-        art::ActivityRegistry &)
+myParticleGunActionService(fhicl::ParameterSet const & p)
 : PrimaryGeneratorActionBase(p.get<string>("name", "examplemyParticleGun")),
 particleGun_(0),
 nparticle(p.get<int>("NParticle")),
