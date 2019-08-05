@@ -1,7 +1,7 @@
 art_make(
   LIB_LIBRARIES
     artg4tk_DataProducts_G4DetectorHits
-    clhep
+    ${CLHEP}
     ${G4DIGITS_HITS}
     ${G4EVENT}
     ${G4GEOMETRY}
@@ -12,26 +12,12 @@ art_make(
     ${G4TRACK}
     ${XERCESC}
   SERVICE_LIBRARIES
-    art_Framework_Core
-    art_Framework_Principal
-    art_Framework_Services_Registry
-    artg4tk_DataProducts_G4DetectorHits
+    ${ART_FRAMEWORK_CORE}
+    ${ART_FRAMEWORK_PRINCIPAL}
     artg4tk_pluginDetectors_gdml
     artg4tk_services_DetectorHolder_service
-    art_Persistency_Provenance
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    canvas
-    cetlib_except
-    clhep
-    fhiclcpp
-    ${G4DIGITS_HITS}
-    ${G4GEOMETRY}
-    ${G4GLOBAL}
+    ${ART_PERSISTENCY_PROVENANCE}
     ${G4MATERIALS}
-    ${G4PERSISTENCY}
-    MF_MessageLogger
-    ${XERCESC}
 )
 
 install_headers()

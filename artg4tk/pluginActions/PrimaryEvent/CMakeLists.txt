@@ -1,17 +1,10 @@
 art_make(
   SERVICE_LIBRARIES
-    art_Framework_Principal
-    art_Framework_Services_Registry
+    ${ART_FRAMEWORK_PRINCIPAL}
     artg4tk_actionBase
     artg4tk_services_ActionHolder_service
-    art_Persistency_Provenance
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    canvas
-    cetlib_except
-    clhep
-    fhiclcpp
+    ${CLHEP}
     ${G4GLOBAL}
     ${G4PARTICLES}
-    MF_MessageLogger
+    ${MF_MESSAGELOGGER}
 )

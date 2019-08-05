@@ -1,6 +1,3 @@
-art_make(
-  LIB_LIBRARIES
-    ${Boost_SYSTEM_LIBRARY}
-)
+art_make()
 
 install_headers()
