@@ -12,7 +12,7 @@
 
 // Some G4 includes
 #include "Geant4/G4UserRunAction.hh"
-#include "Geant4/G4Run.hh"
+class G4Run;
 
 // Everything goes in the Art G4 namespace
 namespace artg4tk {

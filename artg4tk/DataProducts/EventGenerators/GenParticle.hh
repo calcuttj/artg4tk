@@ -13,7 +13,7 @@
 #include "CLHEP/Vector/LorentzVector.h"
 #include "CLHEP/Vector/ThreeVector.h"
 
-#include <ostream>
+#include <iosfwd>
 
 namespace artg4tk {
 

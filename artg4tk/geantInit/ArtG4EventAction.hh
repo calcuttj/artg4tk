@@ -11,7 +11,7 @@
 
 // Some G4 includes
 #include "Geant4/G4UserEventAction.hh"
-#include "Geant4/G4Event.hh"
+class G4Event;
 
 // Everything goes in the Art G4 namespace
 namespace artg4tk {

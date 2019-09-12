@@ -3,8 +3,7 @@
 #include "artg4tk/services/RunSettings_service.hh"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
-artg4tk::RunSettingsService::RunSettingsService(fhicl::ParameterSet const & p, 
-					      art::ActivityRegistry &) :
+artg4tk::RunSettingsService::RunSettingsService(fhicl::ParameterSet const & p) :
   p_ (p) 
 {
   mf::LogDebug("RunSettingService") << "RunSettingsService has been constructed!";

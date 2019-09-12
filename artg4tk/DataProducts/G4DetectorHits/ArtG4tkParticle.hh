@@ -2,11 +2,8 @@
 #define ArtG4tkParticle_H
 
 #include "CLHEP/Vector/LorentzVector.h"
-#include "CLHEP/Vector/ThreeVector.h"
 
 #include<string>
-
-#include <ostream>
 
 namespace artg4tk {
 

@@ -2,17 +2,14 @@
 #define RUNSETTINGS_SERVICE_HH
 
 // Art
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
-
+#include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
-#include "art/Framework/Core/EDProducer.h"
 
 namespace artg4tk {
 
   class RunSettingsService {
   public: 
-    RunSettingsService(fhicl::ParameterSet const&, art::ActivityRegistry&);
+    RunSettingsService(fhicl::ParameterSet const&);
     ~RunSettingsService();
     
     fhicl::ParameterSet getSettings(std::string const &);

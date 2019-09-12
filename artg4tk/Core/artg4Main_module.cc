@@ -31,8 +31,6 @@
 #include "artg4tk/services/ActionHolder_service.hh"
 #include "artg4tk/services/DetectorHolder_service.hh"
 #include "artg4tk/services/PhysicsListHolder_service.hh"
-#include "art/Framework/Services/Optional/RandomNumberGenerator.h"
-
 
 // G4 includes
 #ifdef G4VIS_USE

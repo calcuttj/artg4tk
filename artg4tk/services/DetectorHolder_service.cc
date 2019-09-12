@@ -4,15 +4,12 @@
 // Date: July 2012
 
 //Includes
-#include <iostream>
 
 #include "artg4tk/services/DetectorHolder_service.hh"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 #include "messagefacility/MessageLogger/MessageLogger.h" 
 
 #include "artg4tk/Core/DetectorBase.hh"
-
-#include "Geant4/G4HCofThisEvent.hh"
 
 // Save ourselves the trouble of typing 'std::' all the time
 using std::string;
@@ -26,8 +23,7 @@ static std::string msgctg = "DetectorHolderService";
 // PUBLIC METHODS
 
 // Constructor doesn't do anything with either of its passed components.
-artg4tk::DetectorHolderService::DetectorHolderService(fhicl::ParameterSet const&,
-						    art::ActivityRegistry&) :
+artg4tk::DetectorHolderService::DetectorHolderService(fhicl::ParameterSet const&) :
   categoryMap_(),
   worldPV_(nullptr)
 {}

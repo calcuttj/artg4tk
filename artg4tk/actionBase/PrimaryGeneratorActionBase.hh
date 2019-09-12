@@ -14,7 +14,6 @@
 #define PRIMARY_GENERATOR_ACTION_BASE_HH
 
 #include <string>
-#include <iostream>
 
 #include "artg4tk/actionBase/ActionBase.hh"
 

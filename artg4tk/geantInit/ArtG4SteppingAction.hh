@@ -13,7 +13,7 @@
 
 // A couple of G4 includes
 #include "Geant4/G4UserSteppingAction.hh"
-#include "Geant4/G4Step.hh"
+class G4Step;
 
 // Everything goes in the Art G4 namespace
 namespace artg4tk {

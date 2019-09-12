@@ -7,13 +7,11 @@
 // Date: August 2012
 
 #include "artg4tk/pluginActions/general/ExampleGeneralAction_service.hh"
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
 
 #include "artg4tk/geantInit/ArtG4RunManager.hh"
 
 // G4 includes
-#include "Geant4/globals.hh"
+#include "Geant4/G4Run.hh"
 #include "Geant4/G4Step.hh"
 #include "Geant4/G4Track.hh"
 #include "Geant4/G4TrackingManager.hh"
@@ -24,8 +22,7 @@
 using std::string;
 
 artg4tk::ExampleGeneralActionService::
-ExampleGeneralActionService(fhicl::ParameterSet const & p, 
-			       art::ActivityRegistry &)
+ExampleGeneralActionService(fhicl::ParameterSet const & p)
   : artg4tk::TrackingActionBase(p.get<string>("name","exampleGeneral")),
     artg4tk::RunActionBase(p.get<string>("name","exampleGeneral")),
     artg4tk::SteppingActionBase(p.get<string>("name","exampleGeneral"))

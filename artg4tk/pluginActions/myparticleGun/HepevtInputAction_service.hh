@@ -32,25 +32,25 @@
 // Include guard
 #ifndef EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
 #define EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
+
 // framework Includes:
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
+#include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
-#include "art/Framework/Core/EDProducer.h"
+
 // Get the artg4tk base class
 #include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
+
 // Geant 4 includes:
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4VPrimaryGenerator.hh"
+class G4Event;
+class G4VPrimaryGenerator;
 
 namespace artg4tk {
 
     class HepevtInputActionService
     : public artg4tk::PrimaryGeneratorActionBase {
     public:
-        HepevtInputActionService(fhicl::ParameterSet const&,
-                art::ActivityRegistry&);
+        HepevtInputActionService(fhicl::ParameterSet const&);
         virtual ~HepevtInputActionService();
         virtual void initialize() override;
         // To generate primaries, we need to overload the GeneratePrimaries

@@ -27,8 +27,7 @@
 #define EXAMPLEGENERALACTION_SERVICE_HH
 
 // Includes for exampleGeneral action service
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
+#include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 
 // Get the base class
@@ -37,9 +36,9 @@
 #include "artg4tk/actionBase/SteppingActionBase.hh"
 
 // Other includes
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4Run.hh"
-#include "Geant4/G4Step.hh"
+class G4Run;
+class G4Step;
+class G4Track;
 
 namespace artg4tk {
 
@@ -49,8 +48,7 @@ namespace artg4tk {
       public artg4tk::SteppingActionBase
   {
   public: 
-    ExampleGeneralActionService(fhicl::ParameterSet const&, 
-			 art::ActivityRegistry&);
+    ExampleGeneralActionService(fhicl::ParameterSet const&);
     virtual ~ExampleGeneralActionService();
 
     // Overload preUserTrackingAction method to decide whether or not to

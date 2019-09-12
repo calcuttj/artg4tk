@@ -34,8 +34,7 @@ static std::string msgctg = "ActionHolderService";
 
 // Constructor doesn't do much with the passed arguments, but does initialize
 // the logger for the service
-artg4tk::ActionHolderService::ActionHolderService(fhicl::ParameterSet const&,
-						art::ActivityRegistry&) :
+artg4tk::ActionHolderService::ActionHolderService(fhicl::ParameterSet const&) :
   runActionsMap_(),
   eventActionsMap_(),
   trackingActionsMap_(),

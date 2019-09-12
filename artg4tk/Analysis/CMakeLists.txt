@@ -1,21 +1,11 @@
 art_make(
   MODULE_LIBRARIES
-    art_Framework_Core
-    art_Framework_Principal
-    art_root_io_tfile_support ${ROOT_CORE}
-    art_root_io_TFileService_service
-    art_Framework_Services_Registry
+    ${ART_FRAMEWORK_SERVICES_REGISTRY}
+    ${ART_ROOT_IO_TFILESERVICE_SERVICE}
+    ${ART_ROOT_IO_TFILE_SUPPORT}
     artg4tk_DataProducts_EventGenerators
-    art_Persistency_Provenance
-    art_Utilities
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    canvas
-    cetlib_except
-    clhep
+    ${CLHEP}
     ${ROOT_CORE}
-    fhiclcpp
-    ${G4ZLIB}
     ${ROOT_HIST}
     ${ROOT_TREE}
 )

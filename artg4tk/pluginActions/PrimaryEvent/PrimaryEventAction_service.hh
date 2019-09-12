@@ -28,16 +28,13 @@
 #define EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
 
 // Includes
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
+#include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 #include "art/Framework/Services/Registry/ServiceMacros.h"
-#include "art/Framework/Core/EDProducer.h"
 
-#include "Geant4/G4Event.hh"
-#include "Geant4/G4ParticleGun.hh"
-#include "Geant4/G4VPrimaryGenerator.hh"
+#include "Geant4/G4ThreeVector.hh"
+class G4Event;
 
 // Get the base class
 #include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
@@ -47,8 +44,7 @@ namespace artg4tk {
   class PrimaryEventActionService 
     : public artg4tk::PrimaryGeneratorActionBase {
   public: 
-    PrimaryEventActionService(fhicl::ParameterSet const&, 
-				    art::ActivityRegistry&);
+    PrimaryEventActionService(fhicl::ParameterSet const&);
     virtual ~PrimaryEventActionService();
     
     void addG4Particle(G4Event *event,

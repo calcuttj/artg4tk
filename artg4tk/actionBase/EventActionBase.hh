@@ -24,12 +24,9 @@
 #define EVENT_ACTION_BASE_HH
 
 #include <string>
-#include <iostream>
 
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/ActionHolder_service.hh"
-
-#include "Geant4/globals.hh"
 
 #include "artg4tk/actionBase/ActionBase.hh"
 

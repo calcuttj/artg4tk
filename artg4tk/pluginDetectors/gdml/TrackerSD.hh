@@ -13,13 +13,12 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 #ifndef TrackerSD_h
-#define TrackerSD_h 1
+#define TrackerSD_h
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
 class G4Step;
 class G4HCofThisEvent;
-class TrackerHitCollection;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
@@ -40,4 +39,3 @@ namespace artg4tk {
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 }
 #endif
-

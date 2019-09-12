@@ -3,7 +3,7 @@
 //
 
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
-#include <iostream>
+#include <ostream>
 
 artg4tk::GenParticle::GenParticle():
   _pdgId(PDGCode::invalid),

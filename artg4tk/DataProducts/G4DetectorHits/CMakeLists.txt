@@ -1,6 +1,3 @@
-art_make(
-  LIB_LIBRARIES
-    ${G4PARTICLES}
-)
+art_make(LIB_LIBRARIES ${G4PARTICLES})
 
 install_headers()

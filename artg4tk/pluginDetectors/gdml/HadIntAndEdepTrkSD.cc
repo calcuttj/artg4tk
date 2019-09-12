@@ -13,19 +13,18 @@
 // (based in test23 of the Geant 4 test suite)
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
+
 // Geant 4 includes:
-// #include "Geant4/G4HCofThisEvent.hh"
 #include "Geant4/G4Step.hh"
 #include "Geant4/G4ThreeVector.hh"
 #include "Geant4/G4SDManager.hh"
-#include "Geant4/G4ios.hh"
-#include "Geant4/G4UnitsTable.hh"
 #include "Geant4/G4SystemOfUnits.hh"
-// #include "Geant4/G4RunManager.hh"
+
 //artg4tk includes:
 #include "artg4tk/pluginDetectors/gdml/HadIntAndEdepTrkSD.hh"
+
 // c++ includes:
-#include <typeinfo>
+#include <vector>
 
 artg4tk::HadIntAndEdepTrkSD::HadIntAndEdepTrkSD(G4String name)
    : G4VSensitiveDetector(name) 
@@ -138,4 +137,3 @@ void artg4tk::HadIntAndEdepTrkSD::ProcessEdep( G4Step* theStep )
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

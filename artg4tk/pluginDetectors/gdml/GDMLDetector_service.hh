@@ -37,18 +37,16 @@
 #define GDMLDETECTOR_SERVICE_HH
 
 // Includes
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
-
-//#include "art/Framework/Services/Registry/ServiceMacros.h"
-#include "art/Framework/Core/EDProducer.h"
-
+#include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
+namespace art { class EDProducer; }
 
 #include <vector>
 #include <string>
-#include "Geant4/G4LogicalVolume.hh"
-#include "Geant4/G4VPhysicalVolume.hh"
+
+class G4HCosThisEvent;
+class G4LogicalVolume;
+class G4VPhysicalVolume;
 
 // Get the base class
 #include "artg4tk/Core/DetectorBase.hh"
@@ -65,7 +63,7 @@ namespace artg4tk {
       mf::LogInfo logInfo_;
       std::vector<std::pair<std::string,std::string> > DetectorList;
     public:
-        GDMLDetectorService(fhicl::ParameterSet const&, art::ActivityRegistry&);
+        GDMLDetectorService(fhicl::ParameterSet const&);
         virtual ~GDMLDetectorService();
 
     private:
@@ -88,4 +86,3 @@ namespace artg4tk {
 using artg4tk::GDMLDetectorService;
 DECLARE_ART_SERVICE(GDMLDetectorService,LEGACY)
 #endif
-

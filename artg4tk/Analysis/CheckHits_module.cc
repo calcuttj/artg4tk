@@ -15,10 +15,51 @@
 // 
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#include "artg4tk/Analysis/CheckHits_module.hh"
+
+// art Framework includes.
 #include "art/Framework/Core/EDAnalyzer.h"
-#include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
+#include "art/Framework/Principal/Handle.h"
+#include "art_root_io/TFileService.h"
+#include "art/Framework/Core/ModuleMacros.h"
+#include "art/Framework/Principal/fwd.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
+
+// artg4tk includes:
+#include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
+#include "artg4tk/pluginDetectors/gdml/DRCalorimeterHit.hh"
+#include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
+
+// Root includes.
+#include "TH1F.h"
+
+// Other includes.
+#include "CLHEP/Units/SystemOfUnits.h"
+
+namespace artg4tk {
+    class CheckHits;
+}
+
+class artg4tk::CheckHits : public art::EDAnalyzer {
+public:
+
+    explicit CheckHits(fhicl::ParameterSet const& p);
+    virtual void beginJob();
+    virtual void beginRun(const art::Run& Run);
+    virtual void endJob();
+    virtual void analyze(const art::Event& event);
+
+private:
+
+    bool _DumpGDML; // enable/disable dumping of GDML geometry information
+    TH1F* _hnHits; // number of CaloHits
+    TH1F* _hEdep; // total energy deposition in CaloHits
+    TH1F* _hnDRHits;// number of DRCaloHits
+    TH1F* _hDREdep;// total energy deposition in DRCaloHits
+    TH1F* _hNCeren;// total number of Cerenkovphotons in DRCaloHits
+};
+
+using namespace std;
 
 artg4tk::CheckHits::CheckHits(fhicl::ParameterSet const& p) :
 art::EDAnalyzer(p),

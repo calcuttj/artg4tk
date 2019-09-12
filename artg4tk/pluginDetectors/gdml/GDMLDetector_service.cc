@@ -1,36 +1,38 @@
 //
-//               __        __ __  __  __  
+//               __        __ __  __  __
 //   ____ ______/ /_____ _/ // / / /_/ /__
 //  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
-// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
-// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
-//               /____/                  
+// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<
+// \__,_/_/   \__/\__, /  /_/  \__/_/|_|
+//               /____/
 //
 // artg4tk: art based Geant 4 Toolkit
-// 
+//
 //=============================================================================
-// GDMLDetector_service.hh: 
-// GDMLDetectorService is the service that constructs the Geant 4 Geometry 
+// GDMLDetector_service.hh:
+// GDMLDetectorService is the service that constructs the Geant 4 Geometry
 // as specified in a gdml file.
 // To use this service, all you need to do is put it in the services section
 // of the fcl configuration file, like this (Just change the name of the gdml file):
-// 
+//
 // <pre>
-// services: { 
+// services: {
 //   ...
-//     ...  
-// GDMLDetector : 
+//     ...
+// GDMLDetector :
 //    {
 //    category: "world"
 //    gdmlFileName_ : "ta_target.gdml"
-//    }  
+//    }
 //   }
 // </pre>
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
+
 // framework includes:
 #include "art/Framework/Services/Registry/ServiceMacros.h"
-// artg4tk includes: 
+
+// artg4tk includes:
 #include "artg4tk/pluginDetectors/gdml/GDMLDetector_service.hh"
 #include "artg4tk/pluginDetectors/gdml/ColorReader.hh"
 #include "artg4tk/pluginDetectors/gdml/CalorimeterSD.hh"
@@ -47,17 +49,13 @@
 //
 // Geant 4 includes:
 #include "Geant4/G4SDManager.hh"
-#include "Geant4/G4VUserDetectorConstruction.hh"
 #include "Geant4/G4GDMLParser.hh"
-#include "Geant4/globals.hh"
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4LogicalVolumeStore.hh"
 #include "Geant4/G4VPhysicalVolume.hh"
 #include "Geant4/G4PhysicalVolumeStore.hh"
 #include "Geant4/G4UserLimits.hh"
-#include "Geant4/G4UnitsTable.hh"
-#include "Geant4/G4StepLimiter.hh"
-#include "Geant4/G4RegionStore.hh"
+
 // C++ includes
 #include <vector>
 #include <map>
@@ -78,11 +76,11 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return split(s, delim, elems);
 }
 
-artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p, art::ActivityRegistry &)
+artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p)
 : artg4tk::DetectorBase(p,
-			p.get<string>("name", "GDMLDetectorService"),
-			p.get<string>("category", "World"),
-			p.get<string>("mother_category", "")),
+                        p.get<string>("name", "GDMLDetectorService"),
+                        p.get<string>("category", "World"),
+                        p.get<string>("mother_category", "")),
   gdmlFileName_( p.get<std::string>("gdmlFileName_","")),
   checkoverlaps_( p.get<bool>("CheckOverlaps",false)),
   dumpMP_( p.get<bool>("DumpMaterialProperties",false)),
@@ -189,19 +187,19 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
     }
     if (dumpMP_)
       {
-	G4cout << *(G4Material::GetMaterialTable());
-	/*
-	G4Region* region = G4RegionStore::GetInstance()->GetRegion("DefaultRegionForTheWorld", false);
-	std::vector<G4Material*>::const_iterator mItr = region->GetMaterialIterator();
-	size_t nMaterial = region->GetNumberOfMaterials();
-	G4cout << nMaterial << G4endl;
-	for (size_t iMate = 0; iMate < nMaterial; iMate++) {
-	  G4cout << (*mItr)->GetName() << G4endl;
-	  G4MaterialPropertiesTable* mt = (*mItr)->GetMaterialPropertiesTable();
-	  if (mt != nullptr) {
+        G4cout << *(G4Material::GetMaterialTable());
+        /*
+        G4Region* region = G4RegionStore::GetInstance()->GetRegion("DefaultRegionForTheWorld", false);
+        std::vector<G4Material*>::const_iterator mItr = region->GetMaterialIterator();
+        size_t nMaterial = region->GetNumberOfMaterials();
+        G4cout << nMaterial << G4endl;
+        for (size_t iMate = 0; iMate < nMaterial; iMate++) {
+          G4cout << (*mItr)->GetName() << G4endl;
+          G4MaterialPropertiesTable* mt = (*mItr)->GetMaterialPropertiesTable();
+          if (mt != nullptr) {
             mt->DumpTable();
-	    //            if (mt->GetProperty("SLOWCOMPONENT", true) != nullptr) {
-	    //  mt->GetProperty("SLOWCOMPONENT", true)->SetSpline(true);
+            //            if (mt->GetProperty("SLOWCOMPONENT", true) != nullptr) {
+            //  mt->GetProperty("SLOWCOMPONENT", true)->SetSpline(true);
             //    std::cout << "Scint " << mt->GetProperty("SLOWCOMPONENT", true)->GetVectorLength()<< std::endl;
             //}
         }
@@ -272,7 +270,7 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
     //std::cout << "****************Detectorlist size:  " << DetectorList.size() << std::endl;
     for (cii = DetectorList.begin(); cii != DetectorList.end(); cii++) {
         std::string sdname = (*cii).first + "_" + (*cii).second;
-	//        std::cout << "****************SDNAME:" << sdname << std::endl;
+        //        std::cout << "****************SDNAME:" << sdname << std::endl;
         if ((*cii).second == "HadInteraction") {
             G4SDManager* sdman = G4SDManager::GetSDMpointer();
             HadInteractionSD* hisd = dynamic_cast<HadInteractionSD*> (sdman->FindSensitiveDetector(sdname));

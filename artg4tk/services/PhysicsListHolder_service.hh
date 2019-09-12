@@ -12,11 +12,10 @@
 #define PHYSICSLIST_HOLDER_SERVICE_HH
 
 // Includes
-#include "fhiclcpp/ParameterSet.h"
-#include "art/Framework/Services/Registry/ActivityRegistry.h"
+#include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 
-#include "Geant4/G4VUserPhysicsList.hh"
+class G4VUserPhysicsList;
 
 // Everything for the Art G4 simulation goes in the @artg4tk@ namespace
 namespace artg4tk {
@@ -28,7 +27,7 @@ namespace artg4tk {
   
     
     // Constructor for Physics List holder
-    PhysicsListHolderService(fhicl::ParameterSet const&, art::ActivityRegistry&) :
+    PhysicsListHolderService(fhicl::ParameterSet const&) :
       physicsListService_()
     {}
     

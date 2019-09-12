@@ -1,9 +1,6 @@
-
 #include "artg4tk/DataProducts/G4ModelConfig/ArtG4tkModelConfig.hh"
 
 #include "fhiclcpp/ParameterSet.h"
-
-#include <assert.h>
 
 void artg4tk::ArtG4tkModelConfig::Fill( const fhicl::ParameterSet& pset )
 {
