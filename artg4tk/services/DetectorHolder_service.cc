@@ -114,14 +114,14 @@ artg4tk::DetectorHolderService::getParametersForCategory(std::string category)
 }
 
 // Tell the detectors to tell Art what they produce
-void artg4tk::DetectorHolderService::callArtProduces(art::EDProducer * prod)
+void artg4tk::DetectorHolderService::callArtProduces(art::ProducesCollector & prod, art::ConsumesCollector & prod2)
 {
   // Let's loop over the detectors in the map
   for ( auto entry : categoryMap_ ) {
 
     mf::LogDebug(msgctg) << "Calling art produces for category " 
 		      << (entry.second)->category();
-    (entry.second)->callArtProduces(prod);
+    (entry.second)->callArtProduces(prod, prod2);
   }
 }
 

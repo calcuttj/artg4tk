@@ -35,6 +35,8 @@
 #include "fhiclcpp/ParameterSet.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Core/EDProducer.h"
+#include "art/Framework/Core/ProducesCollector.h"
+#include "art/Framework/Core/ConsumesCollector.h"
 
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/DetectorHolder_service.hh"
@@ -100,8 +102,9 @@ namespace artg4tk {
   
     // Tell Art what this detector will put into the event. You do not need to
     // call this yourself.
-    void callArtProduces(art::EDProducer * producer) {
-      doCallArtProduces(producer);
+    void callArtProduces(art::ProducesCollector& produces_coll,
+                         art::ConsumesCollector& consumes_coll) {
+      doCallArtProduces(produces_coll, consumes_coll);
     }
 
     // Put anything you need to into the event. You do not need to call this
@@ -145,7 +148,8 @@ namespace artg4tk {
     // h3. Optional private methods you can override (see list above)
 
     // Tell Art what you will put into the event.
-    virtual void doCallArtProduces(art::EDProducer *) {}
+    virtual void doCallArtProduces(art::ProducesCollector& produces_coll,
+                                   art::ConsumesCollector& consumes_coll) {}
     
     // Convert G4 hits into Art hits. Put them in the event (which you can get
     // from the DetectorHolder service).
