@@ -181,8 +181,8 @@ artg4tk::artg4tkMain::artg4tkMain(fhicl::ParameterSet const & p)
     // Build the detectors' logical volumes
     detectorHolder -> constructAllLVs();
     // And running @callArtProduces@ on each
-    actionHolder -> callArtProduces(this);
-    detectorHolder -> callArtProduces(this);
+    actionHolder -> callArtProduces(producesCollector());
+    detectorHolder -> callArtProduces(producesCollector());
     
   // Set up the random number engine.
   // See the documentation in RandomNumberHeader.h for

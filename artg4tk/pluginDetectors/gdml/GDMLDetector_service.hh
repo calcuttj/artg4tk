@@ -39,7 +39,7 @@
 // Includes
 #include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
-namespace art { class EDProducer; }
+namespace art { class ProducesCollector; }
 
 #include <vector>
 #include <string>
@@ -74,7 +74,7 @@ namespace artg4tk {
         // We need to add something to the art event, so we need these two methods:
 
         // Tell Art what we'll produce
-        virtual void doCallArtProduces(art::EDProducer * producer) override;
+        virtual void doCallArtProduces(art::ProducesCollector&) override;
 
         // Actually produce
         virtual void doFillEventWithArtHits(G4HCofThisEvent * hc) override;

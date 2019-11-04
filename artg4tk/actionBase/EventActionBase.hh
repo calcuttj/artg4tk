@@ -52,8 +52,8 @@ namespace artg4tk {
 
     // Tell Art what this detector will put into the event. You do not need to
     // call this yourself.
-    void callArtProduces(art::EDProducer * producer) {
-      doCallArtProduces(producer);
+    void callArtProduces(art::ProducesCollector& collector) {
+      doCallArtProduces(collector);
     }
 
     // h3. The interesting methods. 
@@ -67,7 +67,7 @@ namespace artg4tk {
     virtual void endOfEventAction(const G4Event *) {}
 
     // Tell Art what you will put into the event.
-    virtual void doCallArtProduces(art::EDProducer *) {}
+    virtual void doCallArtProduces(art::ProducesCollector&) {}
 
   };
 }
