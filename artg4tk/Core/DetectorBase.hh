@@ -34,9 +34,6 @@
 // Art includes
 #include "fhiclcpp/ParameterSet.h"
 #include "art/Framework/Principal/Event.h"
-#include "art/Framework/Core/EDProducer.h"
-#include "art/Framework/Core/ProducesCollector.h"
-#include "art/Framework/Core/ConsumesCollector.h"
 
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/DetectorHolder_service.hh"
@@ -45,6 +42,10 @@
 class G4LogicalVolume;
 class G4VPhysicalVolume;
 class G4HCofThisEvent;
+
+namespace art {
+  class ProducesCollector;
+}
 
 // h3. Declare the @DetectorBase@ class
 
@@ -80,7 +81,7 @@ namespace artg4tk {
     }
   
     // Destructor
-    virtual ~DetectorBase(){}
+    virtual ~DetectorBase() = default;
   
     // Intialize after the particle list is set up
     virtual void initialize() {};
@@ -102,9 +103,8 @@ namespace artg4tk {
   
     // Tell Art what this detector will put into the event. You do not need to
     // call this yourself.
-    void callArtProduces(art::ProducesCollector& produces_coll,
-                         art::ConsumesCollector& consumes_coll) {
-      doCallArtProduces(produces_coll, consumes_coll);
+    void callArtProduces(art::ProducesCollector& produces_coll) {
+      doCallArtProduces(produces_coll);
     }
 
     // Put anything you need to into the event. You do not need to call this
@@ -122,16 +122,16 @@ namespace artg4tk {
     std::vector<G4LogicalVolume*> lvs() const { return _myLVs; }
 
     // Return the name of this detector
-    std::string myName() const { return _myName; }
+    std::string const& myName() const { return _myName; }
     
     // Return the category of this detector
-    std::string category() const { return _category; }
+    std::string const& category() const { return _category; }
     
     // Returnh the mother category for this detector
-    std::string motherCategory() const {return _motherCategory; }
+    std::string const& motherCategory() const {return _motherCategory; }
     
     // Return the parameter set for this detector
-    fhicl::ParameterSet parameters() const {return _myParams; }
+    fhicl::ParameterSet const& parameters() const {return _myParams; }
         
   private:
     
@@ -148,8 +148,7 @@ namespace artg4tk {
     // h3. Optional private methods you can override (see list above)
 
     // Tell Art what you will put into the event.
-    virtual void doCallArtProduces(art::ProducesCollector& produces_coll,
-                                   art::ConsumesCollector& consumes_coll) {}
+    virtual void doCallArtProduces(art::ProducesCollector& produces_coll) {}
     
     // Convert G4 hits into Art hits. Put them in the event (which you can get
     // from the DetectorHolder service).

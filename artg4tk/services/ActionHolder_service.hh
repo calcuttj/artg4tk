@@ -20,7 +20,7 @@
 #include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 namespace art {
-  class EDProducer;
+  class ProducesCollector;
   class Event;
   class Run;
 }
@@ -70,7 +70,7 @@ namespace artg4tk {
     void initialize();
 
     // Tell each action to notify Art of what it will be producing.
-    void callArtProduces(art::EDProducer * prod);
+    void callArtProduces(art::ProducesCollector& prod);
 
     // Tell each action to dump anything it likes into the Art event
     void fillEventWithArtStuff();

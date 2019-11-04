@@ -11,7 +11,7 @@
 #include <string>
 
 namespace art {
-  class EDProducer;
+  class ProducesCollector;
   class Event;
   class Run;
 }
@@ -26,14 +26,14 @@ namespace artg4tk {
     // Constructor. The derived class must call this constructor. It takes a 
     // single string for the name of the action object.
     ActionBase(std::string myName)
-      : myName_( myName )
+      : myName_(move(myName))
     {}
 
     // Destructor
     virtual ~ActionBase();
 
     // Accessor
-    std::string myName() const {return myName_;}
+    std::string const& myName() const {return myName_;}
 
     // h3. Optional methods
     
@@ -43,7 +43,7 @@ namespace artg4tk {
     virtual void initialize() {}
 
     // Call produces<T> to notify Art what you'll be adding to the Art event.
-    virtual void callArtProduces(art::EDProducer *){}
+    virtual void callArtProduces(art::ProducesCollector&){}
 
     // Fill the Art event with whatever you said you would, if you haven't
     // already. This is called by ActionHolder at the very end of the Art

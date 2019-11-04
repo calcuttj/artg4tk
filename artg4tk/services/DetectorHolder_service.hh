@@ -73,7 +73,7 @@ namespace artg4tk {
     fhicl::ParameterSet const getParametersForCategory(std::string category);
 
     // Tell Art what the detectors produce
-    void callArtProduces(art::ProducesCollector &, art::ConsumesCollector &);
+    void callArtProduces(art::ProducesCollector&);
     
     // Convert GEANT4 hits to Art hits and put them in the event.
     void fillEventWithArtHits(G4HCofThisEvent* hc);

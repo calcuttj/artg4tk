@@ -30,6 +30,7 @@
 //=============================================================================
 
 // framework includes:
+#include "art/Framework/Core/ProducesCollector.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
 
 // artg4tk includes:
@@ -231,32 +232,32 @@ std::vector<G4VPhysicalVolume *> artg4tk::GDMLDetectorService::doPlaceToPVs(std:
     return myPVvec;
 }
 
-void artg4tk::GDMLDetectorService::doCallArtProduces(art::EDProducer * producer) {
+void artg4tk::GDMLDetectorService::doCallArtProduces(art::ProducesCollector& collector) {
     // Tell Art what we produce, and label the entries
     std::vector<std::pair<std::string, std::string> >::const_iterator cii;
     for (cii = DetectorList.begin(); cii != DetectorList.end(); cii++) {
         if ((*cii).second == "DRCalorimeter") {
             std::string identifier = myName() +(*cii).first;
-            producer -> produces<DRCalorimeterHitCollection>(identifier);
+            collector.produces<DRCalorimeterHitCollection>(identifier);
             std::string EdepID = identifier + "Edep";
-            producer -> produces<ByParticle>(EdepID);
+            collector.produces<ByParticle>(EdepID);
             std::string NCerenID = identifier + "NCeren";
-            producer -> produces<ByParticle>(NCerenID);
+            collector.produces<ByParticle>(NCerenID);
         } else if ((*cii).second == "Calorimeter") {
             std::string identifier = myName() +(*cii).first;
-            producer -> produces<CalorimeterHitCollection>(identifier);
+            collector.produces<CalorimeterHitCollection>(identifier);
         } else if ((*cii).second == "PhotonDetector") {
             std::string identifier = myName() + (*cii).first;
-            producer -> produces<PhotonHitCollection>(identifier);
+            collector.produces<PhotonHitCollection>(identifier);
         } else if ((*cii).second == "Tracker") {
             std::string identifier = myName()+(*cii).first;
-            producer -> produces<TrackerHitCollection>(identifier);
+            collector.produces<TrackerHitCollection>(identifier);
         } else if ((*cii).second == "HadInteraction") {
             // std::string identifier = myName() + (*cii).first;
-            producer -> produces<ArtG4tkVtx>(); // do NOT use product instance name (for now)
+            collector.produces<ArtG4tkVtx>(); // do NOT use product instance name (for now)
         } else if ((*cii).second == "HadIntAndEdepTrk") {
-            producer->produces<ArtG4tkVtx>();
-            producer->produces<TrackerHitCollection>();
+            collector.produces<ArtG4tkVtx>();
+            collector.produces<TrackerHitCollection>();
         }
     }
 }
