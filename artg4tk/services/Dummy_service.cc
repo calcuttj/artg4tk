@@ -1,7 +1,7 @@
 // Common materials used throughout the simulation
 
 #include "artg4tk/services/Dummy_service.hh"
-#include "art/Framework/Core/EDProducer.h"
+#include "art/Framework/Core/ProducesCollector.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 #include <iostream>
@@ -16,10 +16,10 @@ artg4tk::DummyService::~DummyService()
 {
 }
 
-void artg4tk::DummyService::notifyArtOfProduction(art::EDProducer * prod)
+void artg4tk::DummyService::notifyArtOfProduction(art::ProducesCollector & prod)
 {
   mf::LogDebug("DummyService") << "running produces<int>()...";
-  prod -> produces<int>();
+  prod.produces<int>();
   mf::LogDebug("DummyService") << "done!";
 }
 

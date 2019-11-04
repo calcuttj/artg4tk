@@ -155,12 +155,12 @@ artg4tk::ActionBase* artg4tk::ActionHolderService::getAction(std::string name, P
 }
 
 // h3. Art-specific methods
-void artg4tk::ActionHolderService::callArtProduces(art::EDProducer * prod)
+void artg4tk::ActionHolderService::callArtProduces(art::ProducesCollector& collector)
 {
 
   // Loop over the "uber" activity map and call @callArtProduces@ on each
   for ( auto entry : allActionsMap_) {
-    (entry.second)->callArtProduces(prod);
+    (entry.second)->callArtProduces(collector);
   }
 }
 

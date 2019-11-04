@@ -4,7 +4,7 @@
 // Art
 #include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceMacros.h"
-namespace art { class EDProducer; }
+namespace art { class ProducesCollector; }
 
 namespace artg4tk {
 
@@ -13,7 +13,7 @@ namespace artg4tk {
     DummyService(fhicl::ParameterSet const&);
     ~DummyService();
 
-    void notifyArtOfProduction(art::EDProducer * prod);
+    void notifyArtOfProduction(art::ProducesCollector & prod);
 
   private:
 
