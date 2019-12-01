@@ -56,10 +56,12 @@
 #include "Geant4/G4VPhysicalVolume.hh"
 #include "Geant4/G4PhysicalVolumeStore.hh"
 #include "Geant4/G4UserLimits.hh"
-
+#include "Geant4/G4UnitsTable.hh"
+#include "Geant4/G4StepLimiter.hh"
 // C++ includes
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 using std::string;
 
@@ -84,10 +86,35 @@ artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p)
                         p.get<string>("mother_category", "")),
   gdmlFileName_( p.get<std::string>("gdmlFileName_","")),
   checkoverlaps_( p.get<bool>("CheckOverlaps",false)),
+  volumeNames_( p.get<std::vector<std::string>>("volumeNames",{}) ),
+  stepLimits_( p.get<std::vector<float>>("stepLimits",{}) ),
   dumpMP_( p.get<bool>("DumpMaterialProperties",false)),
-  logInfo_("GDMLDetectorService") {
+  logInfo_("GDMLDetectorService") 
+{
+  // -- D.R. : Check for valid volume, steplimit pairs
+  if(volumeNames_.size() != stepLimits_.size()) {
+    throw cet::exception("LArG4DetectorService") << "Configuration error: volumeNames:[] and"
+                                                 << " stepLimits:[] have different sizes!" << "\n";
+  }
 
-}
+  inputVolumes_ = volumeNames_.size();
+
+  //-- define commonly used units, that we might need
+  new G4UnitDefinition("volt/cm","V/cm","Electric field",CLHEP::volt/CLHEP::cm);
+
+  if (inputVolumes_ > 0) { mf::LogInfo("LArG4DetectorService::Ctr") << "Reading stepLimit(s) from the configuration file, for volume(s):"; }
+  for(size_t i=0; i<inputVolumes_; ++i){
+    if(stepLimits_.at(i) < 0) {
+      throw cet::exception("LArG4DetectorService") << "Invalid stepLimits found. Step limits must be"
+                      << " positive! Bad value : stepLimits[" << i << "] = " << stepLimits_.at(i)
+                      << " [mm]\n";
+    } else {
+      selectedVolumes_.push_back( std::make_pair( volumeNames_.at(i), stepLimits_.at(i) ) );
+      mf::LogInfo("LArG4DetectorService::Ctr") << "Volume: " << volumeNames_.at(i)
+                                               << ", stepLimit: " << stepLimits_.at(i);
+    }//--check for negative
+  } //--loop over inputVolumes
+}//--Ctor
 
 // Destructor
 
@@ -117,19 +144,51 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
     std::cout << "Found " << auxmap->size()
             << " volume(s) with auxiliary information."
             << std::endl << std::endl;
+    std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
     for (G4GDMLAuxMapType::const_iterator iter = auxmap->begin();
-            iter != auxmap->end(); iter++) {
+        iter != auxmap->end(); iter++) {
         G4cout << "Volume " << ((*iter).first)->GetName()
                 << " has the following list of auxiliary information: "
                 << G4endl;
         for (G4GDMLAuxListType::const_iterator vit = (*iter).second.begin();
-                vit != (*iter).second.end(); vit++) {
+            vit != (*iter).second.end(); vit++) {
             std::cout << "--> Type: " << (*vit).type
-                    << " Value: " << (*vit).value << std::endl;
+                   << " Value: " << (*vit).value << std::endl;
+
+            G4double value = atof((*vit).value);
+            G4double val_unit = 1; //--no unit
+            G4String provided_category = "NONE";
+            if( ((*vit).unit) && ((*vit).unit != "") ) { // -- if provided and non-NULL
+              val_unit = G4UnitDefinition::GetValueOf( (*vit).unit );
+              mf::LogInfo("AuxUnit") << " Unit parsed = " << (*vit).unit; 
+              value *= val_unit; //-- Now do something with the value, making sure that the unit is appropriate
+              provided_category = G4UnitDefinition::GetCategory((*vit).unit);
+            }
             if ((*vit).type == "StepLimit") {
-                G4UserLimits *fStepLimit = new G4UserLimits(atof((*vit).value));
-                std::cout << "fStepLimit:  " << atof((*vit).value) << "  " << atof((*vit).value) / CLHEP::cm << " cm" << std::endl;
+                G4UserLimits *fStepLimit = NULL;
+
+                //-- check that steplimit has valid length unit category
+                G4String steplimit_category = "Length";
+                if(provided_category == steplimit_category) {
+                  mf::LogInfo("AuxUnit") << "Valid StepLimit unit category obtained: " << provided_category.c_str();
+                  fStepLimit = new G4UserLimits(value);
+                  G4cout << "fStepLimit:  " << value << "  " << value / CLHEP::cm << " cm" << std::endl;
+                } else if (provided_category == "NONE"){ //--no unit category provided, use the default CLHEP::mm
+                  MF_LOG_WARNING("StepLimitUnit") << "StepLimit in geometry file does not have a unit!"
+                                                  << " Defaulting to mm...";
+                  value *= CLHEP::mm;
+                  fStepLimit = new G4UserLimits(value);
+                  G4cout << "fStepLimit:  " << value << "  " << value / CLHEP::cm << " cm" << std::endl;
+                } else { //--wrong unit category provided
+                  throw cet::exception("StepLimitUnit") << "StepLimit does not have a valid length unit!\n"
+                                                        << " Category of unit provided = " << provided_category << ".\n";
+                }
+
                 ((*iter).first)->SetUserLimits(fStepLimit);
+                // -- D.R. insert into map <volName,stepLimit> to cross-check later
+                MF_LOG_DEBUG("LArG4DetectorService::") << "Set stepLimit for volume: " << ((*iter).first)->GetName()
+                        << " from the GDML file.";
+                setGDMLVolumes_.insert(std::make_pair( ((*iter).first)->GetName(), atof((*vit).value) ));
             }
             if ((*vit).type == "SensDet") {
                 if ((*vit).value == "DRCalorimeter") {
@@ -185,11 +244,12 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
                 }
             }
         }
+        std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
     }
     if (dumpMP_)
-      {
-        G4cout << *(G4Material::GetMaterialTable());
-        /*
+    {
+      G4cout << *(G4Material::GetMaterialTable());
+      /*
         G4Region* region = G4RegionStore::GetInstance()->GetRegion("DefaultRegionForTheWorld", false);
         std::vector<G4Material*>::const_iterator mItr = region->GetMaterialIterator();
         size_t nMaterial = region->GetNumberOfMaterials();
@@ -205,10 +265,13 @@ std::vector<G4LogicalVolume *> artg4tk::GDMLDetectorService::doBuildLVs() {
             //}
         }
         mItr++;
+      }
+      G4cout << G4endl;
+      */
     }
-    G4cout << G4endl;
-*/
-}
+    if (inputVolumes_ > 0) {
+      setStepLimits(parser);
+    }
     std::cout << "List SD Tree: " << std::endl;
     SDman->ListTree();
     std::cout << " Collection Capacity:  " << SDman->GetCollectionCapacity() << std::endl;
@@ -231,6 +294,55 @@ std::vector<G4VPhysicalVolume *> artg4tk::GDMLDetectorService::doPlaceToPVs(std:
     myPVvec.push_back(pPVStore->at(pPVStore->size() - 1)); // only need to return the PV of the world  (last entry in Volume Store)
     return myPVvec;
 }
+
+void artg4tk::GDMLDetectorService::setStepLimits(G4GDMLParser *parser){
+  // -- D. Rivera : This function sets step limits for volumes provided in the configuration file
+  //                and overrides the step limit (if any) set for the same volumes but from the GMDL
+  //                geometry file. The GDML step limit (if provided in the gdml file) is set first
+  //                and later overriden by this method if a valid volumeName,setStepLimit is provided.
+  MF_LOG_WARNING("LArG4DetectorService::setStepLimits") << "Setting step limits from configuration"
+                  << " file. This will OVERRIDE redundant stepLimit(s) set in the GDML file. Note"
+                  << " that stepLimits are only active if enabled in the physicsListService via the"
+                  << " appropriate parameter.";
+
+  std::string volumeName  = "";
+  float previousStepLimit = 0.;
+  float newStepLimit      = 0.;
+  for(size_t i=0; i<inputVolumes_; ++i)
+  {
+    // -- Check whether the volumeName provided corresponds to a valid volumeName in the geometry
+    G4LogicalVolume* setVol = parser->GetVolume(selectedVolumes_[i].first);
+
+    // -- get the G4LogicalVolume corresponding to the selectedVolume
+    volumeName = setVol->GetName();
+    newStepLimit = selectedVolumes_[i].second;
+    MF_LOG_DEBUG("LArG4DetectorService::setStepLimits") << "Got logical volume with name: "
+                                                        << volumeName;
+
+    // -- check if a stepLimit for this volume has been set before:
+    auto search = setGDMLVolumes_.find(volumeName);
+    if(search != setGDMLVolumes_.end())
+    {
+      previousStepLimit = search->second;
+      if (newStepLimit != previousStepLimit) {
+        MF_LOG_WARNING("LArG4DetectorService::setStepLimits") << "OVERRIDING PREVIOUSLY SET"
+                    << " STEPLIMIT FOR VOLUME : " << volumeName
+                    << " FROM " << previousStepLimit << " mm TO " << newStepLimit << " mm";
+      } else {
+        MF_LOG_WARNING("LArG4DetectorService::setStepLimits") << "New stepLimit matches previously"
+                    << " set stepLimit from the GDML file for volume : " << volumeName
+                    << " stepLimit : " << newStepLimit << " mm. Nothing will be changed.";
+        continue;
+      }
+    }//--check if new steplimit differs from a previously set value
+
+    G4UserLimits *fStepLimitOverride = new G4UserLimits(selectedVolumes_[i].second);
+    mf::LogInfo("LArG4DetectorService::setStepLimits") << "fStepLimitOverride:  "
+              << selectedVolumes_[i].second << "  "
+              << (selectedVolumes_[i].second * CLHEP::mm) / CLHEP::cm << " cm";
+    setVol->SetUserLimits(fStepLimitOverride);
+  }//--loop over input volumes
+}//--end of setStepLimit()
 
 void artg4tk::GDMLDetectorService::doCallArtProduces(art::ProducesCollector& collector) {
     // Tell Art what we produce, and label the entries
@@ -263,7 +375,7 @@ void artg4tk::GDMLDetectorService::doCallArtProduces(art::ProducesCollector& col
 }
 
 void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC) {
-        //
+    //
     // NOTE(JVY): 1st hadronic interaction will be fetched as-is from HadInteractionSD
     //            a copy (via copy ctor) will be placed directly into art::Event
     //
