@@ -47,6 +47,7 @@ namespace art { class ProducesCollector; }
 class G4HCosThisEvent;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
+class G4GDMLParser;
 
 // Get the base class
 #include "artg4tk/Core/DetectorBase.hh"
@@ -56,12 +57,17 @@ namespace artg4tk {
 
     class GDMLDetectorService : public artg4tk::DetectorBase {
     private:
-      std::string gdmlFileName_;  // name of the gdml file 
-      bool checkoverlaps_;        // enable/disable check of overlaps
-      bool dumpMP_;               // enable/disable dump of material properties
+      std::string gdmlFileName_;              // name of the gdml file 
+      bool checkoverlaps_;                    // enable/disable check of overlaps
+      std::vector<std::string> volumeNames_;  // list of volume names for which step limits should be set
+      std::vector<float> stepLimits_;         // corresponding step limits to be set for each volume in the list of volumeNames, [mm]
+      size_t inputVolumes_;                   // number of stepLimits to be set
+      bool dumpMP_;                           // enable/disable dump of material properties
       // A message logger for this action
       mf::LogInfo logInfo_;
       std::vector<std::pair<std::string,std::string> > DetectorList;
+      std::vector< std::pair<std::string, float> >  selectedVolumes_; // holds all <volume, steplimit> pairs to be set from the configuration file
+      std::unordered_map<std::string, float> setGDMLVolumes_;         // holds all <volume, steplimit> pairs set from the GDML file
     public:
         GDMLDetectorService(fhicl::ParameterSet const&);
         virtual ~GDMLDetectorService();
@@ -71,6 +77,10 @@ namespace artg4tk {
         // Private overriden methods
         virtual std::vector<G4LogicalVolume*> doBuildLVs() override;
         virtual std::vector<G4VPhysicalVolume*> doPlaceToPVs(std::vector<G4LogicalVolume*>) override;
+
+        // -- D.R. Set the step limits for specific volumes from the configuration file
+        virtual void setStepLimits(G4GDMLParser *parser);
+
         // We need to add something to the art event, so we need these two methods:
 
         // Tell Art what we'll produce
