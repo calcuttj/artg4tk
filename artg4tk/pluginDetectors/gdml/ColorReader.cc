@@ -62,7 +62,7 @@ void ColorReader::ExtensionRead(const xercesc::DOMElement * const extElement) {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void ColorReader::VolumeRead(const xercesc::DOMElement * const volumeElement) {
-    G4cout << "G4GDML: VolumeRead" << G4endl;
+    //G4cout << "G4GDML: VolumeRead" << G4endl;
     G4VSolid* solidPtr = 0;
     G4Material* materialPtr = 0;
     G4VisAttributes* attrPtr = 0;
@@ -99,7 +99,7 @@ void ColorReader::VolumeRead(const xercesc::DOMElement * const volumeElement) {
 
     pMotherLogical = new G4LogicalVolume(solidPtr, materialPtr,
             GenerateName(name), 0, 0, 0);
-    G4cout << "G4GDML: attaching visual attribute ..." << G4endl;
+    //G4cout << "G4GDML: attaching visual attribute ..." << G4endl;
     pMotherLogical->SetVisAttributes(attrPtr);
 
     if (!auxList.empty()) {

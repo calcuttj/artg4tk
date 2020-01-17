@@ -44,6 +44,8 @@ services: {
     {
     category: "world"
     gdmlFileName_ : "lArDet.gdml"
+    volumeNames: ["volTPCActiveInner"] # list of volumes for which the stepLimit should be set
+    stepLimits: [0.1] # corresponding stepLimits in mm for the volumes in the volumeNames list
     }   
 
 
