@@ -91,6 +91,8 @@ artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const & p)
   dumpMP_( p.get<bool>("DumpMaterialProperties",false)),
   logInfo_("GDMLDetectorService") 
 {
+  // Make sure units are defined.
+     G4UnitDefinition::GetUnitsTable();
   // -- D.R. : Check for valid volume, steplimit pairs
   if(volumeNames_.size() != stepLimits_.size()) {
     throw cet::exception("LArG4DetectorService") << "Configuration error: volumeNames:[] and"
