@@ -42,6 +42,7 @@
 // 16.10.2012 A.Ribon: Use new default stopping
 // 19.01.2021 D.Rivera: imported into artg4tk based on :
 //            geant4.10.06.p01/source/physics_lists/lists/src/QGSP_BERT_HP.cc
+//            Converted this to an extensible physics list and registered it
 //
 //----------------------------------------------------------------------------
 //
@@ -68,8 +69,38 @@
 #include "Geant4/G4StoppingPhysics.hh"
 #include "Geant4/G4HadronElasticPhysicsHP.hh"
 
+#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
+
+/////////////////////////////////////////////////////////////////////////////
+// The following change is the _only_ required changed to move from
+// the non-extensible factory to the exensible factory.  All other changes
+// relative to the "factory" example are there to demonstrate new features.
+/////////////////////////////////////////////////////////////////////////////
+//non-extensible:  #include "G4PhysListFactory.hh"
+#include "Geant4/G4PhysListFactoryAlt.hh"
+/////////////////////////////////////////////////////////////////////////////
+// headers needed to demonstrate new features
+/////////////////////////////////////////////////////////////////////////////
+
+// allow ourselves to extend the short names for physics ctor addition/replace
+// along the same lines as EMX, EMY, etc
+#include "Geant4/G4PhysListRegistry.hh"
+
+// allow ourselves to give the user extra info about available physics ctors
+#include "Geant4/G4PhysicsConstructorFactory.hh"
+
+/////////////////////////////////////////////////////////////////////////////
+// pull in a user defined physics list definition into the main program
+// and register it with the factory (doesn't have to be the main program
+// but the .o containing the declaration _must_ get linked/loaded)
+
+#include "Geant4/G4VModularPhysicsList.hh"
+
+#include "Geant4/G4PhysListStamper.hh"  // defines macro for factory registration
 #include "MyQGSP_BERT_HP.hh"
-#include "G4HadronPhysicsQGSP_BERT_HP.hh"
+
+// -- Register the physics list
+G4_DECLARE_PHYSLIST_FACTORY(MyQGSP_BERT_HP);
 
 MyQGSP_BERT_HP::MyQGSP_BERT_HP(G4int ver)
 {
