@@ -42,7 +42,8 @@
 // 16.10.2012 A.Ribon: Use new default stopping
 // 19.01.2021 D.Rivera: imported into artg4tk based on :
 //            geant4.10.06.p01/source/physics_lists/lists/src/QGSP_BERT_HP.cc
-//            Converted this to an extensible physics list and registered it
+//            Converted this to an extensible physics list and registered it.
+//            Included custom version of G4HadronPhysicsQGSP_BERT_HP.
 //
 //----------------------------------------------------------------------------
 //
@@ -69,7 +70,8 @@
 #include "Geant4/G4StoppingPhysics.hh"
 #include "Geant4/G4HadronElasticPhysicsHP.hh"
 
-#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
+//#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
+#include "MyG4HadronPhysicsQGSP_BERT_HP.hh"
 
 /////////////////////////////////////////////////////////////////////////////
 // The following change is the _only_ required changed to move from
@@ -125,7 +127,7 @@ MyQGSP_BERT_HP::MyQGSP_BERT_HP(G4int ver)
   RegisterPhysics( new G4HadronElasticPhysicsHP(ver) );
 
   // Hadron Physics
-  RegisterPhysics( new G4HadronPhysicsQGSP_BERT_HP(ver));
+  RegisterPhysics( new MyG4HadronPhysicsQGSP_BERT_HP(ver));
 
   // Stopping Physics
   RegisterPhysics( new G4StoppingPhysics(ver));
