@@ -71,7 +71,7 @@
 #include "Geant4/G4HadronElasticPhysicsHP.hh"
 
 //#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
-#include "MyG4HadronPhysicsQGSP_BERT_HP.hh"
+#include "MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
 
 /////////////////////////////////////////////////////////////////////////////
 // The following change is the _only_ required changed to move from
@@ -99,15 +99,15 @@
 #include "Geant4/G4VModularPhysicsList.hh"
 
 #include "Geant4/G4PhysListStamper.hh"  // defines macro for factory registration
-#include "MyQGSP_BERT_HP.hh"
+#include "MyQGSP_BERT_ArHP.hh"
 
 // -- Register the physics list
-G4_DECLARE_PHYSLIST_FACTORY(MyQGSP_BERT_HP);
+G4_DECLARE_PHYSLIST_FACTORY(MyQGSP_BERT_ArHP);
 
-MyQGSP_BERT_HP::MyQGSP_BERT_HP(G4int ver)
+MyQGSP_BERT_ArHP::MyQGSP_BERT_ArHP(G4int ver)
 {
 
-  G4cout << "<<< Geant4 Physics List simulation engine: MyQGSP_BERT_HP"<<G4endl;
+  G4cout << "<<< Geant4 Physics List simulation engine: MyQGSP_BERT_ArHP"<<G4endl;
   G4cout <<G4endl<<G4endl;
 
   defaultCutValue = 0.7*CLHEP::mm;  
@@ -127,7 +127,7 @@ MyQGSP_BERT_HP::MyQGSP_BERT_HP(G4int ver)
   RegisterPhysics( new G4HadronElasticPhysicsHP(ver) );
 
   // Hadron Physics
-  RegisterPhysics( new MyG4HadronPhysicsQGSP_BERT_HP(ver));
+  RegisterPhysics( new MyG4HadronPhysicsQGSP_BERT_ArHP(ver));
 
   // Stopping Physics
   RegisterPhysics( new G4StoppingPhysics(ver));
@@ -137,10 +137,10 @@ MyQGSP_BERT_HP::MyQGSP_BERT_HP(G4int ver)
 
 }
 
-void MyQGSP_BERT_HP::SetCuts()
+void MyQGSP_BERT_ArHP::SetCuts()
 {
   if (verboseLevel >1){
-    G4cout << "MyQGSP_BERT_HP::SetCuts:";
+    G4cout << "MyQGSP_BERT_ArHP::SetCuts:";
   }  
   //  " G4VUserPhysicsList::SetCutsWithDefault" method sets 
   //   the default cut value for all particle types 

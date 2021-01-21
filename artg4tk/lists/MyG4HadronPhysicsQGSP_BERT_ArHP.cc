@@ -45,7 +45,7 @@
 //
 #include <iomanip>   
 
-#include "MyG4HadronPhysicsQGSP_BERT_HP.hh"
+#include "MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
 
 #include "Geant4/globals.hh"
 #include "Geant4/G4ios.hh"
@@ -77,19 +77,19 @@
 // factoryGeant4/
 #include "Geant4/G4PhysicsConstructorFactory.hh"
 //
-G4_DECLARE_PHYSCONSTR_FACTORY(MyG4HadronPhysicsQGSP_BERT_HP);
+G4_DECLARE_PHYSCONSTR_FACTORY(MyG4HadronPhysicsQGSP_BERT_ArHP);
 
-MyG4HadronPhysicsQGSP_BERT_HP::MyG4HadronPhysicsQGSP_BERT_HP(G4int)
-    :  MyG4HadronPhysicsQGSP_BERT_HP("hInelastic MyQGSP_BERT_HP")
+MyG4HadronPhysicsQGSP_BERT_ArHP::MyG4HadronPhysicsQGSP_BERT_ArHP(G4int)
+    :  MyG4HadronPhysicsQGSP_BERT_ArHP("hInelastic MyQGSP_BERT_ArHP")
 {}
 
-MyG4HadronPhysicsQGSP_BERT_HP::MyG4HadronPhysicsQGSP_BERT_HP(const G4String& name, G4bool /*quasiElastic */ )
+MyG4HadronPhysicsQGSP_BERT_ArHP::MyG4HadronPhysicsQGSP_BERT_ArHP(const G4String& name, G4bool /*quasiElastic */ )
     :  G4HadronPhysicsQGSP_BERT(name)
 {
     minBERT_neutron = 19.9*MeV;
 }
 
-void MyG4HadronPhysicsQGSP_BERT_HP::Neutron()
+void MyG4HadronPhysicsQGSP_BERT_ArHP::Neutron()
 {
   auto neu = new G4NeutronBuilder( true ); // Fission on
   AddBuilder(neu);
@@ -113,7 +113,7 @@ void MyG4HadronPhysicsQGSP_BERT_HP::Neutron()
   neu->Build();
 }
 
-void MyG4HadronPhysicsQGSP_BERT_HP::ExtraConfiguration()
+void MyG4HadronPhysicsQGSP_BERT_ArHP::ExtraConfiguration()
 {
   // --- Neutrons ---
   const G4ParticleDefinition* neutron = G4Neutron::Neutron();
