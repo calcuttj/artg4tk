@@ -30,6 +30,9 @@
 #ifndef ArParticleHPCaptureFS_h
 #define ArParticleHPCaptureFS_h 1
 
+// -- artg4tk includes
+#include "artg4tk/lists/ArCaptureGammas.hh"
+
 #include "Geant4/globals.hh"
 #include "Geant4/G4HadProjectile.hh"
 #include "Geant4/G4HadFinalState.hh"
@@ -38,7 +41,6 @@
 #include "Geant4/G4ParticleHPNames.hh"
 #include "Geant4/G4ParticleHPPhotonDist.hh"
 #include "Geant4/G4ParticleHPEnAngCorrelation.hh"
-#include "artg4tk/physicslists/builders/ArCaptureGammas.hh"
 
 class ArParticleHPCaptureFS : public G4ParticleHPFinalState
 {

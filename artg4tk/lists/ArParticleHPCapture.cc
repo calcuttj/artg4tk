@@ -32,6 +32,10 @@
 // P. Arce, June-2014 Conversion neutron_hp to particle_hp
 //
 
+// -- artg4tk includes
+#include "artg4tk/lists/ArParticleHPCapture.hh"
+#include "artg4tk/lists/ArParticleHPCaptureFS.hh"
+
 #include "Geant4/G4ParticleHPCapture.hh"
 #include "Geant4/G4ParticleHPManager.hh"
 #include "Geant4/G4SystemOfUnits.hh"
@@ -39,14 +43,6 @@
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4IonTable.hh"
 #include "Geant4/G4Threading.hh"
-
-// LArsoft include
-//#include "larsim/LegacyLArG4/ArParticleHPCapture.hh"
-//#include "larsim/LegacyLArG4/ArParticleHPCaptureFS.hh"
-//#include "artg4tk/physicslists/builders/ArParticleHPCapture.hh"
-//#include "artg4tk/physicslists/builders/ArParticleHPCaptureFS.hh"
-#include "ArParticleHPCapture.hh"
-#include "ArParticleHPCaptureFS.hh"
 
   ArParticleHPCapture::ArParticleHPCapture()
    :G4HadronicInteraction("NeutronHPCapture")
@@ -100,9 +96,9 @@
         }
     }
       
-      for(int i=0;i<100;i++){
-          std::cout<<"I am ArParticleHPCapture"<<std::endl;
-      }
+      //<--for(int i=0;i<100;i++){
+      //<--    std::cout<<"I am ArParticleHPCapture"<<std::endl;
+      //<--}
   }
   
   #include "Geant4/G4ParticleHPThermalBoost.hh"

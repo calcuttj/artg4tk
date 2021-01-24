@@ -13,13 +13,13 @@
 //First version by Karim Zbiri, April, 2005
 ///////////////////////////////////////////////////////////////////////////////
 
+// -- artg4tk includes
+#include "artg4tk/lists/ArCaptureGammas.hh"
 
-//#include "larsim/LegacyLArG4/ArCaptureGammas.hh"
-//#include "artg4tk/physicslists/builders/ArCaptureGammas.hh"
-#include "ArCaptureGammas.hh"
 #include "Geant4/Randomize.hh"
-#include <vector>
 #include "Geant4/G4Gamma.hh"
+#include <vector>
+
 using namespace std;
 
 ArCaptureGammas::ArCaptureGammas () {}
@@ -46,9 +46,9 @@ G4ReactionProductVector *  ArCaptureGammas::GetGammas ()
       theGammas->push_back(theOne);  
     }
     
-    for(int i=0;i<100;i++){
-        std::cout<<"I am ArCaptureGammas"<<std::endl;
-    }
+    //<--for(int i=0;i<100;i++){
+    //<--    std::cout<<"I am ArCaptureGammas"<<std::endl;
+    //<--}
    return theGammas;
 }
 

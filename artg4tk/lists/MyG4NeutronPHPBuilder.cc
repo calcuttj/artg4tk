@@ -31,7 +31,10 @@
 //
 //----------------------------------------------------------------------------
 //
-#include "MyG4NeutronPHPBuilder.hh"
+// -- artg4tk includes
+#include "artg4tk/lists/MyG4NeutronPHPBuilder.hh"
+
+//#include "Geant4/G4NeutronPHPBuilder.hh"
 #include "Geant4/G4ParticleDefinition.hh"
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4ProcessManager.hh"

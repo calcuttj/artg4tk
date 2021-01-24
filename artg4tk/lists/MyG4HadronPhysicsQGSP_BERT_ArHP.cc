@@ -45,7 +45,11 @@
 //
 #include <iomanip>   
 
-#include "MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
+// -- artg4tk includes
+#include "artg4tk/lists/MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
+#include "artg4tk/lists/MyG4NeutronPHPBuilder.hh"
+
+//#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
 
 #include "Geant4/globals.hh"
 #include "Geant4/G4ios.hh"
@@ -58,7 +62,6 @@
 #include "Geant4/G4QGSPNeutronBuilder.hh"
 #include "Geant4/G4BertiniNeutronBuilder.hh"
 //#include "Geant4/G4NeutronPHPBuilder.hh"
-#include "MyG4NeutronPHPBuilder.hh"
 
 #include "Geant4/G4HadronCaptureProcess.hh"
 #include "Geant4/G4NeutronRadCapture.hh"

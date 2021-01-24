@@ -52,6 +52,9 @@
 
 #include <CLHEP/Units/SystemOfUnits.h>
 
+// -- artg4tk includes
+#include "artg4tk/lists/MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
+
 #include "Geant4/globals.hh"
 #include "Geant4/G4ios.hh"
 #include "Geant4/G4ProcessManager.hh"
@@ -71,7 +74,6 @@
 #include "Geant4/G4HadronElasticPhysicsHP.hh"
 
 //#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
-#include "MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
 
 /////////////////////////////////////////////////////////////////////////////
 // The following change is the _only_ required changed to move from

@@ -35,6 +35,9 @@
 #ifndef MyG4NeutronPHPBuilder_h
 #define MyG4NeutronPHPBuilder_h 1
 
+// -- artg4tk includes
+#include "artg4tk/lists/ArParticleHPCapture.hh"
+
 #include "Geant4/globals.hh"
 
 #include "Geant4/G4HadronElasticProcess.hh"
@@ -50,7 +53,6 @@
 #include "Geant4/G4ParticleHPFission.hh"
 #include "Geant4/G4ParticleHPFissionData.hh"
 //#include "Geant4/G4ParticleHPCapture.hh"
-#include "ArParticleHPCapture.hh"
 #include "Geant4/G4ParticleHPCaptureData.hh"
 
 class MyG4NeutronPHPBuilder : public G4VNeutronBuilder

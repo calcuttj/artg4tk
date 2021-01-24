@@ -35,8 +35,9 @@
 //
 // P. Arce, June-2014 Conversion neutron_hp to particle_hp
 //
-//#include "artg4tk/physicslists/builders/ArParticleHPCaptureFS.hh"
-#include "ArParticleHPCaptureFS.hh"
+// -- artg4tk includes
+#include "artg4tk/lists/ArParticleHPCaptureFS.hh"
+
 #include "Geant4/G4ParticleHPManager.hh"
 #include "Geant4/G4PhysicalConstants.hh"
 #include "Geant4/G4SystemOfUnits.hh"
@@ -313,9 +314,9 @@
 // clean up the primary neutron
     theResult.Get()->SetStatusChange(stopAndKill);
       
-      for(int i=0;i<100;i++){
-          std::cout<<"I am ArParticleHPCaptureFS"<<std::endl;
-      }
+      //<--for(int i=0;i<100;i++){
+      //<--    std::cout<<"I am ArParticleHPCaptureFS"<<std::endl;
+      //<--}
       
     return theResult.Get();
   }
