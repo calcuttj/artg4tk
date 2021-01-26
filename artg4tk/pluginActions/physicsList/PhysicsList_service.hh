@@ -49,6 +49,8 @@ namespace artg4tk {
     int verbositylevel_;              // set the verbosity level of optical processes
     std::string WLSProfile_;          // Set the WLS time profile (delta or exponential)
 
+    double PiPlusBias_;
+
   };
   
 }

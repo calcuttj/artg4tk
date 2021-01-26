@@ -9,10 +9,18 @@
 #include "Geant4/G4PhysicsConstructorRegistry.hh"
 #include "Geant4/G4PhysListRegistry.hh"
 
+#include "Geant4/G4PhysListUtil.hh"
+
 // geant 4 physics constructors:
 #include "Geant4/G4OpticalPhysics.hh"
 #include "Geant4/G4NeutronTrackingCut.hh"
 #include "Geant4/G4SystemOfUnits.hh"
+
+#include "Geant4/G4ParticleDefinition.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4PionPlus.hh"
+
+#include "artg4tk/lists/G4HadronPhysicsQGSP_BERT_Bias.hh"
 
 #include <fstream>
 #include <memory>
@@ -42,7 +50,8 @@ artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p) :
   enableWLS_( p.get<bool>("enableWLS",false)),
   BoundaryInvokeSD_( p.get<bool>("BoundaryInvokeSD",false)),
   verbositylevel_( p.get<int>("Verbosity",0)),
-  WLSProfile_( p.get<std::string>("WLSProfile","delta"))
+  WLSProfile_( p.get<std::string>("WLSProfile","delta")),
+  PiPlusBias_(p.get<double>("PiPlusBias", 1.))
 {}
 
 G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
@@ -102,6 +111,15 @@ G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
 	phys->DumpList();
 	phys->DumpCutValuesTable();
       }
+    if (physName.find("Bias") != std::string::npos) {
+      std::cout << "Found Bias" << std::endl;
+      std::cout << phys->GetPhysics("hInelastic_pion_bias QGSP_BERT_Bias");
+      G4HadronPhysicsQGSP_BERT_Bias * bias
+          = (G4HadronPhysicsQGSP_BERT_Bias *)phys->GetPhysics(
+              "hInelastic_pion_bias QGSP_BERT_Bias");
+      bias->SetPiPlusBias(PiPlusBias_);
+    }
+
     return phys;
 }
 
