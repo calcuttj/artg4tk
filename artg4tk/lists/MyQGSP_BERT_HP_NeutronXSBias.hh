@@ -59,7 +59,7 @@ private:
   enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
 };
 
-#include "artg4tk/artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
+#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
 typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
 
 // 2019 by D. Rivera
