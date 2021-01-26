@@ -1,0 +1,133 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// $Id: MyQGSP_BERT_HP.icc 81937 2019-10-09 15:44:09Z drivera $
+//
+//---------------------------------------------------------------------------
+//
+// ClassName:   MyQGSP_BERT_HP_NeutronXSBias
+//
+// Author: 2002 J.P. Wellisch
+//
+// Modified:
+// 15.12.2005 G.Folger: migration to non static particles, rename components,
+//                      ordering of registrations
+// 08.06.2006 V.Ivanchenko: migration to CHIPS stopping
+// 15.06.2006 G.Folger: Migrate to HadronElasticPhysics using improved elastic
+// 26.04.2007 G.Folger: Enable quasielastic for QGS string model
+// 16.05.2007 V.Ivanchenko: rename EM builders
+// 04.06.2010 G.Folger: Use new ctor for builders
+// 16.08.2010 H.Kurashige: Remove inclusion of G4ParticleWithCuts
+// 16.10.2012 A.Ribon: Use new default stopping
+// 09.10.2019 D.Rivera Modified for use with larg4
+//
+//----------------------------------------------------------------------------
+//
+#include <iomanip>
+
+#include "Geant4/globals.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4ParticleTypes.hh"
+#include "Geant4/G4ParticleTable.hh"
+
+#include "Geant4/G4Material.hh"
+#include "Geant4/G4MaterialTable.hh"
+
+#include "Geant4/G4DecayPhysics.hh"
+#include "Geant4/G4RadioactiveDecayPhysics.hh"
+#include "Geant4/G4EmStandardPhysics.hh"
+#include "Geant4/G4IonPhysics.hh"
+
+#include "Geant4/G4EmExtraPhysics.hh"
+#include "Geant4/G4StoppingPhysics.hh"
+//<--#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
+#include "MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias.hh"
+
+#include "Geant4/G4HadronElasticPhysicsHP.hh"
+//<--#include "Geant4/G4DataQuestionaire.hh"
+
+
+template<class T> TMyQGSP_BERT_HP_NeutronXSBias<T>::TMyQGSP_BERT_HP_NeutronXSBias(G4int ver):  T()
+{
+
+  //<--G4DataQuestionaire it(photon, neutron);
+  G4cout << "<<< Geant4 Physics List simulation engine: MyQGSP_BERT_HP_NeutronXSBias 3.0"<<G4endl;
+  G4cout <<G4endl<<G4endl;
+
+  this->defaultCutValue = 0.7*CLHEP::mm;
+  this->SetVerboseLevel(ver);
+
+  // EM Physics
+  this->RegisterPhysics( new G4EmStandardPhysics(ver) );
+
+  // Synchroton Radiation & GN Physics
+  this->RegisterPhysics( new G4EmExtraPhysics(ver) );
+
+  // Decays
+  this->RegisterPhysics( new G4DecayPhysics(ver) );
+
+   // Hadron Elastic scattering
+  this->RegisterPhysics( new G4HadronElasticPhysicsHP(ver) );
+
+  // Hadron Physics
+  //<--this->RegisterPhysics( new G4HadronPhysicsQGSP_BERT_HP(ver));
+  this->RegisterPhysics( new MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias("hInelastic_bias MyQGSP_BERT_HP_NeutronXSBias",true,2.0));
+
+  // Stopping Physics
+  this->RegisterPhysics( new G4StoppingPhysics(ver));
+
+  // Ion Physics
+  this->RegisterPhysics( new G4IonPhysics(ver));
+
+}
+
+template<class T> TMyQGSP_BERT_HP_NeutronXSBias<T>::~TMyQGSP_BERT_HP_NeutronXSBias()
+{
+}
+
+template<class T> void TMyQGSP_BERT_HP_NeutronXSBias<T>::SetCuts()
+{
+  if (this->verboseLevel >1){
+    G4cout << "MyQGSP_BERT_HP_NeutronXSBias::SetCuts: \n";
+  }
+  //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
+  //   the default cut value for all particle types
+
+  this->SetCutsWithDefault();
+
+  //Set proton cut value to 0 for producing low energy recoil nucleus
+  this->SetCutValue(0, "proton");
+
+  if (this->verboseLevel >0)
+    G4VUserPhysicsList::DumpCutValuesTable();
+
+
+}
+
+
+
+// 2019 by D. Rivera
