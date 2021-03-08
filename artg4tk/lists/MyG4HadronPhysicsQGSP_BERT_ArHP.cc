@@ -43,7 +43,7 @@
 //
 //----------------------------------------------------------------------------
 //
-#include <iomanip>   
+#include <iomanip>
 
 // -- artg4tk includes
 #include "artg4tk/lists/MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
@@ -122,8 +122,8 @@ void MyG4HadronPhysicsQGSP_BERT_ArHP::ExtraConfiguration()
   const G4ParticleDefinition* neutron = G4Neutron::Neutron();
   G4HadronicProcess* capture = G4PhysListUtil::FindCaptureProcess(neutron);
   if (capture) {
-    G4NeutronRadCapture* theNeutronRadCapture = new G4NeutronRadCapture(); 
-    theNeutronRadCapture->SetMinEnergy( minBERT_neutron ); 
+    G4NeutronRadCapture* theNeutronRadCapture = new G4NeutronRadCapture();
+    theNeutronRadCapture->SetMinEnergy( minBERT_neutron );
     capture->RegisterMe( theNeutronRadCapture );
   }
   G4HadronicProcess* fission = G4PhysListUtil::FindFissionProcess(neutron);

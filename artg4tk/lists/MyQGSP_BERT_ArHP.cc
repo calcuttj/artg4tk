@@ -38,7 +38,7 @@
 // 26.04.2007 G.Folger: Enable quasielastic for QGS string model
 // 16.05.2007 V.Ivanchenko: rename EM builders
 // 04.06.2010 G.Folger: Use new ctor for builders
-// 16.08.2010 H.Kurashige: Remove inclusion of G4ParticleWithCuts 
+// 16.08.2010 H.Kurashige: Remove inclusion of G4ParticleWithCuts
 // 16.10.2012 A.Ribon: Use new default stopping
 // 19.01.2021 D.Rivera: imported into artg4tk based on :
 //            geant4.10.06.p01/source/physics_lists/lists/src/QGSP_BERT_HP.cc
@@ -48,7 +48,7 @@
 //----------------------------------------------------------------------------
 //
 
-#include <iomanip>   
+#include <iomanip>
 
 #include <CLHEP/Units/SystemOfUnits.h>
 
@@ -112,7 +112,7 @@ MyQGSP_BERT_ArHP::MyQGSP_BERT_ArHP(G4int ver)
   G4cout << "<<< Geant4 Physics List simulation engine: MyQGSP_BERT_ArHP"<<G4endl;
   G4cout <<G4endl<<G4endl;
 
-  defaultCutValue = 0.7*CLHEP::mm;  
+  defaultCutValue = 0.7*CLHEP::mm;
   SetVerboseLevel(ver);
 
   // EM Physics
@@ -143,13 +143,13 @@ void MyQGSP_BERT_ArHP::SetCuts()
 {
   if (verboseLevel >1){
     G4cout << "MyQGSP_BERT_ArHP::SetCuts:";
-  }  
-  //  " G4VUserPhysicsList::SetCutsWithDefault" method sets 
-  //   the default cut value for all particle types 
+  }
+  //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
+  //   the default cut value for all particle types
 
-  SetCutsWithDefault();   
+  SetCutsWithDefault();
 
-  //Set proton cut value to 0 for producing low energy recoil nucleus 
-  SetCutValue(0, "proton");    
-    
+  //Set proton cut value to 0 for producing low energy recoil nucleus
+  SetCutValue(0, "proton");
+
 }

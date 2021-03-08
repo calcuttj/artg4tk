@@ -27,10 +27,10 @@
 // J.P. Wellisch, Nov-1996
 // A prototype of the low energy neutron transport model.
 //
-// 12-April-06 Enable IC electron emissions T. Koi 
+// 12-April-06 Enable IC electron emissions T. Koi
 // 26-January-07 Add G4NEUTRONHP_USE_ONLY_PHOTONEVAPORATION flag
 // 081024 G4NucleiPropertiesTable:: to G4NucleiProperties::
-// 101203 Bugzilla/Geant4 Problem 1155 Lack of residual in some case 
+// 101203 Bugzilla/Geant4 Problem 1155 Lack of residual in some case
 // 110430 Temporary solution in the case of being MF6 final state in Capture reaction (MT102)
 //
 // P. Arce, June-2014 Conversion neutron_hp to particle_hp
@@ -46,7 +46,7 @@
 #include "Geant4/G4Nucleus.hh"
 #include "Geant4/G4PhotonEvaporation.hh"
 #include "Geant4/G4Fragment.hh"
-#include "Geant4/G4IonTable.hh" 
+#include "Geant4/G4IonTable.hh"
 #include "Geant4/G4ParticleHPDataUsed.hh"
 
   G4HadFinalState * ArParticleHPCaptureFS::ApplyYourself(const G4HadProjectile & theTrack)
@@ -65,7 +65,7 @@
     theNeutron.SetKineticEnergy( eKinetic );
 
     // Prepare target
-    G4ReactionProduct theTarget; 
+    G4ReactionProduct theTarget;
     G4Nucleus aNucleus;
     G4double eps = 0.0001;
     if (targetMass < 500*MeV) targetMass =
@@ -75,7 +75,7 @@
     G4double temperature = theTrack.GetMaterial()->GetTemperature();
     theTarget = aNucleus.GetBiasedThermalNucleus(targetMass, neutronVelocity, temperature);
     theTarget.SetDefinitionAndUpdateE( G4IonTable::GetIonTable()->GetIon(G4int(theBaseZ), G4int(theBaseA), 0.0) );
-    
+
     // Put neutron in nucleus rest system
     theNeutron.Lorentz(theNeutron, theTarget);
     eKinetic = theNeutron.GetKineticEnergy();
@@ -83,11 +83,11 @@
     // Sample the photons
     G4ReactionProductVector * thePhotons = 0;
     if (useArCapGamma) {
-    	thePhotons = theFinalgammas.GetGammas(); 
+    	thePhotons = theFinalgammas.GetGammas();
     }
     else {
-      if ( HasFSData() && !G4ParticleHPManager::GetInstance()->GetUseOnlyPhotoEvaporation() ) 
-      { 
+      if ( HasFSData() && !G4ParticleHPManager::GetInstance()->GetUseOnlyPhotoEvaporation() )
+      {
          //NDL has final state data
          if ( hasExactMF6 ) {
 	    theMF6FinalState.SetTarget(theTarget);
@@ -115,35 +115,35 @@
         for(it=products->begin(); it!=products->end(); it++)
         {
           G4ReactionProduct * theOne = new G4ReactionProduct;
-          // T. K. add 
-          if ( (*it)->GetParticleDefinition() != 0 ) 
+          // T. K. add
+          if ( (*it)->GetParticleDefinition() != 0 )
              theOne->SetDefinition( (*it)->GetParticleDefinition() );
           else
              theOne->SetDefinition( G4Gamma::Gamma() ); // this definiion will be over writen
-          
+
           // T. K. comment out below line
           //theOne->SetDefinition( G4Gamma::Gamma() );
           G4IonTable* theTable = G4IonTable::GetIonTable();
           if ( (*it)->GetMomentum().mag() > 10*MeV)
             theOne->SetDefinition(theTable->GetIon(static_cast<G4int>(theBaseZ), static_cast<G4int>(theBaseA+1), 0) );
-      
+
           if ( (*it)->GetExcitationEnergy() > 1.0e-2*eV) {
              G4double ex = (*it)->GetExcitationEnergy();
              G4ReactionProduct* aPhoton = new G4ReactionProduct;
-             aPhoton->SetDefinition( G4Gamma::Gamma() ); 
+             aPhoton->SetDefinition( G4Gamma::Gamma() );
              aPhoton->SetMomentum( (*it)->GetMomentum().vect().unit() * ex );
-             //aPhoton->SetTotalEnergy( ex ); //will be calculated from momentum 
+             //aPhoton->SetTotalEnergy( ex ); //will be calculated from momentum
              thePhotons->push_back(aPhoton);
           }
-      
+
           theOne->SetMomentum( (*it)->GetMomentum().vect() * ( (*it)->GetMomentum().t() - (*it)->GetExcitationEnergy() ) / (*it)->GetMomentum().t() ) ;
           thePhotons->push_back(theOne);
           delete *it;
-        } 
+        }
         delete products;
-      }	
+      }
     }
-    
+
 
     // Add them to the final state
     G4int nPhotons = 0;
@@ -151,12 +151,12 @@
 
 ///*
    if ( DoNotAdjustFinalState() ) {
-//Make at least one photon  
+//Make at least one photon
 //101203 TK
     if ( nPhotons == 0 )
     {
        G4ReactionProduct* theOne = new G4ReactionProduct;
-       theOne->SetDefinition( G4Gamma::Gamma() ); 
+       theOne->SetDefinition( G4Gamma::Gamma() );
        // Bug #1745 DHW G4double theta = pi*G4UniformRand();
        G4double costheta = 2.*G4UniformRand()-1.;
        G4double theta = std::acos(costheta);
@@ -167,7 +167,7 @@
        thePhotons->push_back(theOne);
        nPhotons++; // 0 -> 1
     }
-//One photon case: energy set to Q-value 
+//One photon case: energy set to Q-value
 //101203 TK
     //if ( nPhotons == 1 )
     if ( nPhotons == 1 && thePhotons->operator[](0)->GetDefinition()->GetBaryonNumber() == 0 )
@@ -178,7 +178,7 @@
          - G4IonTable::GetIonTable()->GetIonMass(static_cast<G4int>(theBaseZ), static_cast<G4int>(theBaseA+1), 0);
 
        thePhotons->operator[](0)->SetMomentum( Q*direction );
-    } 
+    }
 //
     }
 
@@ -187,7 +187,7 @@
     {
       thePhotons->operator[](i)->Lorentz(*(thePhotons->operator[](i)), -1*theTarget);
     }
-    
+
     // Recoil, if only one gamma
     //if (1==nPhotons)
     if ( nPhotons == 1 && thePhotons->operator[](0)->GetDefinition()->GetBaryonNumber() == 0 )
@@ -196,13 +196,13 @@
        G4ParticleDefinition * aRecoil = G4IonTable::GetIonTable()
                                         ->GetIon(static_cast<G4int>(theBaseZ), static_cast<G4int>(theBaseA+1), 0);
        theOne->SetDefinition(aRecoil);
-       // Now energy; 
+       // Now energy;
        // Can be done slightly better @
        G4ThreeVector aMomentum =  theTrack.Get4Momentum().vect()
                                  +theTarget.GetMomentum()
 				 -thePhotons->operator[](0)->GetMomentum();
 
-       //TKDB 140520 
+       //TKDB 140520
        //G4ThreeVector theMomUnit = aMomentum.unit();
        //G4double aKinEnergy =  theTrack.GetKineticEnergy()
        //                      +theTarget.GetKineticEnergy(); // gammas come from Q-value
@@ -211,7 +211,7 @@
        //G4double theAbsMom = std::sqrt(theResE*theResE - theResMass*theResMass);
        //G4ThreeVector theMomentum = theAbsMom*theMomUnit;
        //theOne->SetMomentum(theMomentum);
-       
+
        theOne->SetMomentum(aMomentum);
        theResult.Get()->AddSecondary(theOne);
     }
@@ -226,7 +226,7 @@
       theResult.Get()->AddSecondary(theOne);
       delete thePhotons->operator[](i);
     }
-    delete thePhotons; 
+    delete thePhotons;
 
 //101203TK
     G4bool residual = false;
@@ -244,7 +244,7 @@
        for ( G4int j = 0 ; j != theResult.Get()->GetNumberOfSecondaries() ; j++ )
        {
           p_photons += theResult.Get()->GetSecondary(j)->GetParticle()->Get4Momentum();
-          // To many 0 momentum photons -> Check PhotonDist 
+          // To many 0 momentum photons -> Check PhotonDist
           if ( theResult.Get()->GetSecondary(j)->GetParticle()->Get4Momentum().e() > 0 ) nNonZero++;
        }
 
@@ -253,13 +253,13 @@
                        - ( p_photons.e() + aRecoil->GetPDGMass() );
 
 //Add photons
-       if ( nPhotons - nNonZero > 0 ) 
+       if ( nPhotons - nNonZero > 0 )
        {
               //G4cout << "TKDB ArParticleHPCaptureFS::ApplyYourself we will create additional " << nPhotons - nNonZero << " photons" << G4endl;
           std::vector<G4double> vRand;
           vRand.push_back( 0.0 );
           for ( G4int j = 0 ; j != nPhotons - nNonZero - 1 ; j++ )
-          { 
+          {
              vRand.push_back( G4UniformRand() );
           }
           vRand.push_back( 1.0 );
@@ -282,7 +282,7 @@
              G4double sinth = std::sin(theta);
              G4double en = vEPhoton[j];
              G4ThreeVector tempVector(en*sinth*std::cos(phi), en*sinth*std::sin(phi), en*costheta);
-              
+
              p_photons += G4LorentzVector ( tempVector, tempVector.mag() );
              G4DynamicParticle * theOne = new G4DynamicParticle;
              theOne->SetDefinition( G4Gamma::Gamma() );
@@ -290,17 +290,17 @@
              theResult.Get()->AddSecondary(theOne);
           }
 
-//        Add last photon 
+//        Add last photon
           G4DynamicParticle * theOne = new G4DynamicParticle;
           theOne->SetDefinition( G4Gamma::Gamma() );
-//        For better momentum conservation 
+//        For better momentum conservation
           G4ThreeVector lastPhoton = -p_photons.vect().unit()*vEPhoton.back();
           p_photons += G4LorentzVector( lastPhoton , lastPhoton.mag() );
           theOne->SetMomentum( lastPhoton );
           theResult.Get()->AddSecondary(theOne);
        }
 
-//Add residual 
+//Add residual
        G4DynamicParticle * theOne = new G4DynamicParticle;
        G4ThreeVector aMomentum = theTrack.Get4Momentum().vect() + theTarget.GetMomentum()
 			       - p_photons.vect();
@@ -313,15 +313,15 @@
 
 // clean up the primary neutron
     theResult.Get()->SetStatusChange(stopAndKill);
-      
+
       //<--for(int i=0;i<100;i++){
       //<--    std::cout<<"I am ArParticleHPCaptureFS"<<std::endl;
       //<--}
-      
+
     return theResult.Get();
   }
 
-#include <sstream> 
+#include <sstream>
   void ArParticleHPCaptureFS::Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String &, G4ParticleDefinition* )
   {
 
@@ -337,7 +337,7 @@
 
      ss.clear();
      G4String sM;
-     if ( M > 0 ) 
+     if ( M > 0 )
      {
         ss << "m";
         ss << M;
@@ -352,9 +352,9 @@
    std::istringstream theData(std::ios::in);
    G4ParticleHPManager::GetInstance()->GetDataStream(filenameMF6,theData);
 
-     //TK110430 Only use MF6MT102 which has exactly same A and Z 
-     //Even _nat_ do not select and there is no _nat_ case in ENDF-VII.0 
-   if ( theData.good() == true ) { 
+     //TK110430 Only use MF6MT102 which has exactly same A and Z
+     //Even _nat_ do not select and there is no _nat_ case in ENDF-VII.0
+   if ( theData.good() == true ) {
       hasExactMF6=true;
       theMF6FinalState.Init(theData);
       //theData.close();
@@ -368,13 +368,13 @@
     G4ParticleHPDataUsed aFile = theNames.GetName(static_cast<G4int>(A), static_cast<G4int>(Z), M, dirName, tString, dbool);
 
     G4String filename = aFile.GetName();
-    SetAZMs( A, Z, M, aFile ); 
+    SetAZMs( A, Z, M, aFile );
     //theBaseA = A;
     //theBaseZ = G4int(Z+.5);
     if(!dbool || ( Z<2.5 && ( std::abs(theBaseZ - Z)>0.0001 || std::abs(theBaseA - A)>0.0001)))
     {
       hasAnyData = false;
-      hasFSData = false; 
+      hasFSData = false;
       hasXsec = false;
       return;
     }
@@ -382,12 +382,12 @@
    //std::istringstream theData(std::ios::in);
    theData.clear();
    G4ParticleHPManager::GetInstance()->GetDataStream(filename,theData);
-    hasFSData = theFinalStatePhotons.InitMean(theData); 
+    hasFSData = theFinalStatePhotons.InitMean(theData);
     if(hasFSData)
     {
       targetMass = theFinalStatePhotons.GetTargetMass();
-      theFinalStatePhotons.InitAngular(theData); 
-      theFinalStatePhotons.InitEnergies(theData); 
+      theFinalStatePhotons.InitAngular(theData);
+      theFinalStatePhotons.InitEnergies(theData);
     }
     //theData.close();
   }

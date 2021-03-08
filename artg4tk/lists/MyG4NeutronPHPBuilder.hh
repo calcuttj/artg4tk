@@ -57,11 +57,11 @@
 
 class MyG4NeutronPHPBuilder : public G4VNeutronBuilder
 {
-  public: 
+  public:
     MyG4NeutronPHPBuilder();
     virtual ~MyG4NeutronPHPBuilder() {}
 
-  public: 
+  public:
     virtual void Build(G4HadronElasticProcess * aP) final override;
     virtual void Build(G4HadronFissionProcess * aP) final override;
     virtual void Build(G4HadronCaptureProcess * aP) final override;
@@ -72,7 +72,7 @@ class MyG4NeutronPHPBuilder : public G4VNeutronBuilder
       theMin=aM;
       theIMin = theMin;
     }
-    void SetMinInelasticEnergy(G4double aM) 
+    void SetMinInelasticEnergy(G4double aM)
     {
       theIMin=aM;
     }

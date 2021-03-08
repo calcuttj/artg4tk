@@ -28,12 +28,12 @@
  // Hadronic Process: Very Low Energy Neutron X-Sections
  // original by H.P. Wellisch, TRIUMF, 14-Feb-97
  // Builds and has the Cross-section data for one material.
- 
+
 // Class Description
 // Final state production model for a high precision (based on evaluated data
-// libraries) description of neutron capture below 20 MeV; 
+// libraries) description of neutron capture below 20 MeV;
 // To be used in your physics list in case you need this physics.
-// In this case you want to register an object of this class with 
+// In this case you want to register an object of this class with
 // the corresponding process.
 // Class Description - End
 
@@ -48,8 +48,8 @@
 
 class ArParticleHPCapture : public G4HadronicInteraction
 {
-  public: 
-  
+  public:
+
   ArParticleHPCapture();
 
   ~ArParticleHPCapture();
@@ -63,13 +63,13 @@ class ArParticleHPCapture : public G4HadronicInteraction
       void SetVerboseLevel( G4int );
       void BuildPhysicsTable(const G4ParticleDefinition&);
       virtual void ModelDescription(std::ostream& outFile) const;
-  
+
   private:
-  
+
       std::vector<G4ParticleHPChannel*>* theCapture;
   G4String dirName;
   G4int numEle;
-  
+
   G4HadFinalState theResult;
 };
 

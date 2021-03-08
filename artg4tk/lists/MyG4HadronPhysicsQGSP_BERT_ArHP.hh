@@ -73,9 +73,9 @@
 //class G4ComponentGGHadronNucleusXsc;
 //
 
-class MyG4HadronPhysicsQGSP_BERT_ArHP : public G4HadronPhysicsQGSP_BERT 
+class MyG4HadronPhysicsQGSP_BERT_ArHP : public G4HadronPhysicsQGSP_BERT
 {
-  public: 
+  public:
     MyG4HadronPhysicsQGSP_BERT_ArHP(G4int verbose =1);
     MyG4HadronPhysicsQGSP_BERT_ArHP(const G4String& name, G4bool quasiElastic=true);
     virtual ~MyG4HadronPhysicsQGSP_BERT_ArHP() {}

@@ -41,17 +41,17 @@
 #include "Geant4/G4SystemOfUnits.hh"
 
 MyG4NeutronPHPBuilder::
-MyG4NeutronPHPBuilder() 
+MyG4NeutronPHPBuilder()
 {
   theHPElastic = 0;
   theHPElasticData = 0;
-  
+
   theHPFission = 0;
   theHPFissionData = 0;
-  
+
   theHPCapture = 0;
   theHPCaptureData = 0;
-  
+
   theHPInelastic = 0;
   theHPInelasticData = 0;
 

@@ -52,7 +52,7 @@ public:
   MyQGSP_BERT_ArHP(const MyQGSP_BERT_ArHP &) = delete;
   MyQGSP_BERT_ArHP & operator=(const MyQGSP_BERT_ArHP &)=delete;
 
-  // SetCuts() 
+  // SetCuts()
   virtual void SetCuts();
 };
 
