@@ -23,46 +23,38 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: MyQGSP_BERT_HP.hh 66892 2019-10-10 10:57:59Z drivera $
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   MyQGSP_BERT_HP
+// ClassName:   QGSP_BERT_HP
 //
 // Author: 2002 J.P. Wellisch
 //
-// Modified: 2019 D. Rivera
+// Modified:
+// 19.01.2021 D.Rivera: imported into artg4tk based on :
+//            geant4.10.06.p01/source/physics_lists/lists/include/QGSP_BERT_HP.hh
 //
 //----------------------------------------------------------------------------
 //
-#ifndef TMyQGSP_BERT_HP_NeutronXSBias_h
-#define TMyQGSP_BERT_HP_NeutronXSBias_h 1
-
-#include <CLHEP/Units/SystemOfUnits.h>
+#ifndef MyQGSP_BERT_ArHP_h
+#define MyQGSP_BERT_ArHP_h 1
 
 #include "Geant4/globals.hh"
 #include "Geant4/G4VModularPhysicsList.hh"
-#include "Geant4/CompileTimeConstraints.hh"
 
-template<class T>
-class TMyQGSP_BERT_HP_NeutronXSBias: public T
+
+class MyQGSP_BERT_ArHP: public G4VModularPhysicsList
 {
 public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver=1);
-  virtual ~TMyQGSP_BERT_HP_NeutronXSBias();
+  MyQGSP_BERT_ArHP(G4int ver=1);
+  virtual ~MyQGSP_BERT_ArHP()=default;
 
-public:
+  MyQGSP_BERT_ArHP(const MyQGSP_BERT_ArHP &) = delete;
+  MyQGSP_BERT_ArHP & operator=(const MyQGSP_BERT_ArHP &)=delete;
+
   // SetCuts()
   virtual void SetCuts();
-
-private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
 };
-
-#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
-typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
-
-// 2019 by D. Rivera
 
 #endif
 

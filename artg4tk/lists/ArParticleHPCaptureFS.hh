@@ -23,48 +23,62 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: MyQGSP_BERT_HP.hh 66892 2019-10-10 10:57:59Z drivera $
 //
-//---------------------------------------------------------------------------
 //
-// ClassName:   MyQGSP_BERT_HP
+// P. Arce, June-2014 Conversion neutron_hp to particle_hp
 //
-// Author: 2002 J.P. Wellisch
-//
-// Modified: 2019 D. Rivera
-//
-//----------------------------------------------------------------------------
-//
-#ifndef TMyQGSP_BERT_HP_NeutronXSBias_h
-#define TMyQGSP_BERT_HP_NeutronXSBias_h 1
+#ifndef ArParticleHPCaptureFS_h
+#define ArParticleHPCaptureFS_h 1
 
-#include <CLHEP/Units/SystemOfUnits.h>
+// -- artg4tk includes
+#include "artg4tk/lists/ArCaptureGammas.hh"
 
 #include "Geant4/globals.hh"
-#include "Geant4/G4VModularPhysicsList.hh"
-#include "Geant4/CompileTimeConstraints.hh"
+#include "Geant4/G4HadProjectile.hh"
+#include "Geant4/G4HadFinalState.hh"
+#include "Geant4/G4ParticleHPFinalState.hh"
+#include "Geant4/G4ReactionProductVector.hh"
+#include "Geant4/G4ParticleHPNames.hh"
+#include "Geant4/G4ParticleHPPhotonDist.hh"
+#include "Geant4/G4ParticleHPEnAngCorrelation.hh"
 
-template<class T>
-class TMyQGSP_BERT_HP_NeutronXSBias: public T
+class ArParticleHPCaptureFS : public G4ParticleHPFinalState
 {
-public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver=1);
-  virtual ~TMyQGSP_BERT_HP_NeutronXSBias();
+  public:
+  bool useArCapGamma = true;
 
-public:
-  // SetCuts()
-  virtual void SetCuts();
+  ArParticleHPCaptureFS()
+  {
+    hasXsec = false;
+    hasExactMF6 = false;
+    targetMass = 0;
+  }
 
-private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
+  ~ArParticleHPCaptureFS()
+  {
+  }
+
+  void Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String & aFSType, G4ParticleDefinition* );
+  G4HadFinalState * ApplyYourself(const G4HadProjectile & theTrack);
+  G4ParticleHPFinalState * New()
+  {
+   ArParticleHPCaptureFS * theNew = new ArParticleHPCaptureFS;
+   return theNew;
+  }
+
+  private:
+
+  G4double targetMass;
+
+  G4ParticleHPPhotonDist theFinalStatePhotons;
+  ArCaptureGammas       theFinalgammas;
+
+   G4ParticleHPEnAngCorrelation theMF6FinalState;
+   G4bool hasExactMF6;
+
+  G4ParticleHPNames theNames;
+
+//  G4double theCurrentA;
+//  G4double theCurrentZ;
 };
-
-#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
-typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
-
-// 2019 by D. Rivera
-
 #endif
-
-
-

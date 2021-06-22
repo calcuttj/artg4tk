@@ -23,48 +23,69 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: MyQGSP_BERT_HP.hh 66892 2019-10-10 10:57:59Z drivera $
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   MyQGSP_BERT_HP
+// ClassName:   G4HadronPhysicsQGSP_BERT_HP
 //
 // Author: 2002 J.P. Wellisch
 //
-// Modified: 2019 D. Rivera
+// Modified:
+// 15.12.2005 G.Folger: migration to non static particles
+// 25.04.2007 G.Folger: Add quasielastic as option, use quasielastic by default
+// 31.10.2012 A.Ribon: Use G4MiscBuilder
+// 19.03.2013 A.Ribon: Replace LEP with FTFP
+// 19.01.2021 D.Rivera: imported into artg4tk based on :
+//            geant4.10.06.p01/source/physics_lists/constructors/hadron_inelastic/include/G4HadronPhysicsQGSP_BERT_HP.hh
 //
 //----------------------------------------------------------------------------
 //
-#ifndef TMyQGSP_BERT_HP_NeutronXSBias_h
-#define TMyQGSP_BERT_HP_NeutronXSBias_h 1
+#ifndef MyG4HadronPhysicsQGSP_BERT_ArHP_h
+#define MyG4HadronPhysicsQGSP_BERT_ArHP_h 1
 
-#include <CLHEP/Units/SystemOfUnits.h>
+#include "Geant4/G4HadronPhysicsQGSP_BERT.hh"
 
-#include "Geant4/globals.hh"
-#include "Geant4/G4VModularPhysicsList.hh"
-#include "Geant4/CompileTimeConstraints.hh"
+//#include "globals.hh"
+//#include "G4ios.hh"
+//
+//#include "G4VPhysicsConstructor.hh"
+//
+//#include "G4PiKBuilder.hh"
+//#include "G4FTFPPiKBuilder.hh"
+//#include "G4QGSPPiKBuilder.hh"
+//#include "G4BertiniPiKBuilder.hh"
+//
+//#include "G4ProtonBuilder.hh"
+//#include "G4FTFPProtonBuilder.hh"
+//#include "G4QGSPProtonBuilder.hh"
+//#include "G4BertiniProtonBuilder.hh"
+//
+//#include "G4NeutronBuilder.hh"
+//#include "G4FTFPNeutronBuilder.hh"
+//#include "G4QGSPNeutronBuilder.hh"
+//#include "G4BertiniNeutronBuilder.hh"
+//#include "G4NeutronPHPBuilder.hh"
+//
+//#include "G4HyperonFTFPBuilder.hh"
+//#include "G4AntiBarionBuilder.hh"
+//#include "G4FTFPAntiBarionBuilder.hh"
+//
+//class G4ComponentGGHadronNucleusXsc;
+//
 
-template<class T>
-class TMyQGSP_BERT_HP_NeutronXSBias: public T
+class MyG4HadronPhysicsQGSP_BERT_ArHP : public G4HadronPhysicsQGSP_BERT
 {
-public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver=1);
-  virtual ~TMyQGSP_BERT_HP_NeutronXSBias();
+  public:
+    MyG4HadronPhysicsQGSP_BERT_ArHP(G4int verbose =1);
+    MyG4HadronPhysicsQGSP_BERT_ArHP(const G4String& name, G4bool quasiElastic=true);
+    virtual ~MyG4HadronPhysicsQGSP_BERT_ArHP() {}
 
-public:
-  // SetCuts()
-  virtual void SetCuts();
-
-private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
+  protected:
+    virtual void Neutron() override;
+    virtual void ExtraConfiguration() override;
 };
 
-#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
-typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
-
-// 2019 by D. Rivera
+// 2002 by J.P. Wellisch
 
 #endif
-
-
 

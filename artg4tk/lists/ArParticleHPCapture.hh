@@ -23,48 +23,54 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: MyQGSP_BERT_HP.hh 66892 2019-10-10 10:57:59Z drivera $
 //
-//---------------------------------------------------------------------------
 //
-// ClassName:   MyQGSP_BERT_HP
-//
-// Author: 2002 J.P. Wellisch
-//
-// Modified: 2019 D. Rivera
-//
-//----------------------------------------------------------------------------
-//
-#ifndef TMyQGSP_BERT_HP_NeutronXSBias_h
-#define TMyQGSP_BERT_HP_NeutronXSBias_h 1
+ // Hadronic Process: Very Low Energy Neutron X-Sections
+ // original by H.P. Wellisch, TRIUMF, 14-Feb-97
+ // Builds and has the Cross-section data for one material.
 
-#include <CLHEP/Units/SystemOfUnits.h>
+// Class Description
+// Final state production model for a high precision (based on evaluated data
+// libraries) description of neutron capture below 20 MeV;
+// To be used in your physics list in case you need this physics.
+// In this case you want to register an object of this class with
+// the corresponding process.
+// Class Description - End
+
+// P. Arce, June-2014 Conversion neutron_hp to particle_hp
+//
+#ifndef ArParticleHPCapture_h
+#define ArParticleHPCapture_h 1
 
 #include "Geant4/globals.hh"
-#include "Geant4/G4VModularPhysicsList.hh"
-#include "Geant4/CompileTimeConstraints.hh"
+#include "Geant4/G4ParticleHPChannel.hh"
+#include "Geant4/G4HadronicInteraction.hh"
 
-template<class T>
-class TMyQGSP_BERT_HP_NeutronXSBias: public T
+class ArParticleHPCapture : public G4HadronicInteraction
 {
-public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver=1);
-  virtual ~TMyQGSP_BERT_HP_NeutronXSBias();
+  public:
 
-public:
-  // SetCuts()
-  virtual void SetCuts();
+  ArParticleHPCapture();
 
-private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
+  ~ArParticleHPCapture();
+
+  G4HadFinalState * ApplyYourself(const G4HadProjectile& aTrack, G4Nucleus& aTargetNucleus);
+
+  virtual const std::pair<G4double, G4double> GetFatalEnergyCheckLevels() const;
+
+   public:
+      G4int GetVerboseLevel() const;
+      void SetVerboseLevel( G4int );
+      void BuildPhysicsTable(const G4ParticleDefinition&);
+      virtual void ModelDescription(std::ostream& outFile) const;
+
+  private:
+
+      std::vector<G4ParticleHPChannel*>* theCapture;
+  G4String dirName;
+  G4int numEle;
+
+  G4HadFinalState theResult;
 };
 
-#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
-typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
-
-// 2019 by D. Rivera
-
 #endif
-
-
-
