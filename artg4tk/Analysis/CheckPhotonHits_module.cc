@@ -72,8 +72,9 @@ void artg4tk::CheckPhotonHits::beginJob() {
 void artg4tk::CheckPhotonHits::analyze(const art::Event & event) {
     typedef std::vector< art::Handle<PhotonHitCollection> > HandleVector;
     std::map<int, int> photonsperdet;
-    HandleVector allSims;
-    event.getManyByType(allSims);
+    //HandleVector allSims;
+    //event.getManyByType(allSims);
+    auto allSims = event.getMany<PhotonHitCollection>();
     //    cout << "CheckPhotonHits Event:  " << event.event() << "  Nr of PhotonHit collections: " << allSims.size() << endl;
     int section = 0;
     for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {

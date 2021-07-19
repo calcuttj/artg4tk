@@ -85,8 +85,9 @@ void artg4tk::CheckTrackerHits::beginJob() {
 
 void artg4tk::CheckTrackerHits::analyze(const art::Event& event) {
     typedef std::vector< art::Handle<TrackerHitCollection> > HandleVector;
-    HandleVector allSims;
-    event.getManyByType(allSims);
+    //HandleVector allSims;
+    //event.getManyByType(allSims);
+    auto allSims = event.getMany<TrackerHitCollection>();
 
 //    cout << "CheckTrackerHits Event:  " << event.event() << "  Nr of CaloHit collections: " << allSims.size() << endl;
     for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {

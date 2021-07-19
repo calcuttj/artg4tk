@@ -27,8 +27,9 @@ namespace artg4tk {
                                         const std::string& instanceLabel ) {
     
     // Let's try to get the data out of the Run first
-    std::vector< art::Handle< DATATYPE > > handleVec;
-    r.getManyByType(handleVec);
+    //std::vector< art::Handle< DATATYPE > > handleVec;
+    //r.getManyByType(handleVec);
+    auto handleVec = r.getMany< DATATYPE >();
     
     if ( ! handleVec.empty() ) {
       // We found something in the run record

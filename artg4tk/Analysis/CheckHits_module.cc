@@ -87,8 +87,9 @@ void artg4tk::CheckHits::beginJob() {
 
 void artg4tk::CheckHits::analyze(const art::Event& event) {
     typedef std::vector< art::Handle<CalorimeterHitCollection> > HandleVector;
-    HandleVector allSims;
-    event.getManyByType(allSims);
+    //HandleVector allSims;
+    //event.getManyByType(allSims);
+    auto allSims = event.getMany<CalorimeterHitCollection>();
 
     cout << "CheckHits Event:  " << event.event() << "  Nr of CaloHit collections: " << allSims.size() << endl;
     for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
@@ -103,8 +104,9 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
         _hEdep->Fill(sumE / CLHEP::GeV);
     }
     typedef std::vector< art::Handle<DRCalorimeterHitCollection> > DRHandleVector;
-    DRHandleVector allDRSims;
-    event.getManyByType(allDRSims);
+    //DRHandleVector allDRSims;
+    //event.getManyByType(allDRSims);
+    auto allDRSims = event.getMany<DRCalorimeterHitCollection>();
     cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size() << endl;
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
         const DRCalorimeterHitCollection & DRsims(**i);
@@ -121,8 +123,9 @@ void artg4tk::CheckHits::analyze(const art::Event& event) {
         _hNCeren->Fill(sumNCeren);
     }
     typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
-    EdepHandleVector allEdeps;
-    event.getManyByType(allEdeps);
+    //EdepHandleVector allEdeps;
+    //event.getManyByType(allEdeps);
+    auto allEdeps = event.getMany<ByParticle>();
 
     for (EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
         const ByParticle & Edeps(**i);
