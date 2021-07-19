@@ -13,6 +13,8 @@
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Run.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
+#include "messagefacility/MessageLogger/MessageLogger.h"
 
 // Local includes (like actions)
 #include "artg4tk/geantInit/ArtG4RunManager.hh"
@@ -27,7 +29,6 @@
 #include "artg4tk/geantInit/ArtG4TrackingAction.hh"
 
 // Services
-#include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/ActionHolder_service.hh"
 #include "artg4tk/services/DetectorHolder_service.hh"
 #include "artg4tk/services/PhysicsListHolder_service.hh"
