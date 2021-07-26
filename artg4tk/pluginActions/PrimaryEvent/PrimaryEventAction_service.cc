@@ -36,8 +36,9 @@ void artg4tk::PrimaryEventActionService::generatePrimaries(G4Event * anEvent) {
     art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
     art::Event & e = actionHolder -> getCurrArtEvent();
     typedef std::vector< art::Handle<GenParticleCollection> > HandleVector;
-    HandleVector allGens;
-    e.getManyByType(allGens);
+    //HandleVector allGens;
+    //e.getManyByType(allGens);
+    auto allGens = e.getMany<GenParticleCollection>();
     std::cout << "Primary:: GenParticles*******************Size: " << allGens.size() << std::endl;
     for (HandleVector::const_iterator i = allGens.begin(); i != allGens.end(); ++i) {
         const GenParticleCollection & gens(**i);

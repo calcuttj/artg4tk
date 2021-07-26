@@ -78,8 +78,9 @@ void artg4tk::CheckCalorimeterHits::beginJob() {
 
 void artg4tk::CheckCalorimeterHits::analyze(const art::Event& event) {
     typedef std::vector< art::Handle<CalorimeterHitCollection> > HandleVector;
-    HandleVector allSims;
-    event.getManyByType(allSims);
+    //HandleVector allSims;
+    //event.getManyByType(allSims);
+    auto allSims = event.getMany<CalorimeterHitCollection>();
     double sumE = 0.0;
     for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
         const CalorimeterHitCollection & sims(**i);

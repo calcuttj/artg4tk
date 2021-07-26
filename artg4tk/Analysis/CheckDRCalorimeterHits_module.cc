@@ -158,7 +158,7 @@ void artg4tk::CheckDRCalorimeterHits::beginJob() {
 
 void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
     typedef std::vector< art::Handle<DRCalorimeterHitCollection> > DRHandleVector;
-    DRHandleVector allDRSims;
+    //DRHandleVector allDRSims;
     double sumDRE=0;
     double sumNCeren = 0.0;
     unsigned int numz=10;
@@ -173,7 +173,8 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
 	ncerenthin.push_back(0.0);
 	ncerenthick.push_back(0.0);
       }
-    event.getManyByType(allDRSims);
+    //event.getManyByType(allDRSims);
+    auto allDRSims = event.getMany<DRCalorimeterHitCollection>();
     for (DRHandleVector::const_iterator i = allDRSims.begin(); i != allDRSims.end(); ++i) {
       art::Handle<DRCalorimeterHitCollection> ih = *i;
        auto const* prov  = ih.provenance();
@@ -239,8 +240,9 @@ void artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event) {
 		 ncerenthin.at(8),
 		 ncerenthin.at(9));     
      typedef std::vector< art::Handle<ByParticle> > EdepHandleVector;
-    EdepHandleVector allEdeps;
-    event.getManyByType(allEdeps);
+    //EdepHandleVector allEdeps;
+    //event.getManyByType(allEdeps);
+    auto allEdeps = event.getMany<ByParticle>();
     bool first=true;
     ByParticle addup;
     ByParticle addupnc;
