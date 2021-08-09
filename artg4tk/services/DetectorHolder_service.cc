@@ -6,7 +6,7 @@
 //Includes
 
 #include "artg4tk/services/DetectorHolder_service.hh"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 #include "messagefacility/MessageLogger/MessageLogger.h" 
 
 #include "artg4tk/Core/DetectorBase.hh"

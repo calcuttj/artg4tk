@@ -3,6 +3,7 @@
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Handle.h"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 #include "fhiclcpp/ParameterSet.h"
 
 #include "artg4tk/services/ActionHolder_service.hh"

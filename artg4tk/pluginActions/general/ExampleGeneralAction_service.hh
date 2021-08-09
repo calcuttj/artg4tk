@@ -28,7 +28,7 @@
 
 // Includes for exampleGeneral action service
 #include "fhiclcpp/fwd.h"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 
 // Get the base class
 #include "artg4tk/actionBase/TrackingActionBase.hh"

@@ -9,6 +9,7 @@
 
 // Services
 #include "art/Framework/Services/Registry/ServiceHandle.h"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 #include "artg4tk/G4PhysModelParamStudy/G4Services/ProcLevelSimSetup_service.hh"
 
 // CLHEP/Random

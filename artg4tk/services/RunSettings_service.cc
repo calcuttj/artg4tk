@@ -1,6 +1,7 @@
 // Common materials used throughout the simulation
 
 #include "artg4tk/services/RunSettings_service.hh"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 artg4tk::RunSettingsService::RunSettingsService(fhicl::ParameterSet const & p) :

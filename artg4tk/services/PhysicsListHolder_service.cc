@@ -1,7 +1,7 @@
 // Implemenation for PhysicsListHolder_service
 
 #include "artg4tk/services/PhysicsListHolder_service.hh"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 #include "artg4tk/services/PhysicsListServiceBase.hh"
 
 void artg4tk::PhysicsListHolderService::registerPhysicsListService( PhysicsListServiceBase* pl ) {

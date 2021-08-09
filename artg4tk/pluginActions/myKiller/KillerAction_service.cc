@@ -29,6 +29,7 @@
 //=============================================================================
 
 #include "artg4tk/pluginActions/myKiller/KillerAction_service.hh"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 
 // G4 includes
 #include "Geant4/G4Track.hh"

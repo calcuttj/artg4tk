@@ -30,13 +30,13 @@
 //=============================================================================
 
 // Include guard
-#ifndef EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
-#define EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
+#ifndef HEPEVT_INPUTACTIONSERVICE_HH
+#define HEPEVT_INPUTACTIONSERVICE_HH
 
 // framework Includes:
 #include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 
 // Get the artg4tk base class
 #include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
