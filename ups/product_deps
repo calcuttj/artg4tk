@@ -31,8 +31,8 @@ gdmldir product_dir     gdml
 
 product          version
 art_root_io     v1_08_03
-geant4          v4_10_6_p01d
-cetbuildtools   v8_11_02        -       only_for_build
+geant4          v4_11_0_b01
+cetbuildtools   v8_14_02        -       only_for_build
 end_product_list
 
 # We now define allowed qualifiers and the corresponding qualifiers for the depdencies.
