@@ -3,7 +3,7 @@
 
 // Art
 #include "fhiclcpp/fwd.h"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 
 namespace artg4tk {
 

@@ -3,5 +3,5 @@ art_make(
     artg4tk_actionBase
     artg4tk_services_ActionHolder_service
     ${CLHEP}
-    ${MF_MESSAGELOGGER}
+    messagefacility::MF_MessageLogger
 )

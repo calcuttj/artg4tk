@@ -3,7 +3,7 @@ include_directories($ENV{XERCES_C_INC})
 
 art_make(
   LIB_LIBRARIES
-    ${ART_UTILITIES}
+    art::Utilities
     cetlib_except
     ${ROOT_CORE}
     ${ROOT_HIST}
@@ -24,7 +24,7 @@ art_make(
     ${G4TRACK}
     ${G4RUN}
   SERVICE_LIBRARIES
-    ${ART_FRAMEWORK_CORE}
+    art::Framework_Core
 )
 
 install_headers()

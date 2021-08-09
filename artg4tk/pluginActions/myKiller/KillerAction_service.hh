@@ -35,7 +35,7 @@
 
 // Includes for general action service
 #include "fhiclcpp/fwd.h"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 // Get the base class

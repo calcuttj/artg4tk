@@ -4,5 +4,5 @@ art_make(
     artg4tk_services_ActionHolder_service
     ${G4EVENT}
     ${G4PARTICLES}
-    ${MF_MESSAGELOGGER}
+    messagefacility::MF_MessageLogger
 )
