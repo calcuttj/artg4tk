@@ -1,5 +1,5 @@
-#ifndef artg4tk_RecordChi2_H
-#define artg4tk_RecordChi2_H 1
+#ifndef artg4tk_G4PhysModelParamStudy_AnalysisProducts_RecordChi2_hh
+#define artg4tk_G4PhysModelParamStudy_AnalysisProducts_RecordChi2_hh
 
 // #include <string>
 #include <TNamed.h>
@@ -132,4 +132,4 @@ private:
   ClassDef(RecordChi2, 10)
 };
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_AnalysisProducts_RecordChi2_hh */

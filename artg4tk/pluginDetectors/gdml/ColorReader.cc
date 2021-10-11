@@ -18,11 +18,7 @@
 #include "Geant4/G4LogicalVolume.hh"
 #include "Geant4/G4VisAttributes.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 ColorReader::ColorReader() : G4GDMLReadStructure() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 ColorReader::~ColorReader()
 {
@@ -31,8 +27,6 @@ ColorReader::~ColorReader()
     delete pos->second;
   }
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void
 ColorReader::ExtensionRead(const xercesc::DOMElement* const extElement)
@@ -57,12 +51,9 @@ ColorReader::ExtensionRead(const xercesc::DOMElement* const extElement)
   }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 void
 ColorReader::VolumeRead(const xercesc::DOMElement* const volumeElement)
 {
-  // G4cout << "G4GDML: VolumeRead" << G4endl;
   G4VSolid* solidPtr = 0;
   G4Material* materialPtr = 0;
   G4VisAttributes* attrPtr = 0;
@@ -94,7 +85,6 @@ ColorReader::VolumeRead(const xercesc::DOMElement* const volumeElement)
   }
 
   pMotherLogical = new G4LogicalVolume(solidPtr, materialPtr, GenerateName(name), 0, 0, 0);
-  // G4cout << "G4GDML: attaching visual attribute ..." << G4endl;
   pMotherLogical->SetVisAttributes(attrPtr);
 
   if (!auxList.empty()) {
@@ -103,8 +93,6 @@ ColorReader::VolumeRead(const xercesc::DOMElement* const volumeElement)
 
   Volume_contentRead(volumeElement);
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void
 ColorReader::ColorRead(const xercesc::DOMElement* const colorElement)
@@ -146,8 +134,6 @@ ColorReader::ColorRead(const xercesc::DOMElement* const colorElement)
   color = new G4VisAttributes(G4Color(r, g, b, a));
   fAttribs.insert(std::make_pair(name, color));
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4VisAttributes*
 ColorReader::GetVisAttribute(const G4String& ref)

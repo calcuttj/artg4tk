@@ -31,9 +31,9 @@ namespace artg4tk {
     explicit AnalyzerSASM6E(const fhicl::ParameterSet&);
     virtual ~AnalyzerSASM6E();
 
-    virtual void analyze(const art::Event& event) override;
-    virtual void beginJob() override;
-    virtual void endJob() override;
+    void analyze(const art::Event& event) override;
+    void beginJob() override;
+    void endJob() override;
 
   protected:
     virtual TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&);
@@ -458,5 +458,4 @@ artg4tk::AnalyzerSASM6E::extractPTBinFromTitle(const std::string& title)
   return ret;
 }
 
-using artg4tk::AnalyzerSASM6E;
-DEFINE_ART_MODULE(AnalyzerSASM6E)
+DEFINE_ART_MODULE(artg4tk::AnalyzerSASM6E)

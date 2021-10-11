@@ -1,5 +1,5 @@
-#ifndef artg4tk_MPAnalyzerBase_H
-#define artg4tk_MPAnalyzerBase_H 1
+#ifndef artg4tk_G4PhysModelParamStudy_AnalysisBase_ModelParamAnalyzerBase_hh
+#define artg4tk_G4PhysModelParamStudy_AnalysisBase_ModelParamAnalyzerBase_hh
 
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/AnalyzerWithExpDataBase.hh"
 
@@ -23,8 +23,8 @@ namespace artg4tk {
     explicit ModelParamAnalyzerBase(const fhicl::ParameterSet&);
     virtual ~ModelParamAnalyzerBase();
 
-    virtual void beginRun(const art::Run&) override;
-    virtual void endJob() override;
+    void beginRun(const art::Run&) override;
+    void endJob() override;
 
   protected:
     void prepareG4PTable();
@@ -50,4 +50,4 @@ namespace artg4tk {
 
 }
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_AnalysisBase_ModelParamAnalyzerBase_hh */

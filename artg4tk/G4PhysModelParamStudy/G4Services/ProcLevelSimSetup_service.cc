@@ -1,4 +1,3 @@
-
 // Authors: Julia Yarba
 
 // Date: Oct. 2015
@@ -111,6 +110,4 @@ artg4tk::ProcLevelSimSetupService::Init()
   return;
 }
 
-using artg4tk::ProcLevelSimSetupService;
-
-DEFINE_ART_SERVICE(ProcLevelSimSetupService)
+DEFINE_ART_SERVICE(artg4tk::ProcLevelSimSetupService)

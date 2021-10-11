@@ -1,5 +1,5 @@
-#ifndef G4ProcLevelSimSetup_SERVICE_HH
-#define G4ProcLevelSimSetup_SERVICE_HH
+#ifndef artg4tk_G4PhysModelParamStudy_G4Services_ProcLevelSimSetup_service_hh
+#define artg4tk_G4PhysModelParamStudy_G4Services_ProcLevelSimSetup_service_hh
 
 // Art
 #include "art/Framework/Services/Registry/ActivityRegistry.h"
@@ -66,7 +66,6 @@ namespace artg4tk {
 
 }
 
-using artg4tk::ProcLevelSimSetupService;
-DECLARE_ART_SERVICE(ProcLevelSimSetupService, LEGACY)
+DECLARE_ART_SERVICE(artg4tk::ProcLevelSimSetupService, LEGACY)
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_G4Services_ProcLevelSimSetup_service_hh */

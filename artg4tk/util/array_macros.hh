@@ -1,5 +1,5 @@
-#ifndef ARRAY_MACROS_HH
-#define ARRAY_MACROS_HH
+#ifndef artg4tk_util_array_macros_hh
+#define artg4tk_util_array_macros_hh
 
 /** @file array_macros.hh
 
@@ -52,4 +52,4 @@ array_size_struct<N> static_array_size_fn(T (&)[N]);
 #error ARRAYBEGIN defined already!
 #endif
 
-#endif // ARRAY_MACROS_HH
+#endif /* artg4tk_util_array_macros_hh */

@@ -1,12 +1,10 @@
-#ifndef DUMMY_SERVICE_HH
-#define DUMMY_SERVICE_HH
+#ifndef artg4tk_services_Dummy_service_hh
+#define artg4tk_services_Dummy_service_hh
 
 // Art
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
+#include "art/Framework/Core/Frameworkfwd.h"
 #include "fhiclcpp/fwd.h"
-namespace art {
-  class ProducesCollector;
-}
 
 namespace artg4tk {
 
@@ -17,10 +15,9 @@ namespace artg4tk {
 
     void notifyArtOfProduction(art::ProducesCollector& prod);
 
-  private:
   };
 }
-using artg4tk::DummyService;
-DECLARE_ART_SERVICE(DummyService, LEGACY)
 
-#endif
+DECLARE_ART_SERVICE(artg4tk::DummyService, LEGACY)
+
+#endif /* artg4tk_services_Dummy_service_hh */

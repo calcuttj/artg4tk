@@ -31,9 +31,8 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 
-// Include guard
-#ifndef GDMLDETECTOR_SERVICE_HH
-#define GDMLDETECTOR_SERVICE_HH
+#ifndef artg4tk_pluginDetectors_gdml_GDMLDetector_service_hh
+#define artg4tk_pluginDetectors_gdml_GDMLDetector_service_hh
 
 // Includes
 #include "fhiclcpp/fwd.h"
@@ -78,8 +77,8 @@ namespace artg4tk {
 
   private:
     // Private overriden methods
-    virtual std::vector<G4LogicalVolume*> doBuildLVs() override;
-    virtual std::vector<G4VPhysicalVolume*> doPlaceToPVs(std::vector<G4LogicalVolume*>) override;
+    std::vector<G4LogicalVolume*> doBuildLVs() override;
+    std::vector<G4VPhysicalVolume*> doPlaceToPVs(std::vector<G4LogicalVolume*>) override;
 
     // -- D.R. Set the step limits for specific volumes from the configuration file
     virtual void setStepLimits(G4GDMLParser* parser);
@@ -87,12 +86,13 @@ namespace artg4tk {
     // We need to add something to the art event, so we need these two methods:
 
     // Tell Art what we'll produce
-    virtual void doCallArtProduces(art::ProducesCollector&) override;
+    void doCallArtProduces(art::ProducesCollector&) override;
 
     // Actually produce
-    virtual void doFillEventWithArtHits(G4HCofThisEvent* hc) override;
+    void doFillEventWithArtHits(G4HCofThisEvent* hc) override;
   };
 }
-using artg4tk::GDMLDetectorService;
-DECLARE_ART_SERVICE(GDMLDetectorService, LEGACY)
-#endif
+
+DECLARE_ART_SERVICE(artg4tk::GDMLDetectorService, LEGACY)
+
+#endif /* artg4tk_pluginDetectors_gdml_GDMLDetector_service_hh */

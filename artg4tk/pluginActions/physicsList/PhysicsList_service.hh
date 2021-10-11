@@ -1,7 +1,7 @@
 // Here we define the physics list
 
-#ifndef PHYSICSLIST_SERVICE_HH
-#define PHYSICSLIST_SERVICE_HH
+#ifndef artg4tk_pluginActions_physicsList_PhysicsList_service_hh
+#define artg4tk_pluginActions_physicsList_PhysicsList_service_hh
 
 #include "fhiclcpp/fwd.h"
 
@@ -16,7 +16,7 @@ namespace artg4tk {
   public:
     PhysicsListService(fhicl::ParameterSet const&);
     virtual ~PhysicsListService(){};
-    virtual G4VUserPhysicsList* makePhysicsList() override;
+    G4VUserPhysicsList* makePhysicsList() override;
 
   private:
     std::string PhysicsListName_;
@@ -55,7 +55,6 @@ namespace artg4tk {
 
 }
 
-using artg4tk::PhysicsListService;
-DECLARE_ART_SERVICE(PhysicsListService, LEGACY)
+DECLARE_ART_SERVICE(artg4tk::PhysicsListService, LEGACY)
 
-#endif
+#endif /* artg4tk_pluginActions_physicsList_PhysicsList_service_hh */

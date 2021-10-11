@@ -29,43 +29,37 @@
 // Date: August 2012
 //=============================================================================
 
-// Include guard
-#ifndef HEPEVT_INPUTACTIONSERVICE_HH
-#define HEPEVT_INPUTACTIONSERVICE_HH
+#ifndef artg4tk_pluginActions_myparticleGun_HepevtInputAction_service_hh
+#define artg4tk_pluginActions_myparticleGun_HepevtInputAction_service_hh
 
 // framework Includes:
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 #include "fhiclcpp/fwd.h"
-#include "messagefacility/MessageLogger/MessageLogger.h"
 
 // Get the artg4tk base class
 #include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
 
 // Geant 4 includes:
+#include "Geant4/G4VPrimaryGenerator.hh"
 class G4Event;
-class G4VPrimaryGenerator;
 
 namespace artg4tk {
 
   class HepevtInputActionService : public artg4tk::PrimaryGeneratorActionBase {
   public:
     HepevtInputActionService(fhicl::ParameterSet const&);
-    virtual ~HepevtInputActionService();
-    virtual void initialize() override;
+    void initialize() override;
+
     // To generate primaries, we need to overload the GeneratePrimaries
     // method.
-    virtual void generatePrimaries(G4Event* anEvent) override;
-
-    // We don't add anything to the event, so we don't need callArtProduces
-    // or FillEventWithArtStuff.
+    void generatePrimaries(G4Event* anEvent) override;
 
   private:
-    G4VPrimaryGenerator* HEPEvt_;
+    std::unique_ptr<G4VPrimaryGenerator> HEPEvt_{nullptr};
     std::string fileName_; // name of hepevt input file
-    mf::LogInfo logInfo_;
   };
 } // namespace artg4tk
-using artg4tk::HepevtInputActionService;
-DECLARE_ART_SERVICE(HepevtInputActionService, LEGACY)
 
-#endif
+DECLARE_ART_SERVICE(artg4tk::HepevtInputActionService, LEGACY)
+
+#endif /* artg4tk_pluginActions_myparticleGun_HepevtInputAction_service_hh */

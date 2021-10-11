@@ -1,5 +1,5 @@
-#ifndef DataProducts_EventGenerators_GenParticleCollection_h
-#define DataProducts_EventGenerators_GenParticleCollection_h
+#ifndef artg4tk_DataProducts_EventGenerators_GenParticleCollection_hh
+#define artg4tk_DataProducts_EventGenerators_GenParticleCollection_hh
 
 //
 // A collection of generated particles.
@@ -15,4 +15,4 @@ namespace artg4tk {
 
 }
 
-#endif /* DataProducts_GenParticleCollection_h */
+#endif /* artg4tk_DataProducts_EventGenerators_GenParticleCollection_hh */

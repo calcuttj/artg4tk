@@ -1,7 +1,7 @@
 // Utility functions
 
-#ifndef UTILITY_HH
-#define UTILITY_HH
+#ifndef artg4tk_util_util_hh
+#define artg4tk_util_util_hh
 
 #include <functional>
 #include <string>
@@ -51,4 +51,4 @@ namespace artg4tk {
   std::string basePath(const std::string& envVar, const std::string& pkgName);
 }
 
-#endif
+#endif /* artg4tk_util_util_hh */

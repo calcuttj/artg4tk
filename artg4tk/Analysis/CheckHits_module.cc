@@ -43,10 +43,8 @@ namespace artg4tk {
 class artg4tk::CheckHits : public art::EDAnalyzer {
 public:
   explicit CheckHits(fhicl::ParameterSet const& p);
-  virtual void beginJob();
-  virtual void beginRun(const art::Run& Run);
-  virtual void endJob();
-  virtual void analyze(const art::Event& event);
+  void beginJob() override;
+  void analyze(const art::Event& event) override;
 
 private:
   bool _DumpGDML;  // enable/disable dumping of GDML geometry information
@@ -70,13 +68,8 @@ artg4tk::CheckHits::CheckHits(fhicl::ParameterSet const& p)
 {}
 
 void
-artg4tk::CheckHits::beginRun(const art::Run& thisRun)
-{}
-
-void
 artg4tk::CheckHits::beginJob()
 {
-
   art::ServiceHandle<art::TFileService> tfs;
   _hnHits = tfs->make<TH1F>("hnHits", "Number of CaloArtHits", 100, 0., 20000.);
   _hEdep = tfs->make<TH1F>("hEdep", "total Energy deposition in CaloArtHits", 100, 0., 15.);
@@ -90,8 +83,6 @@ void
 artg4tk::CheckHits::analyze(const art::Event& event)
 {
   typedef std::vector<art::Handle<CalorimeterHitCollection>> HandleVector;
-  // HandleVector allSims;
-  // event.getManyByType(allSims);
   auto allSims = event.getMany<CalorimeterHitCollection>();
 
   cout << "CheckHits Event:  " << event.event() << "  Nr of CaloHit collections: " << allSims.size()
@@ -108,8 +99,6 @@ artg4tk::CheckHits::analyze(const art::Event& event)
     _hEdep->Fill(sumE / CLHEP::GeV);
   }
   typedef std::vector<art::Handle<DRCalorimeterHitCollection>> DRHandleVector;
-  // DRHandleVector allDRSims;
-  // event.getManyByType(allDRSims);
   auto allDRSims = event.getMany<DRCalorimeterHitCollection>();
   cout << "Event:  " << event.event() << "  Nr of DRCaloHit collections: " << allDRSims.size()
        << endl;
@@ -128,8 +117,6 @@ artg4tk::CheckHits::analyze(const art::Event& event)
     _hNCeren->Fill(sumNCeren);
   }
   typedef std::vector<art::Handle<ByParticle>> EdepHandleVector;
-  // EdepHandleVector allEdeps;
-  // event.getManyByType(allEdeps);
   auto allEdeps = event.getMany<ByParticle>();
 
   for (EdepHandleVector::const_iterator i = allEdeps.begin(); i != allEdeps.end(); ++i) {
@@ -143,10 +130,4 @@ artg4tk::CheckHits::analyze(const art::Event& event)
 
 } // end analyze
 
-void
-artg4tk::CheckHits::endJob()
-{} // end endJob
-
-using artg4tk::CheckHits;
-
-DEFINE_ART_MODULE(CheckHits)
+DEFINE_ART_MODULE(artg4tk::CheckHits)

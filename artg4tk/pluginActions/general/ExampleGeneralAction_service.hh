@@ -20,9 +20,8 @@
 // Authors: Tasha Arvanitis, Adam Lyon
 // Date: August 2012
 
-// Include guard
-#ifndef EXAMPLEGENERALACTION_SERVICE_HH
-#define EXAMPLEGENERALACTION_SERVICE_HH
+#ifndef artg4tk_pluginActions_general_ExampleGeneralAction_service_hh
+#define artg4tk_pluginActions_general_ExampleGeneralAction_service_hh
 
 // Includes for exampleGeneral action service
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
@@ -39,33 +38,26 @@ class G4Step;
 class G4Track;
 
 namespace artg4tk {
-
   class ExampleGeneralActionService : public artg4tk::TrackingActionBase,
                                       public artg4tk::RunActionBase,
                                       public artg4tk::SteppingActionBase {
   public:
-    ExampleGeneralActionService(fhicl::ParameterSet const&);
-    virtual ~ExampleGeneralActionService();
+    explicit ExampleGeneralActionService(fhicl::ParameterSet const&);
 
-    // Overload preUserTrackingAction method to decide whether or not to
+    // Override preUserTrackingAction method to decide whether or not to
     // track a given particle
-    virtual void preUserTrackingAction(const G4Track* currTrack);
+    void preUserTrackingAction(const G4Track* currTrack) override;
 
-    // Overload userSteppingAction to suspend any tracks that enter the
+    // Override userSteppingAction to suspend any tracks that enter the
     // calorimeter.
-    virtual void userSteppingAction(const G4Step* theStep);
+    void userSteppingAction(const G4Step* theStep) override;
 
-    // Overload the beginOfRunAction method to initialize the random number
+    // Override the beginOfRunAction method to initialize the random number
     // store.
-    virtual void beginOfRunAction(const G4Run* currentRun);
-
-    // We don't need to add anything to the event, so we don't need
-    // callArtProduces or fillEventWithArtStuff.
-
-    // No private data members needed!
+    void beginOfRunAction(const G4Run* currentRun) override;
   };
 } // namespace artg4tk
-using artg4tk::ExampleGeneralActionService;
-DECLARE_ART_SERVICE(ExampleGeneralActionService, LEGACY)
 
-#endif
+DECLARE_ART_SERVICE(artg4tk::ExampleGeneralActionService, LEGACY)
+
+#endif /* artg4tk_pluginActions_general_ExampleGeneralAction_service_hh */

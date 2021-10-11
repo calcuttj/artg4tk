@@ -18,14 +18,10 @@
 // code in this method of an action object is equivalent to putting it in the
 // @PostUserTrackingAction@ method of the simulation's tracking action class.
 
-// Include guard
-#ifndef TRACKING_ACTION_BASE_HH
-#define TRACKING_ACTION_BASE_HH
+#ifndef artg4tk_actionBase_TrackingActionBase_hh
+#define artg4tk_actionBase_TrackingActionBase_hh
 
 #include <string>
-
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
 
 #include "artg4tk/actionBase/ActionBase.hh"
 
@@ -39,11 +35,7 @@ namespace artg4tk {
   public:
     // Constructor. The derived class must call this constructor. It takes a
     // single string for the name of the action object.
-    TrackingActionBase(std::string myName) : ActionBase(myName)
-    {
-      art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
-      actionHolder->registerAction(this);
-    }
+    explicit TrackingActionBase(std::string name);
 
     // Destructor
     virtual ~TrackingActionBase();
@@ -64,4 +56,4 @@ namespace artg4tk {
   };
 }
 
-#endif // TRACKING_ACTION_BASE_HH
+#endif /* artg4tk_actionBase_TrackingActionBase_hh */

@@ -1,5 +1,3 @@
-
-
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/ModelParamAnalyzerBase.hh"
 
 #include "art/Framework/Core/ModuleMacros.h"
@@ -32,9 +30,9 @@ namespace artg4tk {
     explicit AnalyzerIAEA(const fhicl::ParameterSet&);
     virtual ~AnalyzerIAEA();
 
-    virtual void analyze(const art::Event&) override;
-    virtual void beginJob() override;
-    virtual void endJob() override;
+    void analyze(const art::Event&) override;
+    void beginJob() override;
+    void endJob() override;
 
   protected:
     virtual TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&);
@@ -403,9 +401,6 @@ artg4tk::AnalyzerIAEA::extractThetaFromTitle(const std::string& title)
 void
 artg4tk::AnalyzerIAEA::calculateChi2()
 {
-
-  return;
 }
 
-using artg4tk::AnalyzerIAEA;
-DEFINE_ART_MODULE(AnalyzerIAEA)
+DEFINE_ART_MODULE(artg4tk::AnalyzerIAEA)

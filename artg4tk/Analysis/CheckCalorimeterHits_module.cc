@@ -38,10 +38,8 @@ namespace artg4tk {
 class artg4tk::CheckCalorimeterHits : public art::EDAnalyzer {
 public:
   explicit CheckCalorimeterHits(fhicl::ParameterSet const& p);
-  virtual void beginJob();
-  virtual void beginRun(const art::Run& Run);
-  virtual void endJob();
-  virtual void analyze(const art::Event& event);
+  void beginJob() override;
+  void analyze(const art::Event& event) override;
 
 private:
   bool _DumpGDML; // enable/disable dumping of GDML geometry information
@@ -61,10 +59,6 @@ artg4tk::CheckCalorimeterHits::CheckCalorimeterHits(fhicl::ParameterSet const& p
 {}
 
 void
-artg4tk::CheckCalorimeterHits::beginRun(const art::Run& thisRun)
-{}
-
-void
 artg4tk::CheckCalorimeterHits::beginJob()
 {
   art::ServiceHandle<art::TFileService> tfs;
@@ -73,20 +67,16 @@ artg4tk::CheckCalorimeterHits::beginJob()
   _haEdep = tfs->make<TH1F>("haEdep", "z of  Energy deposition in CaloArtHits", 200, -500., 500.);
   _ntuple = tfs->make<TNtuple>(
     "ntuple", "Demo ntuple", "Event:ID:Edep:em_Edep:nonem_Edep:xpos:ypos:zpos:time");
-
 } // end beginJob
 
 void
 artg4tk::CheckCalorimeterHits::analyze(const art::Event& event)
 {
   typedef std::vector<art::Handle<CalorimeterHitCollection>> HandleVector;
-  // HandleVector allSims;
-  // event.getManyByType(allSims);
   auto allSims = event.getMany<CalorimeterHitCollection>();
   double sumE = 0.0;
   for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
     const CalorimeterHitCollection& sims(**i);
-    // cout << "CaloHit collection size:  " << sims.size() << endl;
     sumE = 0.0;
     _hnHits->Fill(sims.size());
     for (CalorimeterHitCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
@@ -107,10 +97,4 @@ artg4tk::CheckCalorimeterHits::analyze(const art::Event& event)
   }
 } // end analyze
 
-void
-artg4tk::CheckCalorimeterHits::endJob()
-{} // end endJob
-
-using artg4tk::CheckCalorimeterHits;
-
-DEFINE_ART_MODULE(CheckCalorimeterHits)
+DEFINE_ART_MODULE(artg4tk::CheckCalorimeterHits)

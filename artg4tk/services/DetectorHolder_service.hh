@@ -18,18 +18,14 @@
 // Authors: Tasha Arvanitis, Adam Lyon
 // Date: July 2012
 
-// Include guard
-#ifndef DETECTOR_HOLDER_SERVICE_HH
-#define DETECTOR_HOLDER_SERVICE_HH
+#ifndef artg4tk_services_DetectorHolder_service_hh
+#define artg4tk_services_DetectorHolder_service_hh
 
 // Includes
+#include "art/Framework/Core/Frameworkfwd.h"
+#include "art/Framework/Principal/fwd.h"
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
-#include "fhiclcpp/ParameterSet.h"
-namespace art {
-  class ProducesCollector;
-  class ConsumesCollector;
-  class Event;
-}
+#include "fhiclcpp/fwd.h"
 
 #include <map>
 
@@ -86,7 +82,7 @@ namespace artg4tk {
     art::Event&
     getCurrArtEvent()
     {
-      return (*currentArtEvent_);
+      return *currentArtEvent_;
     }
 
     // Construct all the logical volumes.
@@ -121,6 +117,6 @@ namespace artg4tk {
 
 } // end namespace artg4tk
 
-using artg4tk::DetectorHolderService;
-DECLARE_ART_SERVICE(DetectorHolderService, LEGACY)
-#endif // DETECTOR_HOLDER_HH
+DECLARE_ART_SERVICE(artg4tk::DetectorHolderService, LEGACY)
+
+#endif /* artg4tk_services_DetectorHolder_service_hh */

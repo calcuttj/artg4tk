@@ -11,8 +11,8 @@
 // before you can use it. We don't want Root to know anything about the map,
 // hence the @__GCCXML__@ ifdefs.
 
-#ifndef STRINGIDS_HH
-#define STRINGIDS_HH
+#ifndef artg4tk_util_StringIDs_hh
+#define artg4tk_util_StringIDs_hh
 
 #include <string>
 #include <vector>
@@ -71,4 +71,4 @@ namespace artg4tk {
   };
 }
 
-#endif
+#endif /* artg4tk_util_StringIDs_hh */

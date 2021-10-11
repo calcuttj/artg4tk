@@ -73,8 +73,6 @@
 #include "Geant4/G4RadioactiveDecayPhysics.hh"
 #include "Geant4/G4StoppingPhysics.hh"
 
-//#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
-
 /////////////////////////////////////////////////////////////////////////////
 // The following change is the _only_ required changed to move from
 // the non-extensible factory to the exensible factory.  All other changes
@@ -144,8 +142,9 @@ MyQGSP_BERT_ArHP::SetCuts()
   if (verboseLevel > 1) {
     G4cout << "MyQGSP_BERT_ArHP::SetCuts:";
   }
-  //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
-  //   the default cut value for all particle types
+
+  // G4VUserPhysicsList::SetCutsWithDefault method sets the default
+  // cut value for all particle types
 
   SetCutsWithDefault();
 

@@ -12,24 +12,22 @@
 // TrackerSD.hh: Class representing a sensitive tracking detector
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#ifndef TrackerSD_h
-#define TrackerSD_h
+#ifndef artg4tk_pluginDetectors_gdml_TrackerSD_hh
+#define artg4tk_pluginDetectors_gdml_TrackerSD_hh
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
 class G4Step;
 class G4HCofThisEvent;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
 
   class TrackerSD : public G4VSensitiveDetector {
   public:
     TrackerSD(G4String);
-    ~TrackerSD();
 
-    void Initialize(G4HCofThisEvent*);
-    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    void Initialize(G4HCofThisEvent*) override;
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*) override;
     const TrackerHitCollection&
     GetHits() const
     {
@@ -38,9 +36,8 @@ namespace artg4tk {
 
   private:
     TrackerHitCollection trackerCollection;
-    // G4int HCID;
   };
 
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 }
-#endif
+
+#endif /* artg4tk_pluginDetectors_gdml_TrackerSD_hh */

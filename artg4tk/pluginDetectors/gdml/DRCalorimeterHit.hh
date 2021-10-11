@@ -1,7 +1,7 @@
 // DR Calorimeter Art Hits
 
-#ifndef DRCALORIMETERHIT_HH
-#define DRCALORIMETERHIT_HH
+#ifndef artg4tk_pluginDetectors_gdml_DRCalorimeterHit_hh
+#define artg4tk_pluginDetectors_gdml_DRCalorimeterHit_hh
 
 #include <vector>
 
@@ -149,4 +149,4 @@ namespace artg4tk {
   typedef std::vector<DRCalorimeterHit> DRCalorimeterHitCollection;
 }
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_DRCalorimeterHit_hh */

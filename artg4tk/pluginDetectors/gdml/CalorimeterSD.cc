@@ -16,23 +16,15 @@
 #include "Geant4/G4Step.hh"
 #include "Geant4/G4ThreeVector.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 artg4tk::CalorimeterSD::CalorimeterSD(G4String name) : G4VSensitiveDetector(name) {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-artg4tk::CalorimeterSD::~CalorimeterSD() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+artg4tk::CalorimeterSD::~CalorimeterSD() = default;
 
 void
 artg4tk::CalorimeterSD::Initialize(G4HCofThisEvent* HCE)
 {
   calorimeterCollection.clear();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool
 artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
@@ -44,13 +36,10 @@ artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   const G4VTouchable* touch = aStep->GetPreStepPoint()->GetTouchable();
   const G4ThreeVector cellpos = touch->GetTranslation();
   int ID = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo();
-  // std::cout<<"ID:  "<<ID<<"  Edep:  "<< edep<<std::endl;
   G4Track* theTrack = aStep->GetTrack();
   G4String particleType = theTrack->GetDefinition()->GetParticleName();
-  //
-  //  check if this cell has been hit before
-  //
 
+  // check if this cell has been hit before
   for (unsigned int j = 0; j < calorimeterCollection.size(); j++) {
     CalorimeterHit aPreviousHit = calorimeterCollection[j];
     if (ID == aPreviousHit.GetID()) {
@@ -63,9 +52,8 @@ artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
       return true;
     }
   }
-  //
-  // otherwise create a new hit:
-  //
+
+  // otherwise create a new hit
   CalorimeterHit newHit;
   if ((particleType == "e+") || (particleType == "gamma") || (particleType == "e-")) {
     newHit = CalorimeterHit(ID, edep, edep, 0.0, cellpos.x(), cellpos.y(), cellpos.z(), time);
@@ -75,5 +63,3 @@ artg4tk::CalorimeterSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   calorimeterCollection.push_back(newHit);
   return true;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

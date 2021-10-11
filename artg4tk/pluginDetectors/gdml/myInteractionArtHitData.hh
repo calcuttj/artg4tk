@@ -15,8 +15,8 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================//
 
-#ifndef MYINTERACTION_ART_HIT_DATA_HH
-#define MYINTERACTION_ART_HIT_DATA_HH
+#ifndef artg4tk_pluginDetectors_gdml_myInteractionArtHitData_hh
+#define artg4tk_pluginDetectors_gdml_myInteractionArtHitData_hh
 #include <string>
 #include <vector>
 
@@ -69,4 +69,4 @@ namespace artg4tk {
   typedef std::vector<myInteractionArtHitData> myInteractionArtHitDataCollection;
 }
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_myInteractionArtHitData_hh */

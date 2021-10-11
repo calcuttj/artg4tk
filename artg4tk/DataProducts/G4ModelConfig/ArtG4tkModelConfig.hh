@@ -1,5 +1,5 @@
-#ifndef ArtG4tkModelConfig_H
-#define ArtG4tkModelConfig_H
+#ifndef artg4tk_DataProducts_G4ModelConfig_ArtG4tkModelConfig_hh
+#define artg4tk_DataProducts_G4ModelConfig_ArtG4tkModelConfig_hh
 
 #include "fhiclcpp/fwd.h"
 
@@ -63,4 +63,4 @@ namespace artg4tk {
 
 }
 
-#endif
+#endif /* artg4tk_DataProducts_G4ModelConfig_ArtG4tkModelConfig_hh */

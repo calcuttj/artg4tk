@@ -19,9 +19,8 @@
 // code in this method of an action object is equivalent to putting it in the
 // @EndOfEventAction@ method of the simulation's event action class.
 
-// Include guard
-#ifndef EVENT_ACTION_BASE_HH
-#define EVENT_ACTION_BASE_HH
+#ifndef artg4tk_actionBase_EventActionBase_hh
+#define artg4tk_actionBase_EventActionBase_hh
 
 #include <string>
 
@@ -40,11 +39,7 @@ namespace artg4tk {
   public:
     // Constructor. The derived class must call this constructor. It takes a
     // single string for the name of the action object.
-    EventActionBase(std::string myName) : ActionBase(myName)
-    {
-      art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
-      actionHolder->registerAction(this);
-    }
+    explicit EventActionBase(std::string name);
 
     // Destructor
     virtual ~EventActionBase();
@@ -71,6 +66,7 @@ namespace artg4tk {
     endOfEventAction(const G4Event*)
     {}
 
+  private:
     // Tell Art what you will put into the event.
     virtual void
     doCallArtProduces(art::ProducesCollector&)
@@ -78,4 +74,4 @@ namespace artg4tk {
   };
 }
 
-#endif // EVENT_ACTION_BASE_HH
+#endif /* artg4tk_actionBase_EventActionBase_hh */

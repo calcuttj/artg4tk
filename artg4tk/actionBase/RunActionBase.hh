@@ -17,9 +17,8 @@
 // of an action object is equivalent to putting it in the @EndOfRun@ method
 // of the simulation's run action class.
 
-// Include guard
-#ifndef RUN_ACTION_BASE_HH
-#define RUN_ACTION_BASE_HH
+#ifndef artg4tk_actionBase_RunActionBase_hh
+#define artg4tk_actionBase_RunActionBase_hh
 
 #include <string>
 
@@ -64,4 +63,4 @@ namespace artg4tk {
   };
 }
 
-#endif // RUN_ACTION_BASE_HH
+#endif /* artg4tk_actionBase_RunActionBase_hh */

@@ -46,7 +46,6 @@
 #include <iomanip>
 
 #include "MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias.hh"
-//#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
 
 #include "Geant4/G4ParticleDefinition.hh"
 #include "Geant4/G4ParticleTable.hh"
@@ -82,77 +81,19 @@ G4ThreadLocal MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias::ThreadPrivate*
 
 MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias::MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias(G4int)
   : G4VPhysicsConstructor("hInelastic MyQGSP_BERT_HP_NeutronXSBias")
-/*  , theNeutrons(0)
-    , theFTFPNeutron(0)
-    , theQGSPNeutron(0)
-    , theBertiniNeutron(0)
-    , theHPNeutron(0)
-    , thePiK(0)
-    , theFTFPPiK(0)
-    , theQGSPPiK(0)
-    , theBertiniPiK(0)
-    , thePro(0)
-    , theFTFPPro(0)
-    , theQGSPPro(0)
-    , theBertiniPro(0)
-    , theHyperon(0)
-    , theAntiBaryon(0)
-    , theFTFPAntiBaryon(0)
-    , xsKaon(0)
-    , xsNeutronCaptureXS(0)*/
-//    , QuasiElastic(true)
 {}
 
 MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias::MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias(
   const G4String& name,
   G4bool /*quasiElastic */)
   : G4VPhysicsConstructor(name)
-/*  , theNeutrons(0)
-    , theFTFPNeutron(0)
-    , theQGSPNeutron(0)
-    , theBertiniNeutron(0)
-    , theHPNeutron(0)
-    , thePiK(0)
-    , theFTFPPiK(0)
-    , theQGSPPiK(0)
-    , theBertiniPiK(0)
-    , thePro(0)
-    , theFTFPPro(0)
-    , theQGSPPro(0)
-    , theBertiniPro(0)
-    , theHyperon(0)
-    , theAntiBaryon(0)
-    , theFTFPAntiBaryon(0)
-    , xsKaon(0)
-    , xsNeutronCaptureXS(0)*/
-//    , QuasiElastic(quasiElastic)
 {}
 
 MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias::MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias(
   const G4String& name,
   G4bool /*quasiElastic */,
   G4double XSMultiplier)
-  : G4VPhysicsConstructor(name)
-  /*  , theNeutrons(0)
-      , theFTFPNeutron(0)
-      , theQGSPNeutron(0)
-      , theBertiniNeutron(0)
-      , theHPNeutron(0)
-      , thePiK(0)
-      , theFTFPPiK(0)
-      , theQGSPPiK(0)
-      , theBertiniPiK(0)
-      , thePro(0)
-      , theFTFPPro(0)
-      , theQGSPPro(0)
-      , theBertiniPro(0)
-      , theHyperon(0)
-      , theAntiBaryon(0)
-      , theFTFPAntiBaryon(0)
-      , xsKaon(0)
-      , xsNeutronCaptureXS(0)*/
-  //    , QuasiElastic(quasiElastic)
-  , theBertiniNeutronXSMultiplier(XSMultiplier)
+  : G4VPhysicsConstructor(name), theBertiniNeutronXSMultiplier(XSMultiplier)
 {}
 
 void
@@ -177,9 +118,6 @@ MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias::CreateModels()
   tpdata->theFTFPNeutron->SetMaxEnergy(maxFTFP);
 
   tpdata->theNeutrons->RegisterMe(tpdata->theBertiniNeutron = new G4BertiniNeutronBuilder);
-  // tpdata->theNeutrons->RegisterMe(tpdata->theBertiniNeutron=new MyG4BertiniNeutronBuilder);
-  // tpdata->theNeutrons->RegisterMe(tpdata->theBertiniNeutron=new
-  // MyG4BertiniNeutronBuilder(theBertiniNeutronXSMultiplier) );
   tpdata->theBertiniNeutron->SetMinEnergy(maxHP);
   tpdata->theBertiniNeutron->SetMaxEnergy(maxBERT);
 

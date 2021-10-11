@@ -7,8 +7,8 @@
 //
 //
 
-#ifndef DATAFROMRUNORSERVICE_HH
-#define DATAFROMRUNORSERVICE_HH
+#ifndef artg4tk_util_DataFromRunOrService_hh
+#define artg4tk_util_DataFromRunOrService_hh
 
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Principal/Run.h"
@@ -61,4 +61,4 @@ namespace artg4tk {
 
 }
 
-#endif
+#endif /* artg4tk_util_DataFromRunOrService_hh */

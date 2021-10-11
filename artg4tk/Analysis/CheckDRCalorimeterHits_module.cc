@@ -45,10 +45,8 @@ namespace artg4tk {
 class artg4tk::CheckDRCalorimeterHits : public art::EDAnalyzer {
 public:
   explicit CheckDRCalorimeterHits(fhicl::ParameterSet const& p);
-  virtual void beginJob();
-  virtual void beginRun(const art::Run& Run);
-  virtual void endJob();
-  virtual void analyze(const art::Event& event);
+  void beginJob() override;
+  void analyze(const art::Event& event) override;
 
 private:
   fhicl::ParameterSet pstl; // parameterset from PhysicsListService
@@ -75,10 +73,6 @@ artg4tk::CheckDRCalorimeterHits::CheckDRCalorimeterHits(fhicl::ParameterSet cons
   , _hEdepvsNCeren(0)
   , _ntuple(0)
   , _ntuple2(0)
-{}
-
-void
-artg4tk::CheckDRCalorimeterHits::beginRun(const art::Run& thisRun)
 {}
 
 void
@@ -320,9 +314,4 @@ artg4tk::CheckDRCalorimeterHits::analyze(const art::Event& event)
   }
 } // end analyze
 
-void
-artg4tk::CheckDRCalorimeterHits::endJob()
-{} // end endJob
-using artg4tk::CheckDRCalorimeterHits;
-
-DEFINE_ART_MODULE(CheckDRCalorimeterHits)
+DEFINE_ART_MODULE(artg4tk::CheckDRCalorimeterHits)

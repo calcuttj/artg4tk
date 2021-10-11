@@ -7,9 +7,8 @@
 // to initialize Geant with the *real* physics list class (because it will
 // change things internally).
 
-// Include guard
-#ifndef PHYSICSLIST_HOLDER_SERVICE_HH
-#define PHYSICSLIST_HOLDER_SERVICE_HH
+#ifndef artg4tk_services_PhysicsListHolder_service_hh
+#define artg4tk_services_PhysicsListHolder_service_hh
 
 // Includes
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
@@ -25,10 +24,7 @@ namespace artg4tk {
   class PhysicsListHolderService {
   public:
     // Constructor for Physics List holder
-    PhysicsListHolderService(fhicl::ParameterSet const&) : physicsListService_() {}
-
-    // Destructor - don't do anything
-    virtual ~PhysicsListHolderService() {}
+    PhysicsListHolderService(fhicl::ParameterSet const&) {}
 
     // This registers the passed detector with the service.
     void registerPhysicsListService(PhysicsListServiceBase*);
@@ -40,14 +36,12 @@ namespace artg4tk {
     void initializePhysicsList() const;
 
   private:
-    PhysicsListServiceBase* physicsListService_;
+    PhysicsListServiceBase* physicsListService_{nullptr};
 
   }; // class PhysicsListHolderService
 
 } // end namespace artg4tk
 
-// using art::LEGACY;
-using artg4tk::PhysicsListHolderService;
-DECLARE_ART_SERVICE(PhysicsListHolderService, LEGACY)
+DECLARE_ART_SERVICE(artg4tk::PhysicsListHolderService, LEGACY)
 
-#endif // PHYSICSLIST_HOLDER_SERVICE
+#endif /* artg4tk_services_PhysicsListHolder_service_hh */

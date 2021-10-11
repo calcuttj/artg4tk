@@ -1,7 +1,7 @@
 // Calorimeter Art Hits
 
-#ifndef TRACKERHIT_HH
-#define TRACKERHIT_HH
+#ifndef artg4tk_pluginDetectors_gdml_TrackerHit_hh
+#define artg4tk_pluginDetectors_gdml_TrackerHit_hh
 
 #include <vector>
 
@@ -36,4 +36,4 @@ namespace artg4tk {
   typedef std::vector<TrackerHit> TrackerHitCollection;
 }
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_TrackerHit_hh */

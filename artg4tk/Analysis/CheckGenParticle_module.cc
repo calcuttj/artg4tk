@@ -43,10 +43,10 @@ namespace artg4tk {
 class artg4tk::CheckGenParticle : public art::EDAnalyzer {
 public:
   explicit CheckGenParticle(fhicl::ParameterSet const& p);
-  virtual void beginJob();
-  virtual void beginRun(const art::Run& Run);
-  virtual void endJob();
-  virtual void analyze(const art::Event& event);
+  void beginJob() override;
+  void beginRun(const art::Run& Run) override;
+  void endJob() override;
+  void analyze(const art::Event& event) override;
 
 private:
   std::string _myName;
@@ -117,6 +117,4 @@ artg4tk::CheckGenParticle::endJob()
   cout << " ********************************CheckGenParticle: I am done " << endl;
 }
 
-using artg4tk::CheckGenParticle;
-
-DEFINE_ART_MODULE(CheckGenParticle)
+DEFINE_ART_MODULE(artg4tk::CheckGenParticle)

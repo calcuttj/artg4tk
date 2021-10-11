@@ -95,10 +95,10 @@ namespace artg4tk {
     explicit ProcLevelMPVaryProducer(const fhicl::ParameterSet& pset);
     virtual ~ProcLevelMPVaryProducer();
 
-    virtual void produce(art::Event& event) override;
-    virtual void beginJob() override;
-    virtual void beginRun(art::Run&) override;
-    virtual void endRun(art::Run&) override;
+    void produce(art::Event& event) override;
+    void beginJob() override;
+    void beginRun(art::Run&) override;
+    void endRun(art::Run&) override;
 
   private:
     // special purpose functions

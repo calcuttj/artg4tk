@@ -20,6 +20,7 @@ find_package(CLHEP REQUIRED)
 find_package(fhiclcpp REQUIRED)
 find_package(Geant4 REQUIRED COMPONENTS gdml)
 find_package(messagefacility REQUIRED)
+find_package(Range REQUIRED)
 
 add_subdirectory(artg4tk)
 add_subdirectory(examples)

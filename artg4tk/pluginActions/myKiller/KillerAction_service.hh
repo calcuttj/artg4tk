@@ -28,10 +28,8 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 
-// Include guard
-// Include guard
-#ifndef KILLERACTION_SERVICE_HH
-#define KILLERACTION_SERVICE_HH
+#ifndef artg4tk_pluginActions_myKiller_KillerAction_service_hh
+#define artg4tk_pluginActions_myKiller_KillerAction_service_hh
 
 // Includes for general action service
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
@@ -48,7 +46,7 @@ namespace artg4tk {
   public:
     KillerActionService(fhicl::ParameterSet const&);
     virtual ~KillerActionService();
-    virtual bool killNewTrack(const G4Track* aTrack) override;
+    bool killNewTrack(const G4Track* aTrack) override;
 
   private:
     // Member data!
@@ -59,6 +57,6 @@ namespace artg4tk {
     mf::LogInfo logInfo_;
   };
 } // end namespace artg4tk
-using artg4tk::KillerActionService;
-DECLARE_ART_SERVICE(KillerActionService, LEGACY)
-#endif
+
+DECLARE_ART_SERVICE(artg4tk::KillerActionService, LEGACY)
+#endif /* artg4tk_pluginActions_myKiller_KillerAction_service_hh */

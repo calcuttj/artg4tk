@@ -1,5 +1,5 @@
-#ifndef MPStudyGeom_H
-#define MPStudyGeom_H 1
+#ifndef artg4tk_G4PhysModelParamStudy_G4Components_ModelParamStudyGeom_hh
+#define artg4tk_G4PhysModelParamStudy_G4Components_ModelParamStudyGeom_hh
 
 // G4
 #include "Geant4/G4VUserDetectorConstruction.hh"
@@ -105,4 +105,4 @@ private:
   G4VPhysicalVolume* fPhysTarget;
 };
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_G4Components_ModelParamStudyGeom_hh */

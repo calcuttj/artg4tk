@@ -12,8 +12,8 @@
 // G4Interaction.hh: holds outcome of an interaction + checks if 1st interaction or not
 // Author: Julia Yarba (Fermilab)
 //=============================================================================
-#ifndef G4Interaction_H
-#define G4Interaction_H
+#ifndef artg4tk_DataProducts_G4DetectorHits_G4Interaction_hh
+#define artg4tk_DataProducts_G4DetectorHits_G4Interaction_hh
 
 #include "Geant4/G4VParticleChange.hh"
 
@@ -55,4 +55,4 @@ private:
   G4Track* fIncomingTrack;
 };
 
-#endif
+#endif /* artg4tk_DataProducts_G4DetectorHits_G4Interaction_hh */

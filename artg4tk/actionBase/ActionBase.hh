@@ -4,21 +4,11 @@
 // inherit from this class directly. Instead, use a next level up class, like
 // @TrackingActionBase@.
 
-// Include guard
-#ifndef ACTION_BASE_HH
-#define ACTION_BASE_HH
+#ifndef artg4tk_actionBase_ActionBase_hh
+#define artg4tk_actionBase_ActionBase_hh
 
 #include <string>
 
-namespace art {
-  class ProducesCollector;
-  class Event;
-  class Run;
-}
-
-// Declarations of types we use as input parameters
-
-// Everything goes in the Art G4 namespace
 namespace artg4tk {
 
   class ActionBase {
@@ -46,32 +36,10 @@ namespace artg4tk {
     initialize()
     {}
 
-    // Call produces<T> to notify Art what you'll be adding to the Art event.
-    virtual void
-    callArtProduces(art::ProducesCollector&)
-    {}
-
-    // Fill the Art event with whatever you said you would, if you haven't
-    // already. This is called by ActionHolder at the very end of the Art
-    // event, after all the GEANT stuff is finished.
-    virtual void
-    fillEventWithArtStuff(art::Event&)
-    {}
-
-    // Fill the Art event with Run information at the beginning of the run
-    virtual void
-    fillRunBeginWithArtStuff(art::Run&)
-    {}
-
-    // Fill the Art event with Run information at the end of the run
-    virtual void
-    fillRunEndWithArtStuff(art::Run&)
-    {}
-
   private:
     // A string containing this action object's name
     std::string myName_;
   };
 }
 
-#endif // ACTION_BASE_HH
+#endif /* artg4tk_actionBase_ActionBase_hh */

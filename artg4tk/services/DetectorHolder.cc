@@ -5,10 +5,10 @@
 
 // Includes
 
-#include "artg4tk/services/DetectorHolder_service.hh"
-#include "messagefacility/MessageLogger/MessageLogger.h"
-
 #include "artg4tk/Core/DetectorBase.hh"
+#include "artg4tk/services/DetectorHolder_service.hh"
+
+#include "messagefacility/MessageLogger/MessageLogger.h"
 
 // Save ourselves the trouble of typing 'std::' all the time
 using std::endl;
@@ -100,11 +100,9 @@ artg4tk::DetectorHolderService::getDetectorForCategory(std::string category) con
   if (categoryDB != categoryMap_.end()) {
     // We have a detector of that category
     return categoryDB->second;
-  } else {
-    // We don't have a detector of that category - problem!
-    throw cet::exception("DetectorHolderService")
-      << "No detector found for category " << category << ".LO";
   }
+  throw cet::exception("DetectorHolderService")
+    << "No detector found for category " << category << ".LO";
 }
 
 // Get the parameter set for a detector given its category string
@@ -120,7 +118,6 @@ artg4tk::DetectorHolderService::callArtProduces(art::ProducesCollector& collecto
 {
   // Let's loop over the detectors in the map
   for (auto entry : categoryMap_) {
-
     mf::LogDebug(msgctg) << "Calling art produces for category " << (entry.second)->category();
     (entry.second)->callArtProduces(collector);
   }
@@ -143,21 +140,14 @@ artg4tk::DetectorHolderService::fillEventWithArtHits(G4HCofThisEvent* hc)
 void
 artg4tk::DetectorHolderService::addDBtoCategoryMap(DetectorBase* const db)
 {
-  if (0 == categoryMap_.count(db->category())) {
-    // This DB isn't already in the map - let's add it!
-
-    // Create the pair to add
-    pair<string, DetectorBase*> itemToAdd(db->category(), db);
-
-    // Add it
-    categoryMap_.insert(itemToAdd);
-    mf::LogDebug(msgctg) << "Registered detector with category: " << db->category();
-  } else {
+  if (categoryMap_.find(db->category()) != cend(categoryMap_)) {
     // We already have one of these detectors
     throw cet::exception("DetectorHolderService")
       << "Duplicate detector found. "
-      << "There are at least two detectors found with category " << db->category() << ".\n";
+      << "There is already one detector with the category " << db->category() << ".\n";
   }
+  categoryMap_.try_emplace(db->category(), db);
+  mf::LogDebug(msgctg) << "Registered detector with category: " << db->category();
 }
 
 // Find a detector's mother logical volume and pass it to the detector to
@@ -166,8 +156,7 @@ void
 artg4tk::DetectorHolderService::placeDetector(DetectorBase* const db)
 {
   // Check if we're dealing with the world volume first.
-  if (0 == (db->category()).compare("world")) {
-
+  if (db->category() == "world") {
     // The world's mother 'logical volume' is an empty vector.
     worldPV_ = (db->placeToPVs(std::vector<G4LogicalVolume*>()))[0];
     mf::LogDebug(msgctg) << "Just placed detector with category: " << db->category();
@@ -176,21 +165,15 @@ artg4tk::DetectorHolderService::placeDetector(DetectorBase* const db)
 
   // Deal with non-world detectors
   auto motherCategoryDB = categoryMap_.find(db->motherCategory());
-
-  if (motherCategoryDB != categoryMap_.end()) {
-    // We have a parent volume - pass the DB its mother volume and call place.
-    db->placeToPVs(motherCategoryDB->second->lvs());
-    // Success!
-    mf::LogDebug(msgctg) << "Just placed detector with category: " << db->category();
-    return;
+  if (motherCategoryDB == categoryMap_.end()) {
+    throw cet::exception("DetectorHolderService")
+      << "No mother volume found for detector with category " << db->category()
+      << ", which wanted a mother of category " << db->motherCategory()
+      << ". This probably means you are missing a "
+      << "detector class (derived from DetectorBase).\n";
   }
-  // If we reach this point, we're missing a detector - throw an exception.
-  throw cet::exception("DetectorHolderService")
-    << "No mother volume found for detector with category " << db->category()
-    << ", which wanted a mother of category " << db->motherCategory()
-    << ". This probably means you are missing a "
-    << "detector class (derived from DetectorBase).\n";
 
-  // Finding the mother volume failed.
-  return;
+  // We have a parent volume - pass the DB its mother volume and call place.
+  db->placeToPVs(motherCategoryDB->second->lvs());
+  mf::LogDebug(msgctg) << "Just placed detector with category: " << db->category();
 }

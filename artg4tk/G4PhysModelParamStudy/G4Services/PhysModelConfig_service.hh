@@ -1,5 +1,5 @@
-#ifndef G4ModelConfig_SERVICE_HH
-#define G4ModelConfig_SERVICE_HH
+#ifndef artg4tk_G4PhysModelParamStudy_G4Services_PhysModelConfig_service_hh
+#define artg4tk_G4PhysModelParamStudy_G4Services_PhysModelConfig_service_hh
 
 // Art
 #include "art/Framework/Services/Registry/ActivityRegistry.h"
@@ -45,7 +45,6 @@ namespace artg4tk {
 
 }
 
-using artg4tk::PhysModelConfigService;
-DECLARE_ART_SERVICE(PhysModelConfigService, LEGACY)
+DECLARE_ART_SERVICE(artg4tk::PhysModelConfigService, LEGACY)
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_G4Services_PhysModelConfig_service_hh */

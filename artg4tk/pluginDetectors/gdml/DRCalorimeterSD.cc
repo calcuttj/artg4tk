@@ -28,15 +28,9 @@ namespace artg4tk {
 
   DRCalorimeterSD::DRCalorimeterSD(G4String name) : G4VSensitiveDetector(name) {}
 
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-  DRCalorimeterSD::~DRCalorimeterSD() {}
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
   void
   DRCalorimeterSD::EndOfEvent(G4HCofThisEvent*)
   {}
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
   void
   DRCalorimeterSD::Initialize(G4HCofThisEvent* HCE)

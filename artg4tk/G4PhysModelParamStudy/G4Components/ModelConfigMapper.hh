@@ -1,5 +1,5 @@
-#ifndef ModelConfigMapper_H
-#define ModelConfigMapper_H 1
+#ifndef artg4tk_G4PhysModelParamStudy_G4Components_ModelConfigMapper_hh
+#define artg4tk_G4PhysModelParamStudy_G4Components_ModelConfigMapper_hh
 
 #include <map>
 #include <string>
@@ -81,4 +81,4 @@ private:
   std::map<std::string, std::map<std::string, std::string>> fConfigParameters;
 };
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_G4Components_ModelConfigMapper_hh */

@@ -64,17 +64,13 @@
 
 #include "Geant4/G4EmExtraPhysics.hh"
 #include "Geant4/G4StoppingPhysics.hh"
-//<--#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
 #include "MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias.hh"
 
 #include "Geant4/G4HadronElasticPhysicsHP.hh"
-//<--#include "Geant4/G4DataQuestionaire.hh"
 
 template <class T>
 TMyQGSP_BERT_HP_NeutronXSBias<T>::TMyQGSP_BERT_HP_NeutronXSBias(G4int ver) : T()
 {
-
-  //<--G4DataQuestionaire it(photon, neutron);
   G4cout << "<<< Geant4 Physics List simulation engine: MyQGSP_BERT_HP_NeutronXSBias 3.0" << G4endl;
   G4cout << G4endl << G4endl;
 
@@ -104,10 +100,6 @@ TMyQGSP_BERT_HP_NeutronXSBias<T>::TMyQGSP_BERT_HP_NeutronXSBias(G4int ver) : T()
   // Ion Physics
   this->RegisterPhysics(new G4IonPhysics(ver));
 }
-
-template <class T>
-TMyQGSP_BERT_HP_NeutronXSBias<T>::~TMyQGSP_BERT_HP_NeutronXSBias()
-{}
 
 template <class T>
 void

@@ -1,5 +1,5 @@
-#ifndef VDBConnect_H
-#define VDBConnect_H 1
+#ifndef artg4tk_ExpDataAccess_VDBConnect_hh
+#define artg4tk_ExpDataAccess_VDBConnect_hh
 
 #include <iostream>
 #include <string>
@@ -38,4 +38,4 @@ private:
   bool fInitialized;
 };
 
-#endif
+#endif /* artg4tk_ExpDataAccess_VDBConnect_hh */

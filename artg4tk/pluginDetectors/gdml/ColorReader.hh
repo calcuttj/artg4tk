@@ -13,8 +13,8 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 
-#ifndef ColorReader_H
-#define ColorReader_H 1
+#ifndef artg4tk_pluginDetectors_gdml_ColorReader_hh
+#define artg4tk_pluginDetectors_gdml_ColorReader_hh
 
 #include "Geant4/G4GDMLReadStructure.hh"
 #include <map>
@@ -24,21 +24,19 @@ class G4VisAttributes;
 /// GDML reader for the color attributes
 
 class ColorReader : public G4GDMLReadStructure {
-
 public:
   ColorReader();
   ~ColorReader();
 
-  void ExtensionRead(const xercesc::DOMElement* const element);
-  void ColorRead(const xercesc::DOMElement* const element);
-
   G4VisAttributes* GetVisAttribute(const G4String& ref);
 
-protected:
-  virtual void VolumeRead(const xercesc::DOMElement* const);
+  void ColorRead(const xercesc::DOMElement* const element);
 
 private:
+  void ExtensionRead(const xercesc::DOMElement* const element) override;
+  void VolumeRead(const xercesc::DOMElement* const) override;
+
   std::map<G4String, G4VisAttributes*> fAttribs;
 };
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_ColorReader_hh */

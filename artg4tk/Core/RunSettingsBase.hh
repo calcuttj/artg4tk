@@ -1,5 +1,5 @@
-#ifndef RUNSETTINGS_BASE_HH
-#define RUNSETTINGS_BASE_HH
+#ifndef artg4tk_Core_RunSettingsBase_hh
+#define artg4tk_Core_RunSettingsBase_hh
 
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/RunSettings_service.hh"
@@ -26,4 +26,4 @@ namespace artg4tk {
   };
 }
 
-#endif // RUNSETTINGS_BASE_HH
+#endif /* artg4tk_Core_RunSettingsBase_hh */

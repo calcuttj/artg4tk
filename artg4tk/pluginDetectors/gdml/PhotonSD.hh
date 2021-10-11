@@ -13,8 +13,8 @@
 // photons
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#ifndef PhotonSD_h
-#define PhotonSD_h 1
+#ifndef artg4tk_pluginDetectors_gdml_PhotonSD_hh
+#define artg4tk_pluginDetectors_gdml_PhotonSD_hh
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/pluginDetectors/gdml/PhotonHit.hh"
@@ -22,15 +22,13 @@
 class G4Step;
 class G4HCofThisEvent;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
   class PhotonSD : public G4VSensitiveDetector {
   public:
-    PhotonSD(G4String);
-    ~PhotonSD();
+    explicit PhotonSD(G4String);
 
-    void Initialize(G4HCofThisEvent*);
-    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    void Initialize(G4HCofThisEvent*) override;
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*) override;
     const PhotonHitCollection&
     GetHits() const
     {
@@ -41,6 +39,5 @@ namespace artg4tk {
     PhotonHitCollection hitCollection;
   };
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_PhotonSD_hh */

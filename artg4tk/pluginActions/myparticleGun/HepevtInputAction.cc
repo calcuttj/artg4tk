@@ -31,39 +31,24 @@
 
 // Framework includes
 #include "fhiclcpp/ParameterSet.h"
+#include "messagefacility/MessageLogger/MessageLogger.h"
 
 // artg4tk includes
 #include "artg4tk/pluginActions/myparticleGun/HepevtInputAction_service.hh"
 
 // Geant4 includes
 #include "Geant4/G4HEPEvtInterface.hh"
-#include "Geant4/G4VPrimaryGenerator.hh"
-
-using std::string;
 
 artg4tk::HepevtInputActionService::HepevtInputActionService(fhicl::ParameterSet const& p)
-  : PrimaryGeneratorActionBase(p.get<string>("name", "HepevtInput"))
-  , HEPEvt_(0)
+  : PrimaryGeneratorActionBase(p.get<std::string>("name", "HepevtInput"))
   , fileName_(p.get<std::string>("FileName"))
-  ,
-  // Initialize our message logger
-  logInfo_("ExampleParticleGunAction")
 {}
-
-// Destructor
-
-artg4tk::HepevtInputActionService::~HepevtInputActionService()
-{
-  delete HEPEvt_;
-}
 
 void
 artg4tk::HepevtInputActionService::initialize()
 {
-
-  logInfo_ << "Initializing Hepevt Input\n";
-  const char* filename = (const char*)fileName_.c_str();
-  HEPEvt_ = new G4HEPEvtInterface(filename);
+  mf::LogInfo("HepevtInputAction") << "Initializing Hepevt Input";
+  HEPEvt_ = std::make_unique<G4HEPEvtInterface>(fileName_.c_str());
 }
 
 // Create a primary particle for an event!

@@ -26,9 +26,6 @@ artg4tk::ExampleGeneralActionService::ExampleGeneralActionService(fhicl::Paramet
   , artg4tk::SteppingActionBase(p.get<string>("name", "exampleGeneral"))
 {}
 
-// Destructor
-artg4tk::ExampleGeneralActionService::~ExampleGeneralActionService() {}
-
 // Overload PreUserTrackingAction method to decide whether or not to
 // track a given particle
 void
@@ -41,12 +38,9 @@ artg4tk::ExampleGeneralActionService::preUserTrackingAction(const G4Track* currT
   // Create trajectory only for primaries
   if (currTrack->GetParentID() == 0) {
     trackingMan->SetStoreTrajectory(true);
-    // trackingAction -> fpTrackingManager->SetStoreTrajectory(true);
   }
-
   else {
     trackingMan->SetStoreTrajectory(false);
-    // trackingAction -> fpTrackingManager->SetStoreTrajectory(false);
   }
 }
 

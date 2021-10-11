@@ -40,8 +40,8 @@
 //
 //----------------------------------------------------------------------------
 //
-#ifndef MyG4HadronPhysicsQGSP_BERT_ArHP_h
-#define MyG4HadronPhysicsQGSP_BERT_ArHP_h 1
+#ifndef artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_ArHP_hh
+#define artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_ArHP_hh
 
 #include "Geant4/G4HadronPhysicsQGSP_BERT.hh"
 
@@ -80,10 +80,10 @@ public:
   virtual ~MyG4HadronPhysicsQGSP_BERT_ArHP() {}
 
 protected:
-  virtual void Neutron() override;
-  virtual void ExtraConfiguration() override;
+  void Neutron() override;
+  void ExtraConfiguration() override;
 };
 
 // 2002 by J.P. Wellisch
 
-#endif
+#endif /* artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_ArHP_hh */

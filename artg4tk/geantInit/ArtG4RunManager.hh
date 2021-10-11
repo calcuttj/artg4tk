@@ -1,5 +1,5 @@
-#ifndef ArtG4_ArtG4RunManager_hh
-#define ArtG4_ArtG4RunManager_hh
+#ifndef artg4tk_geantInit_ArtG4RunManager_hh
+#define artg4tk_geantInit_ArtG4RunManager_hh
 //
 // Override the G4RunManager class so that the ArtG4 framework can drive
 // the event loop.
@@ -111,4 +111,4 @@ namespace artg4tk {
 
 } // end namespace artg4tk.
 
-#endif /* ArtG4_ArtG4RunManager_hh */
+#endif /* artg4tk_geantInit_ArtG4RunManager_hh */

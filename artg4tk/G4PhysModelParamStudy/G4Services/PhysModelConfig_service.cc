@@ -1,4 +1,3 @@
-
 // Authors: Julia Yarba
 
 // Date: Oct. 2015
@@ -151,6 +150,4 @@ artg4tk::PhysModelConfigService::DoConfigure(const std::string& mod,
   return;
 }
 
-using artg4tk::PhysModelConfigService;
-
-DEFINE_ART_SERVICE(PhysModelConfigService)
+DEFINE_ART_SERVICE(artg4tk::PhysModelConfigService)

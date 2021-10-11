@@ -52,10 +52,10 @@ namespace artg4tk {
     explicit ModelParamStudyProducer(const fhicl::ParameterSet& pset);
     virtual ~ModelParamStudyProducer();
 
-    virtual void produce(art::Event& event) override;
-    virtual void beginJob() override;
-    virtual void beginRun(art::Run&) override;
-    virtual void endRun(art::Run&) override;
+    void produce(art::Event& event) override;
+    void beginJob() override;
+    void beginRun(art::Run&) override;
+    void endRun(art::Run&) override;
 
   private:
     void clear();

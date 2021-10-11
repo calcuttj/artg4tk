@@ -19,23 +19,13 @@
 #include "Geant4/G4ThreeVector.hh"
 #include "Geant4/G4VProcess.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 artg4tk::PhotonSD::PhotonSD(G4String name) : G4VSensitiveDetector(name) {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void
 artg4tk::PhotonSD::Initialize(G4HCofThisEvent* HCE)
 {
   hitCollection.clear();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-artg4tk::PhotonSD::~PhotonSD() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4bool
 artg4tk::PhotonSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)

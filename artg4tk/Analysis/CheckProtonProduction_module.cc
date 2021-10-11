@@ -45,10 +45,10 @@ namespace artg4tk {
 class artg4tk::CheckProtonProduction : public art::EDAnalyzer {
 public:
   explicit CheckProtonProduction(fhicl::ParameterSet const& p);
-  virtual void beginJob();
-  virtual void beginRun(const art::Run& Run);
-  virtual void endJob();
-  virtual void analyze(const art::Event& event);
+  void beginJob() override;
+  void beginRun(const art::Run& Run) override;
+  void endJob() override;
+  void analyze(const art::Event& event) override;
 
 private:
   int fNThetaBinsFW;
@@ -133,7 +133,6 @@ artg4tk::CheckProtonProduction::beginRun(const art::Run& thisRun)
 void
 artg4tk::CheckProtonProduction::beginJob()
 {
-
   art::ServiceHandle<art::TFileService> tfs;
   _fHistoNSec = tfs->make<TH1F>("NSec", "neutron + Cu", 100, 0., 100.);
   //
@@ -228,26 +227,15 @@ void
 artg4tk::CheckProtonProduction::analyze(const art::Event& event)
 {
   typedef std::vector<art::Handle<myInteractionArtHitDataCollection>> HandleVector;
-  // HandleVector allSims;
-  // event.getManyByType(allSims);
   auto allSims = event.getMany<myInteractionArtHitDataCollection>();
-
-  // cout << "CheckProtonProduction Event:  " << event.event() << "  Nr of Interaction collections:
-  // " << allSims.size() << endl;
 
   for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
     const myInteractionArtHitDataCollection& sims(**i);
-    // cout << "InteractionHit collection size:  " << sims.size() << endl;
     if (sims.size() > 0) {
       _fHistoNSec->Fill(sims.size());
     }
     for (myInteractionArtHitDataCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
       const myInteractionArtHitData& hit = *j;
-      // cout << "Name:  " << hit.pname
-      // << " Momentum:  " << hit.pmom
-      //		 << " kinetic Energy: " << hit.Ekin
-      //	 << " Theta:  " << hit.theta
-      //	 << endl;
       if (hit.pname == "proton") {
         _fHistoSecPMom->Fill(hit.pmom);
         double angle = hit.theta * 57.29577951;
@@ -308,9 +296,6 @@ artg4tk::CheckProtonProduction::endJob()
   double xbin = _fHistoNSec->GetBinWidth(1);
   double scale = 1. / (xbin * norm);
   _fHistoNSec->Scale(scale);
-  // fHistoNSec->Write();
 } // end endJob
 
-using artg4tk::CheckProtonProduction;
-
-DEFINE_ART_MODULE(CheckProtonProduction)
+DEFINE_ART_MODULE(artg4tk::CheckProtonProduction)

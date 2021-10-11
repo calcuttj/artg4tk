@@ -7,16 +7,12 @@
 // put a track on the waiting list). See @artg4tk/geantInit/ArtG4StackingAction.hh@ and @.cc@ for
 // how this class is handled.
 
-// Include guard
-#ifndef STACKING_ACTION_BASE_HH
-#define STACKING_ACTION_BASE_HH
+#ifndef artg4tk_actionBase_StackingActionBase_hh
+#define artg4tk_actionBase_StackingActionBase_hh
 
 #include <string>
 
 #include "artg4tk/actionBase/ActionBase.hh"
-
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
 
 class G4Track;
 
@@ -26,12 +22,7 @@ namespace artg4tk {
   public:
     // Constructor. The derived class must call this constructor. It takes a
     // single string for the name of the action object.
-
-    StackingActionBase(std::string myName) : ActionBase(myName)
-    {
-      art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
-      actionHolder->registerAction(this);
-    }
+    explicit StackingActionBase(std::string name);
 
     // Destructor
     virtual ~StackingActionBase();
@@ -45,4 +36,4 @@ namespace artg4tk {
   };
 }
 
-#endif // STACKING_ACTION_BASE_HH
+#endif /* artg4tk_actionBase_StackingActionBase_hh */

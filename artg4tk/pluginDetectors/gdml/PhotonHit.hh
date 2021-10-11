@@ -15,8 +15,8 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 
-#ifndef PhotonHit_h
-#define PhotonHit_h 1
+#ifndef artg4tk_pluginDetectors_gdml_PhotonHit_hh
+#define artg4tk_pluginDetectors_gdml_PhotonHit_hh
 #include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -131,4 +131,4 @@ namespace artg4tk {
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_PhotonHit_hh */

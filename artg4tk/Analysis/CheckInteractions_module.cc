@@ -44,10 +44,10 @@ namespace artg4tk {
 class artg4tk::CheckInteractions : public art::EDAnalyzer {
 public:
   explicit CheckInteractions(fhicl::ParameterSet const& p);
-  virtual void beginJob();
-  virtual void beginRun(const art::Run& Run);
-  virtual void endJob();
-  virtual void analyze(const art::Event& event);
+  void beginJob() override;
+  void beginRun(const art::Run& Run) override;
+  void endJob() override;
+  void analyze(const art::Event& event) override;
 
 private:
   int fNThetaBinsFW;
@@ -92,7 +92,6 @@ artg4tk::CheckInteractions::beginJob()
 
   art::ServiceHandle<art::TFileService> tfs;
   _fHistoNSec = tfs->make<TH1F>("NSec", "proton + Ta", 100, 0., 100.);
-  //_hnHits = tfs->make<TH1F>("hnHits", "Number of CaloArtHits", 100, 0., 20000.);
   _hEdep = tfs->make<TH1F>("hEdep", "total Energy deposition in CaloArtHits", 100, 0., 15.);
   _hnDRHits = tfs->make<TH1F>("hnDRHits", "Number of DRCaloArtHits", 100, 0., 20000.);
   _hDREdep = tfs->make<TH1F>("hDREdep", "total Energy deposition in DRCaloArtHits", 100, 0., 11.);
@@ -130,11 +129,7 @@ artg4tk::CheckInteractions::beginJob()
     htitle = ht + " -> X + pi-, " + theta_bin_fw;
     hname = "piminus_fw_" + osTitle3.str();
     TH1D* histo = tfs->make<TH1D>(hname.c_str(), htitle.c_str(), 80, 0., 8.0);
-    //        fHistoSecPiMinusFW.push_back(new TH1D(hname.c_str(), htitle.c_str(), 80, 0., 8.0));
     fHistoSecPiMinusFW.push_back(histo);
-    //      htitle = ht + " -> X + pi+, " + theta_bin_fw;
-    //      hname = "piplus_fw_" + osTitle3.str();
-    //      fHistoSecPiPlusFW.push_back(new TH1D(hname.c_str(), htitle.c_str(), 80, 0., 8.0));
   }
 
 } // end beginJob
@@ -143,8 +138,6 @@ void
 artg4tk::CheckInteractions::analyze(const art::Event& event)
 {
   typedef std::vector<art::Handle<myInteractionArtHitDataCollection>> HandleVector;
-  // HandleVector allSims;
-  // event.getManyByType(allSims);
   auto allSims = event.getMany<myInteractionArtHitDataCollection>();
 
   cout << "CheckInteractions Event:  " << event.event()
@@ -182,9 +175,6 @@ artg4tk::CheckInteractions::endJob()
   double xbin = _fHistoNSec->GetBinWidth(1);
   double scale = 1. / (xbin * norm);
   _fHistoNSec->Scale(scale);
-  // fHistoNSec->Write();
 } // end endJob
 
-using artg4tk::CheckInteractions;
-
-DEFINE_ART_MODULE(CheckInteractions)
+DEFINE_ART_MODULE(artg4tk::CheckInteractions)

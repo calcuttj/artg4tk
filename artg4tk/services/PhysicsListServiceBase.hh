@@ -1,6 +1,6 @@
 // PhysicsListServiceBase
-#ifndef PHYSICS_LIST_SERVICE_BASE_HH
-#define PHYSICS_LIST_SERVICE_BASE_HH
+#ifndef artg4tk_services_PhysicsListServiceBase_hh
+#define artg4tk_services_PhysicsListServiceBase_hh
 
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "artg4tk/services/PhysicsListHolder_service.hh"
@@ -31,4 +31,4 @@ namespace artg4tk {
 
 } // namespace artg4tk
 
-#endif
+#endif /* artg4tk_services_PhysicsListServiceBase_hh */

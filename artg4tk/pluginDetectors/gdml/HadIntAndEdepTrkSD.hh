@@ -13,8 +13,8 @@
 // (based in test23 of the Geant 4 test suite)
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#ifndef HadIntAndTrackerSD_h
-#define HadIntAndTrackerSD_h 1
+#ifndef artg4tk_pluginDetectors_gdml_HadIntAndEdepTrkSD_hh
+#define artg4tk_pluginDetectors_gdml_HadIntAndEdepTrkSD_hh
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"
@@ -33,10 +33,10 @@ namespace artg4tk {
     HadIntAndEdepTrkSD(G4String);
     ~HadIntAndEdepTrkSD();
 
-    virtual void Initialize(G4HCofThisEvent*);
-    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-    virtual void
-    clear()
+    void Initialize(G4HCofThisEvent*) override;
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*) override;
+    void
+    clear() override
     {
       fFirstInter.Clear();
       fEdepTrkHits.clear();
@@ -66,4 +66,4 @@ namespace artg4tk {
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_HadIntAndEdepTrkSD_hh */

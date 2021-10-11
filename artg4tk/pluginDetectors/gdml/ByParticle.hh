@@ -13,8 +13,9 @@
 // myParticleEContribArtData.hh
 //=============================================================================//
 
-#ifndef ByParticle_HH
-#define ByParticle_HH
+#ifndef artg4tk_pluginDetectors_gdml_ByParticle_hh
+#define artg4tk_pluginDetectors_gdml_ByParticle_hh
+
 #include <map>
 #include <string>
 
@@ -22,7 +23,7 @@ namespace artg4tk {
   // allows to store the contribution by each particle to the event
   // The string stores Particle name, and the double the percentage of
   // the total deposited energy.
-  typedef std::map<std::string, double> ByParticle;
+  using ByParticle = std::map<std::string, double>;
 }
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_ByParticle_hh */

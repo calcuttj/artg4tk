@@ -23,22 +23,15 @@ namespace artg4tk {
     explicit EventGenerator(fhicl::ParameterSet const& pset);
     virtual ~EventGenerator();
 
-    void produce(art::Event& event);
+    void produce(art::Event& event) override;
 
   private:
-    //    // Particle data table.
-    // PDT const& _pdt;
     int _nparticles;
     int fPDG;
     double fMass;
     CLHEP::Hep3Vector fMomentum;
     CLHEP::Hep3Vector fMomentumSig;
     CLHEP::Hep3Vector fVertex;
-
-    // Particle masses.
-    //    double _mpi;
-    // double _mka;
-    // double _mphi;
 
     CLHEP::RandGaussQ* fRandom;
   };
@@ -54,20 +47,6 @@ artg4tk::EventGenerator::EventGenerator(fhicl::ParameterSet const& pset)
   fMomentumSig(CLHEP::Hep3Vector(0., 0., 0.))
   , fVertex(CLHEP::Hep3Vector(0., 0., 0.))
   , fRandom(0)
-
-/*
-  _pdt(( art::ServiceHandle<Conditions>()->pdt())),
-
-
-
-  _mpi(  _pdt.getById( PDGCode::pi_plus).mass() ),
-  _mka(  _pdt.getById( PDGCode::K_plus).mass() ),
-  _mphi( _pdt.getById( PDGCode::phi).mass() ),
-
-  _engine(      createEngine(_seed)),
-  _flat(       _engine),
-  _unitSphere( _engine)
-*/
 {
 
   std::vector<double> mom = pset.get<std::vector<double>>("momentum");
@@ -78,7 +57,6 @@ artg4tk::EventGenerator::EventGenerator(fhicl::ParameterSet const& pset)
 
   std::vector<double> momsig =
     pset.get<std::vector<double>>("momentum_sigma", std::vector<double>());
-  //
   if (!momsig.empty())
     fMomentumSig.setX(momsig[0]);
   if (momsig.size() >= 2)
@@ -87,7 +65,6 @@ artg4tk::EventGenerator::EventGenerator(fhicl::ParameterSet const& pset)
     fMomentumSig.setZ(momsig[2]);
 
   std::vector<double> vtx = pset.get<std::vector<double>>("vertex", std::vector<double>());
-  //
   if (!vtx.empty())
     fVertex.setX(vtx[0]); // in cm
   if (vtx.size() >= 2)
@@ -121,24 +98,13 @@ artg4tk::EventGenerator::~EventGenerator()
 void
 artg4tk::EventGenerator::produce(art::Event& event)
 {
-
-  // Create an empty output data product
   std::unique_ptr<GenParticleCollection> gens(new GenParticleCollection());
   gens->reserve(_nparticles);
-
-  // Product Id of the data product to be created; needed for persistent pointers.
-  // unused art::ProductID gensID(getProductID<GenParticleCollection>());
-
-  // All particles will be produced at the origin. <--- NOT ANYMORE...
-  //  static CLHEP::Hep3Vector origin(0.,0.,0);
-  //  CLHEP::Hep3Vector mom(0.,0.,10000.);
-  //  CLHEP::HepLorentzVector lmom( mom, 1400.14);
 
   if (fPDG == PDGCode::invalid)
     return;
 
   // Apply momentum spread (assume gauss)
-  //
   double tmpx = std::max(0., (fMomentumSig.x() * fRandom->fire() + std::fabs(fMomentum.x())));
   double tmpy = std::max(0., (fMomentumSig.y() * fRandom->fire() + std::fabs(fMomentum.y())));
   double tmpz = std::max(0., (fMomentumSig.z() * fRandom->fire() + std::fabs(fMomentum.z())));
@@ -150,12 +116,6 @@ artg4tk::EventGenerator::produce(art::Event& event)
     tmpz *= -1.;
   CLHEP::Hep3Vector tmp(tmpx, tmpy, tmpz);
 
-  // Put the phi into the output collection; it is a primary particle that has no parent.
-  // gens->push_back ( GenParticle(  PDGCode::proton, art::Ptr<GenParticle>(), origin, lmom,
-  // GenParticle::alive));
-
-  // -->  double e = std::sqrt( fMomentum.mag2() + fMass*fMass );
-  // -->  CLHEP::HepLorentzVector mom4( fMomentum, e );
   double e = std::sqrt(tmp.mag2() + fMass * fMass);
   CLHEP::HepLorentzVector mom4(tmp, e);
   PDGCode::type code = static_cast<PDGCode::type>(fPDG);

@@ -45,10 +45,9 @@ namespace artg4tk {
 class artg4tk::CheckTrackerHits : public art::EDAnalyzer {
 public:
   explicit CheckTrackerHits(fhicl::ParameterSet const& p);
-  virtual void beginJob();
-  virtual void beginRun(const art::Run& Run);
-  virtual void endJob();
-  virtual void analyze(const art::Event& event);
+  void beginJob() override;
+  void beginRun(const art::Run& Run) override;
+  void analyze(const art::Event& event) override;
 
 private:
   TH1F* _hnHits; // number of TrackerHits
@@ -70,7 +69,6 @@ artg4tk::CheckTrackerHits::beginRun(const art::Run& thisRun)
 void
 artg4tk::CheckTrackerHits::beginJob()
 {
-
   art::ServiceHandle<art::TFileService> tfs;
   _hnHits = tfs->make<TH1F>("hnHits", "Number of TrackerArtHits", 200, 0., 10000.);
   _hEdep = tfs->make<TH1F>("hEdep", "total Energy deposition in TrackerArtHits", 200, 0., 1.2);
@@ -83,15 +81,10 @@ void
 artg4tk::CheckTrackerHits::analyze(const art::Event& event)
 {
   typedef std::vector<art::Handle<TrackerHitCollection>> HandleVector;
-  // HandleVector allSims;
-  // event.getManyByType(allSims);
   auto allSims = event.getMany<TrackerHitCollection>();
 
-  //    cout << "CheckTrackerHits Event:  " << event.event() << "  Nr of CaloHit collections: " <<
-  //    allSims.size() << endl;
   for (HandleVector::const_iterator i = allSims.begin(); i != allSims.end(); ++i) {
     const TrackerHitCollection& sims(**i);
-    // cout << "CaloHit collection size:  " << sims.size() << endl;
     double sumE = 0.0;
     _hnHits->Fill(sims.size());
     for (TrackerHitCollection::const_iterator j = sims.begin(); j != sims.end(); ++j) {
@@ -106,10 +99,4 @@ artg4tk::CheckTrackerHits::analyze(const art::Event& event)
 
 } // end analyze
 
-void
-artg4tk::CheckTrackerHits::endJob()
-{} // end endJob
-
-using artg4tk::CheckTrackerHits;
-
-DEFINE_ART_MODULE(CheckTrackerHits)
+DEFINE_ART_MODULE(artg4tk::CheckTrackerHits)

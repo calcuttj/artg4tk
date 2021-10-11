@@ -13,8 +13,8 @@
 // (based in test23 of the Geant 4 test suite)
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#ifndef HadInteractionSD_h
-#define HadInteractionSD_h 1
+#ifndef artg4tk_pluginDetectors_gdml_HadInteractionSD_hh
+#define artg4tk_pluginDetectors_gdml_HadInteractionSD_hh
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"
@@ -22,20 +22,17 @@
 class G4Step;
 class G4HCofThisEvent;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
 
   class HadInteractionSD : public G4VSensitiveDetector {
-
   public:
     // ctor & dtor
     HadInteractionSD(G4String);
-    ~HadInteractionSD();
 
-    virtual void Initialize(G4HCofThisEvent*);
-    virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-    virtual void
-    clear()
+    void Initialize(G4HCofThisEvent*) override;
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*) override;
+    void
+    clear() override
     {
       fFirstInter.Clear();
     }
@@ -46,9 +43,8 @@ namespace artg4tk {
     SetStopAfter1stInt(bool flag = true)
     {
       fStopAfter1stInt = flag;
-      return;
     }
-    const ArtG4tkVtx&
+    ArtG4tkVtx const&
     Get1stInteraction() const
     {
       return fFirstInter;
@@ -59,6 +55,5 @@ namespace artg4tk {
     bool fStopAfter1stInt;
   };
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_HadInteractionSD_hh */

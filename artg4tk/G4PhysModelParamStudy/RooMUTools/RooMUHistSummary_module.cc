@@ -49,8 +49,8 @@ namespace artg4tk {
     // Destructor
     virtual ~RooMUHistSummary();
 
-    virtual void analyze(art::Event const&) override;
-    virtual void endJob() override;
+    void analyze(art::Event const&) override;
+    void endJob() override;
 
   protected:
     virtual TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&);
@@ -271,5 +271,4 @@ artg4tk::RooMUHistSummary::matchExpSpectrum2MC(const int& secid,
   return NULL;
 }
 
-using artg4tk::RooMUHistSummary;
-DEFINE_ART_MODULE(RooMUHistSummary)
+DEFINE_ART_MODULE(artg4tk::RooMUHistSummary)

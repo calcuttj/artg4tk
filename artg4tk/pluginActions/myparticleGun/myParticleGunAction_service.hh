@@ -30,52 +30,50 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 
-// Include guard
-#ifndef MYPARTICLEGUNACTION_SERVICE_HH
-#define MYPARTICLEGUNACTION_SERVICE_HH
+#ifndef artg4tk_pluginActions_myparticleGun_myParticleGunAction_service_hh
+#define artg4tk_pluginActions_myparticleGun_myParticleGunAction_service_hh
 
 // art Includes:
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 #include "fhiclcpp/fwd.h"
-#include "messagefacility/MessageLogger/MessageLogger.h"
 
 // artg4tk includes
 #include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
 
 // Geant 4 includes
+#include "Geant4/G4ParticleGun.hh"
 class G4Event;
-class G4ParticleGun;
+
+#include <string>
 
 namespace artg4tk {
 
   class myParticleGunActionService : public artg4tk::PrimaryGeneratorActionBase {
   public:
     myParticleGunActionService(fhicl::ParameterSet const&);
-    virtual ~myParticleGunActionService();
-    virtual void initialize() override;
+
+    void initialize() override;
+
     // To generate primaries, we need to overload the GeneratePrimaries
     // method.
-    virtual void generatePrimaries(G4Event* anEvent) override;
-    const G4ParticleGun*
+    void generatePrimaries(G4Event* anEvent) override;
+
+    G4ParticleGun const*
     GetGun() const
     {
-      return particleGun_;
+      return particleGun_.get();
     };
-    // We don't add anything to the event, so we don't need callArtProduces
-    // or FillEventWithArtStuff.
 
   private:
-    G4ParticleGun* particleGun_;
-    int nparticle;
+    std::unique_ptr<G4ParticleGun> particleGun_{nullptr};
+    G4int nparticle_;
     std::string particleName_;
-    std::vector<double> ParticleMomentumDirection_;
-    double ParticleEnergy_;
-    std::vector<double> ParticlePosition_;
-    // A message logger for this action object
-    mf::LogInfo logInfo_;
+    std::vector<double> momentumDirection_;
+    double energy_;
+    std::vector<double> position_;
   };
 } // namespace artg4tk
-using artg4tk::myParticleGunActionService;
-DECLARE_ART_SERVICE(myParticleGunActionService, LEGACY)
 
-#endif
+DECLARE_ART_SERVICE(artg4tk::myParticleGunActionService, LEGACY)
+
+#endif /* artg4tk_pluginActions_myparticleGun_myParticleGunAction_service_hh */

@@ -34,8 +34,8 @@
 
 // Header Guard
 
-#ifndef ARTG4_DETECTORBASE_HH
-#define ARTG4_DETECTORBASE_HH
+#ifndef artg4tk_Core_DetectorBase_hh
+#define artg4tk_Core_DetectorBase_hh
 
 // STL includes
 #include <vector>
@@ -218,4 +218,4 @@ namespace artg4tk {
   };
 }
 
-#endif
+#endif /* artg4tk_Core_DetectorBase_hh */

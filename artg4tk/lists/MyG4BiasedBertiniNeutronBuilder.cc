@@ -75,8 +75,6 @@ MyG4BiasedBertiniNeutronBuilder::Build(G4NeutronInelasticProcess* aP)
   aP->RegisterMe(theModel);
 }
 
-MyG4BiasedBertiniNeutronBuilder::~MyG4BiasedBertiniNeutronBuilder() {}
-
 void
 MyG4BiasedBertiniNeutronBuilder::Build(G4HadronElasticProcess*)
 {}

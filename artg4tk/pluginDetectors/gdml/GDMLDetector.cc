@@ -64,24 +64,6 @@
 
 using std::string;
 
-std::vector<std::string>&
-split(const std::string& s, char delim, std::vector<std::string>& elems)
-{
-  std::stringstream ss(s);
-  std::string item;
-  while (std::getline(ss, item, delim)) {
-    elems.push_back(item);
-  }
-  return elems;
-}
-
-std::vector<std::string>
-split(const std::string& s, char delim)
-{
-  std::vector<std::string> elems;
-  return split(s, delim, elems);
-}
-
 artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const& p)
   : artg4tk::DetectorBase(p,
                           p.get<string>("name", "GDMLDetectorService"),
@@ -117,17 +99,16 @@ artg4tk::GDMLDetectorService::GDMLDetectorService(fhicl::ParameterSet const& p)
       throw cet::exception("LArG4DetectorService")
         << "Invalid stepLimits found. Step limits must be"
         << " positive! Bad value : stepLimits[" << i << "] = " << stepLimits_.at(i) << " [mm]\n";
-    } else {
-      selectedVolumes_.push_back(std::make_pair(volumeNames_.at(i), stepLimits_.at(i)));
-      mf::LogInfo("LArG4DetectorService::Ctr")
-        << "Volume: " << volumeNames_.at(i) << ", stepLimit: " << stepLimits_.at(i);
-    } //--check for negative
-  }   //--loop over inputVolumes
+    }
+    selectedVolumes_.push_back(std::make_pair(volumeNames_.at(i), stepLimits_.at(i)));
+    mf::LogInfo("LArG4DetectorService::Ctr")
+      << "Volume: " << volumeNames_.at(i) << ", stepLimit: " << stepLimits_.at(i);
+  } //--loop over inputVolumes
 } //--Ctor
 
 // Destructor
 
-artg4tk::GDMLDetectorService::~GDMLDetectorService() {}
+artg4tk::GDMLDetectorService::~GDMLDetectorService() = default;
 
 std::vector<G4LogicalVolume*>
 artg4tk::GDMLDetectorService::doBuildLVs()

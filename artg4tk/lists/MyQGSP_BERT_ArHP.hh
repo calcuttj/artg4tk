@@ -36,8 +36,8 @@
 //
 //----------------------------------------------------------------------------
 //
-#ifndef MyQGSP_BERT_ArHP_h
-#define MyQGSP_BERT_ArHP_h 1
+#ifndef artg4tk_lists_MyQGSP_BERT_ArHP_hh
+#define artg4tk_lists_MyQGSP_BERT_ArHP_hh
 
 #include "Geant4/G4VModularPhysicsList.hh"
 #include "Geant4/globals.hh"
@@ -45,13 +45,11 @@
 class MyQGSP_BERT_ArHP : public G4VModularPhysicsList {
 public:
   MyQGSP_BERT_ArHP(G4int ver = 1);
-  virtual ~MyQGSP_BERT_ArHP() = default;
 
   MyQGSP_BERT_ArHP(const MyQGSP_BERT_ArHP&) = delete;
   MyQGSP_BERT_ArHP& operator=(const MyQGSP_BERT_ArHP&) = delete;
 
-  // SetCuts()
-  virtual void SetCuts();
+  void SetCuts() override;
 };
 
-#endif
+#endif /* artg4tk_lists_MyQGSP_BERT_ArHP_hh */

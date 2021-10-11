@@ -39,8 +39,8 @@
 
 // P. Arce, June-2014 Conversion neutron_hp to particle_hp
 //
-#ifndef ArParticleHPCapture_h
-#define ArParticleHPCapture_h 1
+#ifndef artg4tk_lists_ArParticleHPCapture_hh
+#define artg4tk_lists_ArParticleHPCapture_hh
 
 #include "Geant4/G4HadronicInteraction.hh"
 #include "Geant4/G4ParticleHPChannel.hh"
@@ -52,15 +52,14 @@ public:
 
   ~ArParticleHPCapture();
 
-  G4HadFinalState* ApplyYourself(const G4HadProjectile& aTrack, G4Nucleus& aTargetNucleus);
+  G4HadFinalState* ApplyYourself(const G4HadProjectile& aTrack, G4Nucleus& aTargetNucleus) override;
 
-  virtual const std::pair<G4double, G4double> GetFatalEnergyCheckLevels() const;
+  const std::pair<G4double, G4double> GetFatalEnergyCheckLevels() const override;
 
-public:
   G4int GetVerboseLevel() const;
   void SetVerboseLevel(G4int);
-  void BuildPhysicsTable(const G4ParticleDefinition&);
-  virtual void ModelDescription(std::ostream& outFile) const;
+  void BuildPhysicsTable(const G4ParticleDefinition&) override;
+  void ModelDescription(std::ostream& outFile) const override;
 
 private:
   std::vector<G4ParticleHPChannel*>* theCapture;
@@ -70,4 +69,4 @@ private:
   G4HadFinalState theResult;
 };
 
-#endif
+#endif /* artg4tk_lists_ArParticleHPCapture_hh */

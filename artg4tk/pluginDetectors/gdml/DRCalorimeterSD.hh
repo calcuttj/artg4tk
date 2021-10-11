@@ -15,8 +15,8 @@
 //
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#ifndef DRCalorimeterSD_h
-#define DRCalorimeterSD_h
+#ifndef artg4tk_pluginDetectors_gdml_DRCalorimeterSD_hh
+#define artg4tk_pluginDetectors_gdml_DRCalorimeterSD_hh
 
 #include "Geant4/G4VSensitiveDetector.hh"
 #include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
@@ -24,8 +24,6 @@
 class G4Step;
 class G4HCofThisEvent;
 
-// class Cerenkov;
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
 
   class DRCalorimeterSD : public G4VSensitiveDetector {
@@ -37,43 +35,42 @@ namespace artg4tk {
     double TotalNCeren;
 
   public:
-    DRCalorimeterSD(G4String);
-    ~DRCalorimeterSD();
-    void Initialize(G4HCofThisEvent*);
-    void EndOfEvent(G4HCofThisEvent*);
-    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    explicit DRCalorimeterSD(G4String);
 
-    const DRCalorimeterHitCollection&
+    void Initialize(G4HCofThisEvent*) override;
+    void EndOfEvent(G4HCofThisEvent*) override;
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*) override;
+
+    DRCalorimeterHitCollection const&
     GetHits() const
     {
       return drcalorimeterCollection;
     }
 
-    const ByParticle
-    GetEbyParticle()
+    ByParticle const&
+    GetEbyParticle() const
     {
       return EbyParticle;
     };
 
-    const ByParticle
+    ByParticle const&
     GetNCerenbyParticle()
     {
       return NCerenbyParticle;
     };
 
     double
-    GetTotalE()
+    GetTotalE() const
     {
       return TotalE;
     }
 
     double
-    GetTotalNCeren()
+    GetTotalNCeren() const
     {
       return TotalNCeren;
     }
   };
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_DRCalorimeterSD_hh */

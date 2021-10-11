@@ -11,16 +11,12 @@
 // object is equivalent to putting it in the @UserSteppingAction@ method of
 // the simulation's stepping action class.
 
-// Include guard
-#ifndef STEPPING_ACTION_BASE_HH
-#define STEPPING_ACTION_BASE_HH
+#ifndef artg4tk_actionBase_SteppingActionBase_hh
+#define artg4tk_actionBase_SteppingActionBase_hh
 
 #include <string>
 
 #include "artg4tk/actionBase/ActionBase.hh"
-
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
 
 // Declarations of types we use as input parameters
 class G4Step;
@@ -32,11 +28,7 @@ namespace artg4tk {
   public:
     // Constructor. The derived class must call this constructor. It takes a
     // single string for the name of the action object.
-    SteppingActionBase(std::string myName) : ActionBase(myName)
-    {
-      art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
-      actionHolder->registerAction(this);
-    }
+    explicit SteppingActionBase(std::string name);
 
     // Destructor
     virtual ~SteppingActionBase();
@@ -52,4 +44,4 @@ namespace artg4tk {
   };
 }
 
-#endif // STEPPING_ACTION_BASE_HH
+#endif /* artg4tk_actionBase_SteppingActionBase_hh */

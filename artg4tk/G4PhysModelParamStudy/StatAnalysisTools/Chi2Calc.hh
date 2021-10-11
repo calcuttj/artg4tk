@@ -1,5 +1,5 @@
-#ifndef Chi2Calc_H
-#define Chi2Calc_H 1
+#ifndef artg4tk_G4PhysModelParamStudy_StatAnalysisTools_Chi2Calc_hh
+#define artg4tk_G4PhysModelParamStudy_StatAnalysisTools_Chi2Calc_hh
 
 //#include <iostream>
 //#include <string>
@@ -36,4 +36,4 @@ private:
   std::vector<std::pair<int, double>> fChi2MCBin;
 };
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_StatAnalysisTools_Chi2Calc_hh */

@@ -41,10 +41,8 @@
 //
 //----------------------------------------------------------------------------
 //
-#ifndef MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias_h
-#define MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias_h 1
-
-///#define G4CASCADE_DEBUG_INTERFACE 1
+#ifndef artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias_hh
+#define artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias_hh
 
 #include "Geant4/G4ios.hh"
 #include "Geant4/globals.hh"
@@ -87,9 +85,8 @@ public:
                                               G4double XSMultiplier = 1.0);
   virtual ~MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias();
 
-public:
-  virtual void ConstructParticle();
-  virtual void ConstructProcess();
+  void ConstructParticle() override;
+  void ConstructProcess() override;
 
 private:
   void CreateModels();
@@ -99,7 +96,6 @@ private:
     G4FTFPNeutronBuilder* theFTFPNeutron;
     G4QGSPNeutronBuilder* theQGSPNeutron;
     G4BertiniNeutronBuilder* theBertiniNeutron;
-    // MyG4BiasedBertiniNeutronBuilder * theBertiniNeutron;
     G4NeutronPHPBuilder* theHPNeutron;
 
     G4PiKBuilder* thePiK;
@@ -122,10 +118,9 @@ private:
   };
   static G4ThreadLocal ThreadPrivate* tpdata;
 
-  // G4bool QuasiElastic;
   G4double theBertiniNeutronXSMultiplier;
 };
 
 // 2019 by D. Rivera
 
-#endif
+#endif /* artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias_hh */

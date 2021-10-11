@@ -15,32 +15,20 @@
 #include "artg4tk/actionBase/TrackingActionBase.hh"
 
 #include "messagefacility/MessageLogger/MessageLogger.h"
+#include "range/v3/view.hpp"
 
 #include <algorithm>
+#include <iostream>
 
-// Don't type 'std::' all the time...
-using std::map;
-using std::pair;
-using std::string;
+using ranges::views::values;
 
-///////////////////
-using namespace std;
 /////////////////////
 // Message category
-static std::string msgctg = "ActionHolderService";
+static std::string const msgctg = "ActionHolderService";
 
 // Constructor doesn't do much with the passed arguments, but does initialize
 // the logger for the service
-artg4tk::ActionHolderService::ActionHolderService(fhicl::ParameterSet const&)
-  : runActionsMap_()
-  , eventActionsMap_()
-  , trackingActionsMap_()
-  , steppingActionsMap_()
-  , stackingActionsMap_()
-  , primaryGeneratorActionsMap_()
-  , currentArtEvent_(nullptr)
-  , allActionsMap_()
-{}
+artg4tk::ActionHolderService::ActionHolderService(fhicl::ParameterSet const&) {}
 
 // Register actions
 template <typename A>
@@ -53,15 +41,12 @@ artg4tk::ActionHolderService::doRegisterAction(A* const action,
   // Check if the name exists in the specific action map
   if (0 == actionMap.count(action->myName())) {
     // Add the action!
-    actionMap.insert(pair<string, A*>(action->myName(), action));
+    actionMap.try_emplace(action->myName(), action);
 
     // Now, check whether the name exists in the overall map of all the actions
     // If so, move on (don't throw an exception, since a single action may need
     // to register in multiple maps). Otherwise, add it.
-    if (0 == allActionsMap_.count(action->myName())) {
-      allActionsMap_.insert(
-        pair<string, ActionBase*>(action->myName(), dynamic_cast<ActionBase*>(action)));
-    }
+    allActionsMap_.try_emplace(action->myName(), action);
   }
 
   else {
@@ -74,190 +59,78 @@ artg4tk::ActionHolderService::doRegisterAction(A* const action,
 void
 artg4tk::ActionHolderService::registerAction(RunActionBase* const action)
 {
-  cerr << "registering to   runActionsMap_" << endl;
+  std::cerr << "registering to   runActionsMap_\n";
   doRegisterAction(action, runActionsMap_);
 }
 
 void
 artg4tk::ActionHolderService::registerAction(EventActionBase* const action)
 {
-  cerr << "registering to   eventActionsMap_" << endl;
+  std::cerr << "registering to   eventActionsMap_\n";
   doRegisterAction(action, eventActionsMap_);
 }
 
 void
 artg4tk::ActionHolderService::registerAction(TrackingActionBase* const action)
 {
-  cerr << "registering to   trackingActionsMap_" << endl;
+  std::cerr << "registering to   trackingActionsMap_\n";
   doRegisterAction(action, trackingActionsMap_);
 }
 
 void
 artg4tk::ActionHolderService::registerAction(SteppingActionBase* const action)
 {
-  cerr << "registering to  steppingActionsMap_" << endl;
+  std::cerr << "registering to  steppingActionsMap_\n";
   doRegisterAction(action, steppingActionsMap_);
 }
 
 void
 artg4tk::ActionHolderService::registerAction(StackingActionBase* const action)
 {
-  cerr << "registering to  stackingActionsMap_" << endl;
+  std::cerr << "registering to  stackingActionsMap_\n";
   doRegisterAction(action, stackingActionsMap_);
 }
 
 void
 artg4tk::ActionHolderService::registerAction(PrimaryGeneratorActionBase* const action)
 {
-  cerr << "registering to  primaryGeneratorActionsMap_" << endl;
+  std::cerr << "registering to  primaryGeneratorActionsMap_\n";
   doRegisterAction(action, primaryGeneratorActionsMap_);
-}
-
-template <typename A>
-A*
-artg4tk::ActionHolderService::doGetAction(std::string name, std::map<std::string, A*>& actionMap)
-{
-
-  // Make a typedef
-  typedef typename std::map<std::string, A*>::const_iterator map_const_iter;
-
-  // Find the action corresponding to the passed in name in the map
-  map_const_iter actionIter = actionMap.find(name);
-  if (actionIter == actionMap.end()) {
-    throw cet::exception("ActionHolderService") << "No action found with name " << name << ".\n";
-  }
-  return actionIter->second;
-}
-
-artg4tk::ActionBase*
-artg4tk::ActionHolderService::getAction(std::string name, RunActionBase* out)
-{
-  out = doGetAction(name, runActionsMap_);
-  return out;
-}
-
-artg4tk::ActionBase*
-artg4tk::ActionHolderService::getAction(std::string name, EventActionBase* out)
-{
-  out = doGetAction(name, eventActionsMap_);
-  return out;
-}
-
-artg4tk::ActionBase*
-artg4tk::ActionHolderService::getAction(std::string name, TrackingActionBase* out)
-{
-  out = doGetAction(name, trackingActionsMap_);
-  return out;
-}
-
-artg4tk::ActionBase*
-artg4tk::ActionHolderService::getAction(std::string name, SteppingActionBase* out)
-{
-  out = doGetAction(name, steppingActionsMap_);
-  return out;
-}
-
-artg4tk::ActionBase*
-artg4tk::ActionHolderService::getAction(std::string name, StackingActionBase* out)
-{
-  out = doGetAction(name, stackingActionsMap_);
-  return out;
-}
-
-artg4tk::ActionBase*
-artg4tk::ActionHolderService::getAction(std::string name, PrimaryGeneratorActionBase* out)
-{
-  out = doGetAction(name, primaryGeneratorActionsMap_);
-  return out;
 }
 
 // h3. Art-specific methods
 void
 artg4tk::ActionHolderService::callArtProduces(art::ProducesCollector& collector)
 {
-
-  // Loop over the "uber" activity map and call @callArtProduces@ on each
-  for (auto entry : allActionsMap_) {
-    (entry.second)->callArtProduces(collector);
+  for (auto action : eventActionsMap_ | values) {
+    action->callArtProduces(collector);
   }
 }
 
 void
 artg4tk::ActionHolderService::initialize()
 {
-  for (auto entry : allActionsMap_) {
-    (entry.second)->initialize();
-  }
-}
-
-void
-artg4tk::ActionHolderService::fillEventWithArtStuff()
-{
-
-  // Loop over the "uber" activity map and call @fillEventWithArtStuff@ on each
-  for (auto entry : allActionsMap_) {
-    (entry.second)->fillEventWithArtStuff(getCurrArtEvent());
-  }
-}
-
-void
-artg4tk::ActionHolderService::fillRunBeginWithArtStuff()
-{
-  // Loop over the activities and call @fillRunBeginWithArtStuff@ on each
-  for (auto entry : allActionsMap_) {
-    (entry.second)->fillRunBeginWithArtStuff(getCurrArtRun());
-  }
-}
-
-void
-artg4tk::ActionHolderService::fillRunEndWithArtStuff()
-{
-  // Loop over the activities and call @fillRunEndWithArtStuff@ on each
-  for (auto entry : allActionsMap_) {
-    (entry.second)->fillRunEndWithArtStuff(getCurrArtRun());
+  for (auto action : allActionsMap_ | values) {
+    action->initialize();
   }
 }
 
 // h2. Action methods
 
-// I tried to be good and use @std::for_each@ but it got really messy very
-// quickly. Oh well.
-
-// h3. Run action methods
-void
-artg4tk::ActionHolderService::beginOfRunAction(const G4Run* theRun)
-{
-
-  // Loop over the runActionsMap and call @beginOfRunAction@ on each
-  for (auto entry : runActionsMap_) {
-    (entry.second)->beginOfRunAction(theRun);
-  }
-}
-
-void
-artg4tk::ActionHolderService::endOfRunAction(const G4Run* theRun)
-{
-
-  // Loop over the runActionsMap and call @endOfRunAction@ on each
-  for (auto entry : runActionsMap_) {
-    (entry.second)->endOfRunAction(theRun);
-  }
-}
-
 // h3. Event action methods
 void
 artg4tk::ActionHolderService::beginOfEventAction(const G4Event* theEvent)
 {
-  for (auto entry : eventActionsMap_) {
-    (entry.second)->beginOfEventAction(theEvent);
+  for (auto action : eventActionsMap_ | values) {
+    action->beginOfEventAction(theEvent);
   }
 }
 
 void
 artg4tk::ActionHolderService::endOfEventAction(const G4Event* theEvent)
 {
-  for (auto entry : eventActionsMap_) {
-    (entry.second)->endOfEventAction(theEvent);
+  for (auto action : eventActionsMap_ | values) {
+    action->endOfEventAction(theEvent);
   }
 }
 
@@ -265,16 +138,16 @@ artg4tk::ActionHolderService::endOfEventAction(const G4Event* theEvent)
 void
 artg4tk::ActionHolderService::preUserTrackingAction(const G4Track* theTrack)
 {
-  for (auto entry : trackingActionsMap_) {
-    (entry.second)->preUserTrackingAction(theTrack);
+  for (auto action : trackingActionsMap_ | values) {
+    action->preUserTrackingAction(theTrack);
   }
 }
 
 void
 artg4tk::ActionHolderService::postUserTrackingAction(const G4Track* theTrack)
 {
-  for (auto entry : trackingActionsMap_) {
-    (entry.second)->postUserTrackingAction(theTrack);
+  for (auto action : trackingActionsMap_ | values) {
+    action->postUserTrackingAction(theTrack);
   }
 }
 
@@ -282,8 +155,8 @@ artg4tk::ActionHolderService::postUserTrackingAction(const G4Track* theTrack)
 void
 artg4tk::ActionHolderService::userSteppingAction(const G4Step* theStep)
 {
-  for (auto entry : steppingActionsMap_) {
-    (entry.second)->userSteppingAction(theStep);
+  for (auto action : steppingActionsMap_ | values) {
+    action->userSteppingAction(theStep);
   }
 }
 
@@ -291,24 +164,19 @@ artg4tk::ActionHolderService::userSteppingAction(const G4Step* theStep)
 bool
 artg4tk::ActionHolderService::killNewTrack(const G4Track* newTrack)
 {
-
-  bool killTrack = false;
-
-  for (auto entry : stackingActionsMap_) {
-    if ((entry.second)->killNewTrack(newTrack)) {
-      killTrack = true;
-      break;
+  for (auto action : stackingActionsMap_ | values) {
+    if (action->killNewTrack(newTrack)) {
+      return true;
     }
   }
-
-  return killTrack;
+  return false;
 }
 
 // h3. Primary generator actions
 void
 artg4tk::ActionHolderService::generatePrimaries(G4Event* theEvent)
 {
-  for (auto entry : primaryGeneratorActionsMap_) {
-    (entry.second)->generatePrimaries(theEvent);
+  for (auto action : primaryGeneratorActionsMap_ | values) {
+    action->generatePrimaries(theEvent);
   }
 }

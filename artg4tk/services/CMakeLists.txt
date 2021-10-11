@@ -1,6 +1,6 @@
 cet_build_plugin(ActionHolder art::service
   LIBRARIES
-  PRIVATE messagefacility::MF_MessageLogger)
+  PRIVATE messagefacility::MF_MessageLogger Range::Range)
 cet_build_plugin(DetectorHolder art::service
   LIBRARIES
   PRIVATE messagefacility::MF_MessageLogger)

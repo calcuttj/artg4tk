@@ -1,5 +1,5 @@
-#ifndef ArtG4tkParticle_H
-#define ArtG4tkParticle_H
+#ifndef artg4tk_DataProducts_G4DetectorHits_ArtG4tkParticle_hh
+#define artg4tk_DataProducts_G4DetectorHits_ArtG4tkParticle_hh
 
 #include "CLHEP/Vector/LorentzVector.h"
 
@@ -62,4 +62,4 @@ namespace artg4tk {
 
 }
 
-#endif
+#endif /* artg4tk_DataProducts_G4DetectorHits_ArtG4tkParticle_hh */

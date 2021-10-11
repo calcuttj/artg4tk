@@ -1,5 +1,5 @@
-#ifndef ArtG4tkVtx_H
-#define ArtG4tkVtx_H
+#ifndef artg4tk_DataProducts_G4DetectorHits_ArtG4tkVtx_hh
+#define artg4tk_DataProducts_G4DetectorHits_ArtG4tkVtx_hh
 
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkParticle.hh"
 
@@ -147,4 +147,4 @@ namespace artg4tk {
 
 }
 
-#endif
+#endif /* artg4tk_DataProducts_G4DetectorHits_ArtG4tkVtx_hh */

@@ -12,8 +12,8 @@
 // ParticleChange.hh: checks if particle changes its identity
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
-#ifndef ParticleChange_H
-#define ParticleChange_H 1
+#ifndef artg4tk_pluginDetectors_gdml_ParticleChange_hh
+#define artg4tk_pluginDetectors_gdml_ParticleChange_hh
 
 #include "Geant4/G4VParticleChange.hh"
 
@@ -34,4 +34,4 @@ private:
   bool fIsFirstInter;
 };
 
-#endif
+#endif /* artg4tk_pluginDetectors_gdml_ParticleChange_hh */

@@ -1,4 +1,3 @@
-
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/ModelParamAnalyzerBase.hh"
 
 #include "art/Framework/Core/ModuleMacros.h"
@@ -31,9 +30,9 @@ namespace artg4tk {
     explicit AnalyzerITEP(const fhicl::ParameterSet&);
     virtual ~AnalyzerITEP();
 
-    virtual void analyze(const art::Event& event) override;
-    virtual void beginJob() override;
-    virtual void endJob() override;
+    void analyze(const art::Event& event) override;
+    void beginJob() override;
+    void endJob() override;
 
   protected:
     virtual TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&);
@@ -542,5 +541,5 @@ artg4tk::AnalyzerITEP::calculateChi2()
 
   return;
 }
-using artg4tk::AnalyzerITEP;
-DEFINE_ART_MODULE(AnalyzerITEP)
+
+DEFINE_ART_MODULE(artg4tk::AnalyzerITEP)

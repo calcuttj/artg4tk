@@ -1,5 +1,5 @@
-#ifndef artg4tk_BeamThinTargetConfig_H
-#define artg4tk_BeamThinTargetConfig_H 1
+#ifndef artg4tk_G4PhysModelParamStudy_AnalysisProducts_BeamThinTargetConfig_hh
+#define artg4tk_G4PhysModelParamStudy_AnalysisProducts_BeamThinTargetConfig_hh
 
 #include <TNamed.h>
 #include <string>
@@ -69,4 +69,4 @@ private:
 
 // }
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_AnalysisProducts_BeamThinTargetConfig_hh */

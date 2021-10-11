@@ -1,5 +1,5 @@
-#ifndef JSON2Data_H
-#define JSON2Data_H 1
+#ifndef artg4tk_ExpDataAccess_JSON2Data_hh
+#define artg4tk_ExpDataAccess_JSON2Data_hh
 
 #include <map>
 #include <string>
@@ -90,4 +90,4 @@ private:
   TGraphErrors* fGraph;
 };
 
-#endif
+#endif /* artg4tk_ExpDataAccess_JSON2Data_hh */

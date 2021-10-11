@@ -32,8 +32,8 @@
 //
 //----------------------------------------------------------------------------
 //
-#ifndef MyG4NeutronPHPBuilder_h
-#define MyG4NeutronPHPBuilder_h 1
+#ifndef artg4tk_lists_MyG4NeutronPHPBuilder_hh
+#define artg4tk_lists_MyG4NeutronPHPBuilder_hh
 
 // -- artg4tk includes
 #include "artg4tk/lists/ArParticleHPCapture.hh"
@@ -61,10 +61,10 @@ public:
   virtual ~MyG4NeutronPHPBuilder() {}
 
 public:
-  virtual void Build(G4HadronElasticProcess* aP) final override;
-  virtual void Build(G4HadronFissionProcess* aP) final override;
-  virtual void Build(G4HadronCaptureProcess* aP) final override;
-  virtual void Build(G4NeutronInelasticProcess* aP) final override;
+  void Build(G4HadronElasticProcess* aP) final override;
+  void Build(G4HadronFissionProcess* aP) final override;
+  void Build(G4HadronCaptureProcess* aP) final override;
+  void Build(G4NeutronInelasticProcess* aP) final override;
 
   virtual void
   SetMinEnergy(G4double aM) final override
@@ -107,4 +107,4 @@ private:
   G4ParticleHPCaptureData* theHPCaptureData;
 };
 
-#endif
+#endif /* artg4tk_lists_MyG4NeutronPHPBuilder_hh */

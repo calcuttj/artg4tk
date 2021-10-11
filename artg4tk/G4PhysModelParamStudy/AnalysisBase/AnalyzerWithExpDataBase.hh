@@ -1,5 +1,5 @@
-#ifndef artg4tk_AnalyzerWithExpDataBase_H
-#define artg4tk_AnalyzerWithExpDataBase_H 1
+#ifndef artg4tk_G4PhysModelParamStudy_AnalysisBase_AnalyzerWithExpDataBase_hh
+#define artg4tk_G4PhysModelParamStudy_AnalysisBase_AnalyzerWithExpDataBase_hh
 
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Principal/Run.h"
@@ -18,7 +18,7 @@ namespace artg4tk {
     explicit AnalyzerWithExpDataBase(const fhicl::ParameterSet&);
     virtual ~AnalyzerWithExpDataBase();
 
-    virtual void endJob() override;
+    void endJob() override;
 
   protected:
     bool matchVDBRec2MC(const int&, const double&, const int&);
@@ -70,4 +70,4 @@ namespace artg4tk {
 
 }
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_AnalysisBase_AnalyzerWithExpDataBase_hh */

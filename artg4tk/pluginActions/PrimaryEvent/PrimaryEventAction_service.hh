@@ -23,29 +23,24 @@
 // Authors: Tasha Arvanitis, Adam Lyon
 // Date: August 2012
 
-// Include guard
-#ifndef PRIMARYEVENTACTION_SERVICE_HH
-#define PRIMARYEVENTACTION_SERVICE_HH
+#ifndef artg4tk_pluginActions_PrimaryEvent_PrimaryEventAction_service_hh
+#define artg4tk_pluginActions_PrimaryEvent_PrimaryEventAction_service_hh
 
-// Includes
 #include "fhiclcpp/fwd.h"
-#include "messagefacility/MessageLogger/MessageLogger.h"
-
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
+
+#include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
 
 #include "Geant4/G4ThreeVector.hh"
 class G4Event;
-
-// Get the base class
-#include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
 
 namespace artg4tk {
 
   class PrimaryEventActionService : public artg4tk::PrimaryGeneratorActionBase {
   public:
     PrimaryEventActionService(fhicl::ParameterSet const&);
-    virtual ~PrimaryEventActionService();
 
+  private:
     void addG4Particle(G4Event* event,
                        int pdgId,
                        const G4ThreeVector& pos,
@@ -56,17 +51,10 @@ namespace artg4tk {
     // To generate primaries, we need to overload the GeneratePrimaries
     // method.
 
-    virtual void generatePrimaries(G4Event* anEvent) override;
-
-    // We don't add anything to the event, so we don't need callArtProduces
-    // or FillEventWithArtStuff.
-
-  private:
-    // A message logger for this action object
-    mf::LogInfo logInfo_;
+    void generatePrimaries(G4Event* anEvent) override;
   };
 } // namespace artg4tk
-using artg4tk::PrimaryEventActionService;
-DECLARE_ART_SERVICE(PrimaryEventActionService, LEGACY)
 
-#endif
+DECLARE_ART_SERVICE(artg4tk::PrimaryEventActionService, LEGACY)
+
+#endif /* artg4tk_pluginActions_PrimaryEvent_PrimaryEventAction_service_hh */

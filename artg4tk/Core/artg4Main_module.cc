@@ -23,7 +23,6 @@
 // The actions
 #include "artg4tk/geantInit/ArtG4EventAction.hh"
 #include "artg4tk/geantInit/ArtG4PrimaryGeneratorAction.hh"
-#include "artg4tk/geantInit/ArtG4RunAction.hh"
 #include "artg4tk/geantInit/ArtG4StackingAction.hh"
 #include "artg4tk/geantInit/ArtG4SteppingAction.hh"
 #include "artg4tk/geantInit/ArtG4TrackingAction.hh"
@@ -52,10 +51,10 @@ namespace artg4tk {
     virtual ~artg4tkMain();
 
     // Overriding producer members
-    virtual void produce(art::Event& e) override;
-    virtual void beginJob() override;
-    virtual void beginRun(art::Run& r) override;
-    virtual void endRun(art::Run&) override;
+    void produce(art::Event& e) override;
+    void beginJob() override;
+    void beginRun(art::Run& r) override;
+    void endRun(art::Run&) override;
 
   private:
     // Our custom run manager
@@ -225,7 +224,8 @@ artg4tk::artg4tkMain::beginRun(art::Run& r)
   art::ServiceHandle<DetectorHolderService> detectorHolder;
 
   // Declare the detector construction to Geant
-  runManager_->SetUserInitialization(new ArtG4DetectorConstruction);
+  runManager_->SetUserInitialization(
+    new ArtG4DetectorConstruction{detectorHolder->worldPhysicalVolume()});
 
   // Get all of the actions and initialize them
   art::ServiceHandle<ActionHolderService> actionHolder;
@@ -235,18 +235,17 @@ artg4tk::artg4tkMain::beginRun(art::Run& r)
   actionHolder->setCurrArtRun(r);
 
   // Declare the primary generator action to Geant
-  runManager_->SetUserAction(new ArtG4PrimaryGeneratorAction);
+  runManager_->SetUserAction(new ArtG4PrimaryGeneratorAction{actionHolder.get()});
 
   // Note that these actions (and ArtG4PrimaryGeneratorAction above) are all
   // generic actions that really don't do much on their own. Rather, to
   // use the power of actions, one must create action objects (derived from
   // @ActionBase@) and register them with the Art @ActionHolder@ service.
   // See @ActionBase@ and/or @ActionHolderService@ for more information.
-  runManager_->SetUserAction(new ArtG4SteppingAction);
-  runManager_->SetUserAction(new ArtG4StackingAction);
-  runManager_->SetUserAction(new ArtG4EventAction);
-  runManager_->SetUserAction(new ArtG4TrackingAction);
-  runManager_->SetUserAction(new ArtG4RunAction);
+  runManager_->SetUserAction(new ArtG4SteppingAction{actionHolder.get()});
+  runManager_->SetUserAction(new ArtG4StackingAction{actionHolder.get()});
+  runManager_->SetUserAction(new ArtG4EventAction{actionHolder.get(), detectorHolder.get()});
+  runManager_->SetUserAction(new ArtG4TrackingAction{actionHolder.get()});
 
   runManager_->Initialize();
   physicsListHolder->initializePhysicsList();
@@ -294,16 +293,6 @@ artg4tk::artg4tkMain::endRun(art::Run& r)
   actionHolder->setCurrArtRun(r);
 
   runManager_->BeamOnEndRun();
-  /*
-  //  visualization stuff
-  //#ifdef G4VIS_USE
-  if ( enableVisualization_ ) {
-    // Delete ui
-    delete visManager_;
-  }
-  //#endif
-   */
 }
 
-using artg4tk::artg4tkMain;
-DEFINE_ART_MODULE(artg4tkMain)
+DEFINE_ART_MODULE(artg4tk::artg4tkMain)

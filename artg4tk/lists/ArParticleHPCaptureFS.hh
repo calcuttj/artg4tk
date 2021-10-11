@@ -27,8 +27,8 @@
 //
 // P. Arce, June-2014 Conversion neutron_hp to particle_hp
 //
-#ifndef ArParticleHPCaptureFS_h
-#define ArParticleHPCaptureFS_h 1
+#ifndef artg4tk_lists_ArParticleHPCaptureFS_hh
+#define artg4tk_lists_ArParticleHPCaptureFS_hh
 
 // -- artg4tk includes
 #include "artg4tk/lists/ArCaptureGammas.hh"
@@ -49,38 +49,31 @@ public:
   ArParticleHPCaptureFS()
   {
     hasXsec = false;
-    hasExactMF6 = false;
-    targetMass = 0;
   }
-
-  ~ArParticleHPCaptureFS() {}
 
   void Init(G4double A,
             G4double Z,
             G4int M,
             G4String& dirName,
             G4String& aFSType,
-            G4ParticleDefinition*);
-  G4HadFinalState* ApplyYourself(const G4HadProjectile& theTrack);
+            G4ParticleDefinition*) override;
+  G4HadFinalState* ApplyYourself(const G4HadProjectile& theTrack) override;
   G4ParticleHPFinalState*
-  New()
+  New() override
   {
-    ArParticleHPCaptureFS* theNew = new ArParticleHPCaptureFS;
-    return theNew;
+    return new ArParticleHPCaptureFS;
   }
 
 private:
-  G4double targetMass;
+  G4double targetMass{0};
 
   G4ParticleHPPhotonDist theFinalStatePhotons;
   ArCaptureGammas theFinalgammas;
 
   G4ParticleHPEnAngCorrelation theMF6FinalState;
-  G4bool hasExactMF6;
+  G4bool hasExactMF6{false};
 
   G4ParticleHPNames theNames;
-
-  //  G4double theCurrentA;
-  //  G4double theCurrentZ;
 };
-#endif
+
+#endif /* artg4tk_lists_ArParticleHPCaptureFS_hh */

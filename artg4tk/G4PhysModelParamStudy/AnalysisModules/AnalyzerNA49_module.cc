@@ -1,4 +1,3 @@
-
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/ModelParamAnalyzerBase.hh"
 
 #include "art/Framework/Core/ModuleMacros.h"
@@ -34,9 +33,9 @@ namespace artg4tk {
     explicit AnalyzerNA49(const fhicl::ParameterSet&);
     virtual ~AnalyzerNA49();
 
-    virtual void analyze(const art::Event& event) override;
-    virtual void beginJob() override;
-    virtual void endJob() override;
+    void analyze(const art::Event& event) override;
+    void beginJob() override;
+    void endJob() override;
 
   protected:
     virtual TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&);
@@ -1261,5 +1260,4 @@ artg4tk::AnalyzerNA49::extractXFBinFromTitle(const std::string& title)
   return ret;
 }
 
-using artg4tk::AnalyzerNA49;
-DEFINE_ART_MODULE(AnalyzerNA49)
+DEFINE_ART_MODULE(artg4tk::AnalyzerNA49)

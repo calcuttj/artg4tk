@@ -1,4 +1,3 @@
-
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/ModelParamAnalyzerBase.hh"
 
 #include "art/Framework/Core/ModuleMacros.h"
@@ -38,9 +37,9 @@ namespace artg4tk {
     explicit AnalyzerEdepTrk(const fhicl::ParameterSet&);
     virtual ~AnalyzerEdepTrk();
 
-    virtual void analyze(const art::Event& event) override;
-    virtual void beginJob() override;
-    virtual void endJob() override;
+    void analyze(const art::Event& event) override;
+    void beginJob() override;
+    void endJob() override;
 
   private:
     int fEvtStart;
@@ -288,5 +287,4 @@ artg4tk::AnalyzerEdepTrk::analyze(const art::Event& e)
   return;
 }
 
-using artg4tk::AnalyzerEdepTrk;
-DEFINE_ART_MODULE(AnalyzerEdepTrk)
+DEFINE_ART_MODULE(artg4tk::AnalyzerEdepTrk)

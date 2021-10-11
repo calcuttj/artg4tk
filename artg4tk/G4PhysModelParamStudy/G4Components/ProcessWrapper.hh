@@ -23,8 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-#ifndef ProcessWrapper_HH
-#define ProcessWrapper_HH 1
+#ifndef artg4tk_G4PhysModelParamStudy_G4Components_ProcessWrapper_hh
+#define artg4tk_G4PhysModelParamStudy_G4Components_ProcessWrapper_hh
 
 #include "Geant4/G4ios.hh"
 #include "Geant4/globals.hh"
@@ -103,4 +103,4 @@ protected:
   bool fUseLundStrFragm;
 };
 
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_G4Components_ProcessWrapper_hh */

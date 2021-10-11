@@ -12,9 +12,8 @@
 // Authors: Tasha Arvanitis, Adam Lyon
 // Date: July 2012
 
-// Include guard
-#ifndef ACTION_HOLDER_SERVICE_HH
-#define ACTION_HOLDER_SERVICE_HH
+#ifndef artg4tk_services_ActionHolder_service_hh
+#define artg4tk_services_ActionHolder_service_hh
 
 // Includes
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
@@ -46,8 +45,7 @@ namespace artg4tk {
 
   class ActionHolderService {
   public:
-    // Constructor for ActionHolderService
-    ActionHolderService(fhicl::ParameterSet const&);
+    explicit ActionHolderService(fhicl::ParameterSet const&);
 
     // This method registers the passed action object with the service
     void registerAction(RunActionBase* const action);
@@ -57,28 +55,13 @@ namespace artg4tk {
     void registerAction(StackingActionBase* const action);
     void registerAction(PrimaryGeneratorActionBase* const action);
 
-    // Get an action
-    ActionBase* getAction(std::string name, RunActionBase* out);
-    ActionBase* getAction(std::string name, EventActionBase* out);
-    ActionBase* getAction(std::string name, TrackingActionBase* out);
-    ActionBase* getAction(std::string name, SteppingActionBase* out);
-    ActionBase* getAction(std::string name, StackingActionBase* out);
-    ActionBase* getAction(std::string name, PrimaryGeneratorActionBase* out);
-
-    // h3. Art-specific methods
-
     // Call ActionBase::initialize for each action
     void initialize();
 
+    // h3. Art-specific methods
+
     // Tell each action to notify Art of what it will be producing.
     void callArtProduces(art::ProducesCollector& prod);
-
-    // Tell each action to dump anything it likes into the Art event
-    void fillEventWithArtStuff();
-
-    // Tell the run actions to dump their stuff into the Art run
-    void fillRunBeginWithArtStuff();
-    void fillRunEndWithArtStuff();
 
     // Set/get the current Art event
     void
@@ -106,10 +89,6 @@ namespace artg4tk {
 
     // h3. Action methods
 
-    // h4. Run Actions
-    void beginOfRunAction(const G4Run*);
-    void endOfRunAction(const G4Run*);
-
     // h4. Event Actions
     void beginOfEventAction(const G4Event*);
     void endOfEventAction(const G4Event*);
@@ -129,33 +108,28 @@ namespace artg4tk {
 
   private:
     // A collection of all our actions, arranged by name
-    std::map<std::string, RunActionBase*> runActionsMap_;
-    std::map<std::string, EventActionBase*> eventActionsMap_;
-    std::map<std::string, TrackingActionBase*> trackingActionsMap_;
-    std::map<std::string, SteppingActionBase*> steppingActionsMap_;
-    std::map<std::string, StackingActionBase*> stackingActionsMap_;
-    std::map<std::string, PrimaryGeneratorActionBase*> primaryGeneratorActionsMap_;
+    std::map<std::string, RunActionBase*> runActionsMap_{};
+    std::map<std::string, EventActionBase*> eventActionsMap_{};
+    std::map<std::string, TrackingActionBase*> trackingActionsMap_{};
+    std::map<std::string, SteppingActionBase*> steppingActionsMap_{};
+    std::map<std::string, StackingActionBase*> stackingActionsMap_{};
+    std::map<std::string, PrimaryGeneratorActionBase*> primaryGeneratorActionsMap_{};
 
     // Hold on to the current Art event
-    art::Event* currentArtEvent_;
+    art::Event* currentArtEvent_{nullptr};
 
     // Hold on to the current Art run
-    art::Run* currentArtRun_;
+    art::Run* currentArtRun_{nullptr};
 
     // An uber-collection of all registered actions, arranged by name
-    std::map<std::string, ActionBase*> allActionsMap_;
+    std::map<std::string, ActionBase*> allActionsMap_{};
 
     // Register the action
     template <typename A>
     void doRegisterAction(A* const action, std::map<std::string, A*>& actionMap);
-
-    // Get an action
-    template <typename A>
-    A* doGetAction(std::string name, std::map<std::string, A*>& actionMap);
   };
 } // namespace artg4tk
 
-using artg4tk::ActionHolderService;
-DECLARE_ART_SERVICE(ActionHolderService, LEGACY)
+DECLARE_ART_SERVICE(artg4tk::ActionHolderService, LEGACY)
 
-#endif // ACTION_HOLDER_HH
+#endif /* artg4tk_services_ActionHolder_service_hh */

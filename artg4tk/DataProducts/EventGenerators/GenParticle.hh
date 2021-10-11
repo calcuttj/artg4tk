@@ -1,5 +1,5 @@
-#ifndef DataProducts_EventGenerators_GenParticle_h
-#define DataProducts_EventGenerators_GenParticle_h
+#ifndef artg4tk_DataProducts_EventGenerators_GenParticle_hh
+#define artg4tk_DataProducts_EventGenerators_GenParticle_hh
 
 //
 // A minimal class to hold information about generated particles.
@@ -98,4 +98,4 @@ namespace artg4tk {
 
 }
 
-#endif /* DataProducts_GenParticle_h */
+#endif /* artg4tk_DataProducts_EventGenerators_GenParticle_hh */
