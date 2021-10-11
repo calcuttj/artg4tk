@@ -1,15 +1,20 @@
-art_make(
-  LIB_LIBRARIES
-    artg4tk_services_ActionHolder_service
-    artg4tk_services_DetectorHolder_service
-    canvas
-    cetlib_except
-    ${CLHEP}
-    ${G4EVENT}
-    ${G4GLOBAL}
-    ${G4INTERCOMS}
-    ${G4RUN}
-    ${G4TRACKING}
+cet_make_library(
+  SOURCE
+    ArtG4DetectorConstruction.cc
+    ArtG4EventAction.cc
+    ArtG4PrimaryGeneratorAction.cc
+    ArtG4RunManager.cc
+    ArtG4StackingAction.cc
+    ArtG4SteppingAction.cc
+    ArtG4TrackingAction.cc
+  LIBRARIES
+    artg4tk::services_ActionHolder_service
+    artg4tk::services_DetectorHolder_service
+    canvas::canvas
+    CLHEP::CLHEP
+    Geant4::G4event
+    Geant4::G4tracking
+    Geant4::G4run
 )
 
 install_headers()

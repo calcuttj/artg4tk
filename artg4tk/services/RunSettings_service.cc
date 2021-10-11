@@ -2,26 +2,5 @@
 
 #include "artg4tk/services/RunSettings_service.hh"
 #include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
-#include "messagefacility/MessageLogger/MessageLogger.h"
 
-artg4tk::RunSettingsService::RunSettingsService(fhicl::ParameterSet const & p) :
-  p_ (p) 
-{
-  mf::LogDebug("RunSettingService") << "RunSettingsService has been constructed!";
-}
-
-// Destructor
-artg4tk::RunSettingsService::~RunSettingsService()
-{
-}
-
-fhicl::ParameterSet artg4tk::RunSettingsService::getSettings(std::string const & s){
-
-  fhicl::ParameterSet p = p_.get<fhicl::ParameterSet>(s,fhicl::ParameterSet());
-  return p;
-}
-
-
-using artg4tk::RunSettingsService;
-
-DEFINE_ART_SERVICE(RunSettingsService)
+DEFINE_ART_SERVICE(artg4tk::RunSettingsService)

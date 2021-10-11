@@ -1,7 +1,7 @@
-art_make(
-  SERVICE_LIBRARIES
-    artg4tk_actionBase
-    artg4tk_services_ActionHolder_service
-    ${CLHEP}
+cet_build_plugin(KillerAction art::service
+  LIBRARIES
+    artg4tk::actionBase
+    artg4tk::services_ActionHolder_service
+    CLHEP::CLHEP
     messagefacility::MF_MessageLogger
 )

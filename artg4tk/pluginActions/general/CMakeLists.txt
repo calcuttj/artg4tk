@@ -1,10 +1,8 @@
-art_make(
-  SERVICE_LIBRARIES
-    artg4tk_actionBase
-    artg4tk_services_ActionHolder_service
-    ${CLHEP}
-    ${G4EVENT}
-    ${G4GLOBAL}
-    ${G4PARTICLES}
-    ${G4RUN}
+cet_build_plugin(ExampleGeneralAction art::service
+  LIBRARIES
+    artg4tk::actionBase
+    artg4tk::services_ActionHolder_service
+    CLHEP::CLHEP
+    Geant4::G4particles
+    Geant4::G4run
 )
