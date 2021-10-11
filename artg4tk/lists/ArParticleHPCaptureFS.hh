@@ -33,18 +33,17 @@
 // -- artg4tk includes
 #include "artg4tk/lists/ArCaptureGammas.hh"
 
-#include "Geant4/globals.hh"
-#include "Geant4/G4HadProjectile.hh"
 #include "Geant4/G4HadFinalState.hh"
+#include "Geant4/G4HadProjectile.hh"
+#include "Geant4/G4ParticleHPEnAngCorrelation.hh"
 #include "Geant4/G4ParticleHPFinalState.hh"
-#include "Geant4/G4ReactionProductVector.hh"
 #include "Geant4/G4ParticleHPNames.hh"
 #include "Geant4/G4ParticleHPPhotonDist.hh"
-#include "Geant4/G4ParticleHPEnAngCorrelation.hh"
+#include "Geant4/G4ReactionProductVector.hh"
+#include "Geant4/globals.hh"
 
-class ArParticleHPCaptureFS : public G4ParticleHPFinalState
-{
-  public:
+class ArParticleHPCaptureFS : public G4ParticleHPFinalState {
+public:
   bool useArCapGamma = true;
 
   ArParticleHPCaptureFS()
@@ -54,31 +53,34 @@ class ArParticleHPCaptureFS : public G4ParticleHPFinalState
     targetMass = 0;
   }
 
-  ~ArParticleHPCaptureFS()
+  ~ArParticleHPCaptureFS() {}
+
+  void Init(G4double A,
+            G4double Z,
+            G4int M,
+            G4String& dirName,
+            G4String& aFSType,
+            G4ParticleDefinition*);
+  G4HadFinalState* ApplyYourself(const G4HadProjectile& theTrack);
+  G4ParticleHPFinalState*
+  New()
   {
+    ArParticleHPCaptureFS* theNew = new ArParticleHPCaptureFS;
+    return theNew;
   }
 
-  void Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String & aFSType, G4ParticleDefinition* );
-  G4HadFinalState * ApplyYourself(const G4HadProjectile & theTrack);
-  G4ParticleHPFinalState * New()
-  {
-   ArParticleHPCaptureFS * theNew = new ArParticleHPCaptureFS;
-   return theNew;
-  }
-
-  private:
-
+private:
   G4double targetMass;
 
   G4ParticleHPPhotonDist theFinalStatePhotons;
-  ArCaptureGammas       theFinalgammas;
+  ArCaptureGammas theFinalgammas;
 
-   G4ParticleHPEnAngCorrelation theMF6FinalState;
-   G4bool hasExactMF6;
+  G4ParticleHPEnAngCorrelation theMF6FinalState;
+  G4bool hasExactMF6;
 
   G4ParticleHPNames theNames;
 
-//  G4double theCurrentA;
-//  G4double theCurrentZ;
+  //  G4double theCurrentA;
+  //  G4double theCurrentZ;
 };
 #endif

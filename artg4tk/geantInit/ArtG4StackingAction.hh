@@ -21,11 +21,11 @@ namespace artg4tk {
   // Declaration of the class
   class ArtG4StackingAction : public G4UserStackingAction {
   public:
-    // Compiler-generated constructor, destructor, copy constructor, and 
+    // Compiler-generated constructor, destructor, copy constructor, and
     // equality operator are okay here.
-    
+
     // Called for each new track
-    G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track *);
+    G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track*);
   };
 
 }

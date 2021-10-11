@@ -36,38 +36,41 @@
 
 using std::string;
 
-artg4tk::KillerActionService::KillerActionService(fhicl::ParameterSet const & p)
-: StackingActionBase(p.get<string>("name", "myKillerAction")),
-killPi0(p.get<bool>("killPi0")),
-killeta(p.get<bool>("killeta")),
-killGammafromnCapture(p.get<bool>("killGammafromnCapture")),
-logInfo_("KillerAction") {
-    // Register ourselves with the ActionHolder
-    //  art::ServiceHandle<ActionHolderService> actionHolder;
+artg4tk::KillerActionService::KillerActionService(fhicl::ParameterSet const& p)
+  : StackingActionBase(p.get<string>("name", "myKillerAction"))
+  , killPi0(p.get<bool>("killPi0"))
+  , killeta(p.get<bool>("killeta"))
+  , killGammafromnCapture(p.get<bool>("killGammafromnCapture"))
+  , logInfo_("KillerAction")
+{
+  // Register ourselves with the ActionHolder
+  //  art::ServiceHandle<ActionHolderService> actionHolder;
 }
 
-bool artg4tk::KillerActionService::killNewTrack(const G4Track * aTrack) {
-    if (aTrack->GetParentID() == 0) return false;
-    if (aTrack->GetDefinition()->GetParticleName() == "pi0") {
-        if (killPi0) {
-            return true;
-        }
-    }
-    if (aTrack->GetDefinition()->GetParticleName() == "eta") {
-        if (killeta) {
-            return true;
-        }
-    }
-    if (aTrack->GetDefinition()->GetParticleName() == "gamma") {
-        if (aTrack->GetCreatorProcess()->GetProcessName() == "nCapture") {
-            if (killGammafromnCapture) {
-                return true;
-            }
-        }
-    }
+bool
+artg4tk::KillerActionService::killNewTrack(const G4Track* aTrack)
+{
+  if (aTrack->GetParentID() == 0)
     return false;
+  if (aTrack->GetDefinition()->GetParticleName() == "pi0") {
+    if (killPi0) {
+      return true;
+    }
+  }
+  if (aTrack->GetDefinition()->GetParticleName() == "eta") {
+    if (killeta) {
+      return true;
+    }
+  }
+  if (aTrack->GetDefinition()->GetParticleName() == "gamma") {
+    if (aTrack->GetCreatorProcess()->GetProcessName() == "nCapture") {
+      if (killGammafromnCapture) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 // Destructor
 
-artg4tk::KillerActionService::~KillerActionService() {
-}
+artg4tk::KillerActionService::~KillerActionService() {}

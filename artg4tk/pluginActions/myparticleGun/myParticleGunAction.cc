@@ -42,48 +42,51 @@
 
 using std::string;
 
-artg4tk::myParticleGunActionService::
-myParticleGunActionService(fhicl::ParameterSet const & p)
-: PrimaryGeneratorActionBase(p.get<string>("name", "examplemyParticleGun")),
-particleGun_(0),
-nparticle(p.get<int>("NParticle")),
-particleName_(p.get<std::string>("Name")),
-ParticleMomentumDirection_(p.get<std::vector<double> >("Direction")),
-ParticleEnergy_(p.get<double>("Energy")),
-ParticlePosition_(p.get<std::vector<double> >("Position")),
-// Initialize our message logger
-logInfo_("ExamplemyParticleGunAction") {
-
-}
+artg4tk::myParticleGunActionService::myParticleGunActionService(fhicl::ParameterSet const& p)
+  : PrimaryGeneratorActionBase(p.get<string>("name", "examplemyParticleGun"))
+  , particleGun_(0)
+  , nparticle(p.get<int>("NParticle"))
+  , particleName_(p.get<std::string>("Name"))
+  , ParticleMomentumDirection_(p.get<std::vector<double>>("Direction"))
+  , ParticleEnergy_(p.get<double>("Energy"))
+  , ParticlePosition_(p.get<std::vector<double>>("Position"))
+  ,
+  // Initialize our message logger
+  logInfo_("ExamplemyParticleGunAction")
+{}
 
 // Destructor
 
-artg4tk::myParticleGunActionService::~myParticleGunActionService() {
-    delete particleGun_;
+artg4tk::myParticleGunActionService::~myParticleGunActionService()
+{
+  delete particleGun_;
 }
 
-void artg4tk::myParticleGunActionService::initialize() {
+void
+artg4tk::myParticleGunActionService::initialize()
+{
 
-    logInfo_ << "Initializing particle gun. \n";
-    G4int n_particle = nparticle;
-    G4ParticleGun* fParticleGun = new G4ParticleGun(n_particle);
-    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4String particleName = particleName_;
-    G4ParticleDefinition* particle = particleTable->FindParticle(particleName);
-    fParticleGun->SetParticleDefinition(particle);
-    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ParticleMomentumDirection_[0],
-            ParticleMomentumDirection_[1],
-            ParticleMomentumDirection_[2]));
-    fParticleGun->SetParticleEnergy(ParticleEnergy_ * CLHEP::GeV);
-    fParticleGun->SetParticlePosition(G4ThreeVector(ParticlePosition_[0] * CLHEP::cm,
-            ParticlePosition_[1] * CLHEP::cm,
-            ParticlePosition_[2] * CLHEP::cm));
-    particleGun_ = fParticleGun;
+  logInfo_ << "Initializing particle gun. \n";
+  G4int n_particle = nparticle;
+  G4ParticleGun* fParticleGun = new G4ParticleGun(n_particle);
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+  G4String particleName = particleName_;
+  G4ParticleDefinition* particle = particleTable->FindParticle(particleName);
+  fParticleGun->SetParticleDefinition(particle);
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(
+    ParticleMomentumDirection_[0], ParticleMomentumDirection_[1], ParticleMomentumDirection_[2]));
+  fParticleGun->SetParticleEnergy(ParticleEnergy_ * CLHEP::GeV);
+  fParticleGun->SetParticlePosition(G4ThreeVector(ParticlePosition_[0] * CLHEP::cm,
+                                                  ParticlePosition_[1] * CLHEP::cm,
+                                                  ParticlePosition_[2] * CLHEP::cm));
+  particleGun_ = fParticleGun;
 }
 
 // Create a primary particle for an event!
 // (Standard Art G4 simulation)
 
-void artg4tk::myParticleGunActionService::generatePrimaries(G4Event * anEvent) {
-    particleGun_->GeneratePrimaryVertex(anEvent);
+void
+artg4tk::myParticleGunActionService::generatePrimaries(G4Event* anEvent)
+{
+  particleGun_->GeneratePrimaryVertex(anEvent);
 }

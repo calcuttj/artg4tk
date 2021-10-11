@@ -13,20 +13,20 @@
 // Art
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 
-
 // Called at the end of each step
-G4ClassificationOfNewTrack artg4tk::ArtG4StackingAction::ClassifyNewTrack(const G4Track * currTrack)
+G4ClassificationOfNewTrack
+artg4tk::ArtG4StackingAction::ClassifyNewTrack(const G4Track* currTrack)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> actionHolder;
-  
+
   // Run userStackingAction
-  bool killTrack = actionHolder -> killNewTrack(currTrack);
-  
+  bool killTrack = actionHolder->killNewTrack(currTrack);
+
   G4ClassificationOfNewTrack trackDisposition = fUrgent;
-  if ( killTrack ) {
+  if (killTrack) {
     trackDisposition = fKill;
   }
-  
+
   return trackDisposition;
 }

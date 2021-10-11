@@ -55,23 +55,23 @@
 // -- artg4tk includes
 #include "artg4tk/lists/MyG4HadronPhysicsQGSP_BERT_ArHP.hh"
 
-#include "Geant4/globals.hh"
-#include "Geant4/G4ios.hh"
+#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4ParticleTypes.hh"
 #include "Geant4/G4ProcessManager.hh"
 #include "Geant4/G4ProcessVector.hh"
-#include "Geant4/G4ParticleTypes.hh"
-#include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/globals.hh"
 
 #include "Geant4/G4Material.hh"
 #include "Geant4/G4MaterialTable.hh"
 
 #include "Geant4/G4DecayPhysics.hh"
-#include "Geant4/G4RadioactiveDecayPhysics.hh"
-#include "Geant4/G4EmStandardPhysics.hh"
 #include "Geant4/G4EmExtraPhysics.hh"
-#include "Geant4/G4IonPhysics.hh"
-#include "Geant4/G4StoppingPhysics.hh"
+#include "Geant4/G4EmStandardPhysics.hh"
 #include "Geant4/G4HadronElasticPhysicsHP.hh"
+#include "Geant4/G4IonPhysics.hh"
+#include "Geant4/G4RadioactiveDecayPhysics.hh"
+#include "Geant4/G4StoppingPhysics.hh"
 
 //#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
 
@@ -80,7 +80,7 @@
 // the non-extensible factory to the exensible factory.  All other changes
 // relative to the "factory" example are there to demonstrate new features.
 /////////////////////////////////////////////////////////////////////////////
-//non-extensible:  #include "G4PhysListFactory.hh"
+// non-extensible:  #include "G4PhysListFactory.hh"
 #include "Geant4/G4PhysListFactoryAlt.hh"
 /////////////////////////////////////////////////////////////////////////////
 // headers needed to demonstrate new features
@@ -100,7 +100,7 @@
 
 #include "Geant4/G4VModularPhysicsList.hh"
 
-#include "Geant4/G4PhysListStamper.hh"  // defines macro for factory registration
+#include "Geant4/G4PhysListStamper.hh" // defines macro for factory registration
 #include "MyQGSP_BERT_ArHP.hh"
 
 // -- Register the physics list
@@ -109,39 +109,39 @@ G4_DECLARE_PHYSLIST_FACTORY(MyQGSP_BERT_ArHP);
 MyQGSP_BERT_ArHP::MyQGSP_BERT_ArHP(G4int ver)
 {
 
-  G4cout << "<<< Geant4 Physics List simulation engine: MyQGSP_BERT_ArHP"<<G4endl;
-  G4cout <<G4endl<<G4endl;
+  G4cout << "<<< Geant4 Physics List simulation engine: MyQGSP_BERT_ArHP" << G4endl;
+  G4cout << G4endl << G4endl;
 
-  defaultCutValue = 0.7*CLHEP::mm;
+  defaultCutValue = 0.7 * CLHEP::mm;
   SetVerboseLevel(ver);
 
   // EM Physics
-  RegisterPhysics( new G4EmStandardPhysics(ver) );
+  RegisterPhysics(new G4EmStandardPhysics(ver));
 
   // Synchroton Radiation & GN Physics
-  RegisterPhysics( new G4EmExtraPhysics(ver) );
+  RegisterPhysics(new G4EmExtraPhysics(ver));
 
   // Decays
-  RegisterPhysics( new G4DecayPhysics(ver) );
-  RegisterPhysics( new G4RadioactiveDecayPhysics(ver) );
+  RegisterPhysics(new G4DecayPhysics(ver));
+  RegisterPhysics(new G4RadioactiveDecayPhysics(ver));
 
   // Hadron Elastic scattering
-  RegisterPhysics( new G4HadronElasticPhysicsHP(ver) );
+  RegisterPhysics(new G4HadronElasticPhysicsHP(ver));
 
   // Hadron Physics
-  RegisterPhysics( new MyG4HadronPhysicsQGSP_BERT_ArHP(ver));
+  RegisterPhysics(new MyG4HadronPhysicsQGSP_BERT_ArHP(ver));
 
   // Stopping Physics
-  RegisterPhysics( new G4StoppingPhysics(ver));
+  RegisterPhysics(new G4StoppingPhysics(ver));
 
   // Ion Physics
-  RegisterPhysics( new G4IonPhysics(ver));
-
+  RegisterPhysics(new G4IonPhysics(ver));
 }
 
-void MyQGSP_BERT_ArHP::SetCuts()
+void
+MyQGSP_BERT_ArHP::SetCuts()
 {
-  if (verboseLevel >1){
+  if (verboseLevel > 1) {
     G4cout << "MyQGSP_BERT_ArHP::SetCuts:";
   }
   //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
@@ -149,7 +149,6 @@ void MyQGSP_BERT_ArHP::SetCuts()
 
   SetCutsWithDefault();
 
-  //Set proton cut value to 0 for producing low energy recoil nucleus
+  // Set proton cut value to 0 for producing low energy recoil nucleus
   SetCutValue(0, "proton");
-
 }

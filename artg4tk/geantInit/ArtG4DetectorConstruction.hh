@@ -37,17 +37,17 @@ namespace artg4tk {
     // DetectorHolder and gets the world volume from there...
     ArtG4DetectorConstruction();
     // ... and the second is passed the world volume as an argument.
-    explicit ArtG4DetectorConstruction(G4VPhysicalVolume *);
+    explicit ArtG4DetectorConstruction(G4VPhysicalVolume*);
 
     // No cleanup is necessary, because GEANT takes care of deleting the world
     // volume when it's finished.
     ~ArtG4DetectorConstruction(){};
 
     // Construct() is called by GEANT on its own and just returns the world
-    G4VPhysicalVolume * Construct();
+    G4VPhysicalVolume* Construct();
 
   private:
-    G4VPhysicalVolume * world_;
+    G4VPhysicalVolume* world_;
   };
 
 }

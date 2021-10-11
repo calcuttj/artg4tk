@@ -21,11 +21,11 @@ namespace artg4tk {
   // Declaration of the class
   class ArtG4SteppingAction : public G4UserSteppingAction {
   public:
-    // Compiler-generated constructor, destructor, copy constructor, and 
+    // Compiler-generated constructor, destructor, copy constructor, and
     // equality operator are okay here.
-    
+
     // Called at the end of each step (I think; the documentation is vague)
-    void UserSteppingAction(const G4Step *);
+    void UserSteppingAction(const G4Step*);
   };
 
 }

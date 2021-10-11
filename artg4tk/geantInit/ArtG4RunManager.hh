@@ -33,36 +33,55 @@
 
 namespace artg4tk {
 
-  class ArtG4RunManager : public G4RunManager{
+  class ArtG4RunManager : public G4RunManager {
 
   public:
-
     ArtG4RunManager();
     virtual ~ArtG4RunManager();
 
     // The four methods that break up BeamOn into 4 pieces.
-    virtual void BeamOnBeginRun( unsigned int runNumber, const char* macroFile=0, G4int n_select=-1);
-    virtual void BeamOnDoOneEvent( int eventNumber );
+    virtual void BeamOnBeginRun(unsigned int runNumber,
+                                const char* macroFile = 0,
+                                G4int n_select = -1);
+    virtual void BeamOnDoOneEvent(int eventNumber);
     virtual void BeamOnEndEvent();
     virtual void BeamOnEndRun();
 
-
     // ArtG4 specific accessors.
-    G4Event const* getCurrentEvent() const { return currentEvent; }
-    G4Timer const*      getG4Timer() const { return timer; }
+    G4Event const*
+    getCurrentEvent() const
+    {
+      return currentEvent;
+    }
+    G4Timer const*
+    getG4Timer() const
+    {
+      return timer;
+    }
 
-    G4double   realElapsedTime() const { return realElapsed_;   }
-    G4double systemElapsedTime() const { return systemElapsed_; }
-    G4double   userElapsedTime() const { return userElapsed_;   }
+    G4double
+    realElapsedTime() const
+    {
+      return realElapsed_;
+    }
+    G4double
+    systemElapsedTime() const
+    {
+      return systemElapsed_;
+    }
+    G4double
+    userElapsedTime() const
+    {
+      return userElapsed_;
+    }
 
   private:
-
     // Private and unimplemented to prevent copying.
-    ArtG4RunManager( ArtG4RunManager const & );
-    ArtG4RunManager& operator=( ArtG4RunManager const & );
+    ArtG4RunManager(ArtG4RunManager const&);
+    ArtG4RunManager& operator=(ArtG4RunManager const&);
 
     // A test to see if this works.
-    G4Event * previousEvent_;
+    G4Event* previousEvent_;
 
     // The variables below correspond to local variables in G4RunManager::BeamOn.
     // or G4RunManager::DoEventLoop.   They need to be member data here because
@@ -71,15 +90,15 @@ namespace artg4tk {
     // end of the run; this emulates the behaviour in the base.
 
     // Name of the macro file to be run after the first n_select events.
-    char const * macroFile_;
+    char const* macroFile_;
 
     // Number of events after which to run the macro file.  If negative
     // then never run the macro.
-    G4int  n_select_;
+    G4int n_select_;
 
     // The number of events completed so far.
     // This was called i_event in G4RunManager but I did not like the name.
-    G4int  nProcessed_;
+    G4int nProcessed_;
 
     // Counters for cumulative time spent processing events.
     G4double realElapsed_;
@@ -88,7 +107,6 @@ namespace artg4tk {
 
     // The command that executes the macro file.
     G4String msg_;
-
   };
 
 } // end namespace artg4tk.

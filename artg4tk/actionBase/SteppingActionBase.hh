@@ -6,7 +6,7 @@
 // following methods:
 
 // @UserSteppingAction@ - This method, which takes a pointer to a constant
-// @G4Step@ object, is called at the end of each step (I think - the 
+// @G4Step@ object, is called at the end of each step (I think - the
 // documentation is a little vague). Putting code in this method of an action
 // object is equivalent to putting it in the @UserSteppingAction@ method of
 // the simulation's stepping action class.
@@ -30,28 +30,26 @@ namespace artg4tk {
 
   class SteppingActionBase : public ActionBase {
   public:
-    // Constructor. The derived class must call this constructor. It takes a 
+    // Constructor. The derived class must call this constructor. It takes a
     // single string for the name of the action object.
-    SteppingActionBase(std::string myName)
-      : ActionBase( myName )
+    SteppingActionBase(std::string myName) : ActionBase(myName)
     {
       art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
       actionHolder->registerAction(this);
     }
 
-
     // Destructor
     virtual ~SteppingActionBase();
 
-    // h3. The interesting methods. 
-    // All of these are defined to do nothing by default. Users can override 
+    // h3. The interesting methods.
+    // All of these are defined to do nothing by default. Users can override
     // them if desired, and if they're not overloaded, they do nothing.
 
     // Called at the end of each step
-    virtual void userSteppingAction(const G4Step *) {}
-    
+    virtual void
+    userSteppingAction(const G4Step*)
+    {}
   };
 }
-
 
 #endif // STEPPING_ACTION_BASE_HH

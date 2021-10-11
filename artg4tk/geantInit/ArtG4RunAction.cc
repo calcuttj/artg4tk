@@ -12,29 +12,29 @@
 // Art
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 
-
 // Called at the beginning of each run:
-void artg4tk::ArtG4RunAction::BeginOfRunAction(const G4Run * currentRun)
+void
+artg4tk::ArtG4RunAction::BeginOfRunAction(const G4Run* currentRun)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> actionHolder;
-  
+
   // Run beginOfRunAction
-  actionHolder -> beginOfRunAction(currentRun);
-  
+  actionHolder->beginOfRunAction(currentRun);
+
   // Actions can write out data at the begin run if necessary
-  actionHolder -> fillRunBeginWithArtStuff();
-  
+  actionHolder->fillRunBeginWithArtStuff();
 }
 // Called at the end of each run:
-void artg4tk::ArtG4RunAction::EndOfRunAction(const G4Run * currentRun)
+void
+artg4tk::ArtG4RunAction::EndOfRunAction(const G4Run* currentRun)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> actionHolder;
-  
+
   // Run endOfRunAction
-  actionHolder -> endOfRunAction(currentRun);
-  
+  actionHolder->endOfRunAction(currentRun);
+
   // Actions need to write out their run data, if they have any
-  actionHolder -> fillRunEndWithArtStuff();
+  actionHolder->fillRunEndWithArtStuff();
 }

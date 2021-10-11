@@ -14,12 +14,12 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 
 // Called to create primaries for an event
-void artg4tk::ArtG4PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent)
+void
+artg4tk::ArtG4PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> actionHolder;
-  
+
   // Run generatePrimaries
-  actionHolder -> generatePrimaries(anEvent);
-  
+  actionHolder->generatePrimaries(anEvent);
 }

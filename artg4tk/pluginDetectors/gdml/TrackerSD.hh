@@ -1,13 +1,13 @@
 //
-//               __        __ __  __  __  
+//               __        __ __  __  __
 //   ____ ______/ /_____ _/ // / / /_/ /__
 //  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
-// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
-// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
-//               /____/                  
+// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<
+// \__,_/_/   \__/\__, /  /_/  \__/_/|_|
+//               /____/
 //
 // artg4tk: art based Geant 4 Toolkit
-// 
+//
 //=============================================================================
 // TrackerSD.hh: Class representing a sensitive tracking detector
 // Author: Hans Wenzel (Fermilab)
@@ -23,19 +23,24 @@ class G4HCofThisEvent;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace artg4tk {
 
-    class TrackerSD : public G4VSensitiveDetector {
-    public:
-      TrackerSD(G4String);
-      ~TrackerSD();
-      
-      void Initialize(G4HCofThisEvent*);
-      G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-      const TrackerHitCollection& GetHits() const { return trackerCollection; }
-    private:
-      TrackerHitCollection trackerCollection;
-      //G4int HCID;
-    };
+  class TrackerSD : public G4VSensitiveDetector {
+  public:
+    TrackerSD(G4String);
+    ~TrackerSD();
 
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    void Initialize(G4HCofThisEvent*);
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    const TrackerHitCollection&
+    GetHits() const
+    {
+      return trackerCollection;
+    }
+
+  private:
+    TrackerHitCollection trackerCollection;
+    // G4int HCID;
+  };
+
+  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 }
 #endif

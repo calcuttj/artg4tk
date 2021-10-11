@@ -24,30 +24,31 @@ using std::map;
 using std::string;
 
 // Called at the beginning of each event. Pass the call on to action objects
-void artg4tk::ArtG4EventAction::BeginOfEventAction(const G4Event * currentEvent)
+void
+artg4tk::ArtG4EventAction::BeginOfEventAction(const G4Event* currentEvent)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> ahs;
-  
-  // Run beginOfEvent
-  ahs -> beginOfEventAction(currentEvent);
 
+  // Run beginOfEvent
+  ahs->beginOfEventAction(currentEvent);
 }
 
-// Called at the end of each event. Call detectors to convert hits for the 
+// Called at the end of each event. Call detectors to convert hits for the
 // event and pass the call on to the action objects.
-void artg4tk::ArtG4EventAction::EndOfEventAction(const G4Event * currentEvent)
+void
+artg4tk::ArtG4EventAction::EndOfEventAction(const G4Event* currentEvent)
 {
   // Convert geant hits to art for DETECTORS
   art::ServiceHandle<artg4tk::DetectorHolderService> dhs;
-  dhs -> fillEventWithArtHits( currentEvent->GetHCofThisEvent() );
- 
+  dhs->fillEventWithArtHits(currentEvent->GetHCofThisEvent());
+
   // Run EndOfEventAction
   art::ServiceHandle<ActionHolderService> ahs;
-  ahs -> endOfEventAction(currentEvent);
-  
+  ahs->endOfEventAction(currentEvent);
+
   // Every ACTION needs to write out their event data now, if they have any
   // (do this within ArtG4EventAction) since some still need to be within
   // Geant
-  ahs -> fillEventWithArtStuff();
+  ahs->fillEventWithArtStuff();
 }

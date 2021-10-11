@@ -36,40 +36,41 @@
 #include "artg4tk/pluginActions/myparticleGun/HepevtInputAction_service.hh"
 
 // Geant4 includes
-#include "Geant4/G4VPrimaryGenerator.hh"
 #include "Geant4/G4HEPEvtInterface.hh"
-
+#include "Geant4/G4VPrimaryGenerator.hh"
 
 using std::string;
 
-artg4tk::HepevtInputActionService::
-HepevtInputActionService(fhicl::ParameterSet const & p)
-: PrimaryGeneratorActionBase(p.get<string>("name", "HepevtInput")),
-HEPEvt_(0),
-fileName_(p.get<std::string>("FileName")),
-// Initialize our message logger
-logInfo_("ExampleParticleGunAction") {
-
-}
+artg4tk::HepevtInputActionService::HepevtInputActionService(fhicl::ParameterSet const& p)
+  : PrimaryGeneratorActionBase(p.get<string>("name", "HepevtInput"))
+  , HEPEvt_(0)
+  , fileName_(p.get<std::string>("FileName"))
+  ,
+  // Initialize our message logger
+  logInfo_("ExampleParticleGunAction")
+{}
 
 // Destructor
 
-artg4tk::HepevtInputActionService::~HepevtInputActionService() {
-    delete HEPEvt_;
+artg4tk::HepevtInputActionService::~HepevtInputActionService()
+{
+  delete HEPEvt_;
 }
 
-void artg4tk::HepevtInputActionService::initialize() {
+void
+artg4tk::HepevtInputActionService::initialize()
+{
 
-        logInfo_ << "Initializing Hepevt Input\n";
-        const char* filename = (const char*)fileName_.c_str();
-        HEPEvt_ = new G4HEPEvtInterface(filename);
-
+  logInfo_ << "Initializing Hepevt Input\n";
+  const char* filename = (const char*)fileName_.c_str();
+  HEPEvt_ = new G4HEPEvtInterface(filename);
 }
 
 // Create a primary particle for an event!
 // (Standard Art G4 simulation)
 
-void artg4tk::HepevtInputActionService::generatePrimaries(G4Event * anEvent) {
-        HEPEvt_->GeneratePrimaryVertex(anEvent);
-
+void
+artg4tk::HepevtInputActionService::generatePrimaries(G4Event* anEvent)
+{
+  HEPEvt_->GeneratePrimaryVertex(anEvent);
 }

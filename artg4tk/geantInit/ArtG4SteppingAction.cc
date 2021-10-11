@@ -13,13 +13,13 @@
 // Art
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 
-
 // Called at the end of each step
-void artg4tk::ArtG4SteppingAction::UserSteppingAction(const G4Step * currentStep)
+void
+artg4tk::ArtG4SteppingAction::UserSteppingAction(const G4Step* currentStep)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> actionHolder;
-  
+
   // Run userSteppingAction
-  actionHolder -> userSteppingAction(currentStep);
+  actionHolder->userSteppingAction(currentStep);
 }

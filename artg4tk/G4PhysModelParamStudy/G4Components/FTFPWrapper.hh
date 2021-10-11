@@ -28,19 +28,13 @@
 
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ProcessWrapper.hh"
 
-class FTFPWrapper : public ProcessWrapper
-{
+class FTFPWrapper : public ProcessWrapper {
 
-   public:
-      
-      FTFPWrapper(const G4String& name="FTFProcessWrapper",
-                        G4ProcessType processType = fHadronic );
-      virtual ~FTFPWrapper() {}
-      
-      virtual void Compose();
+public:
+  FTFPWrapper(const G4String& name = "FTFProcessWrapper", G4ProcessType processType = fHadronic);
+  virtual ~FTFPWrapper() {}
 
+  virtual void Compose();
 };
-
-
 
 #endif

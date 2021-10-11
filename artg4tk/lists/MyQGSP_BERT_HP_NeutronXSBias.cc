@@ -3,10 +3,10 @@
 // the non-extensible factory to the exensible factory.  All other changes
 // relative to the "factory" example are there to demonstrate new features.
 /////////////////////////////////////////////////////////////////////////////
-//non-extensible:  #include "G4PhysListFactory.hh"
+// non-extensible:  #include "G4PhysListFactory.hh"
 #include "Geant4/G4PhysListFactoryAlt.hh"
-//use this for drop-in replacement:  using namespace g4alt;
-//using namespace g4alt;
+// use this for drop-in replacement:  using namespace g4alt;
+// using namespace g4alt;
 
 /////////////////////////////////////////////////////////////////////////////
 // headers needed to demonstrate new features
@@ -26,7 +26,7 @@
 
 #include "Geant4/G4VModularPhysicsList.hh"
 
-#include "Geant4/G4PhysListStamper.hh"  // defines macro for factory registration
+#include "Geant4/G4PhysListStamper.hh" // defines macro for factory registration
 #include "MyQGSP_BERT_HP_NeutronXSBias.hh"
 
 ///#define G4CASCADE_DEBUG_INTERFACE 1

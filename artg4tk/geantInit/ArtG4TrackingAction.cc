@@ -13,21 +13,23 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 
 // Called after the creation of a track and before it's actually simulated
-void artg4tk::ArtG4TrackingAction::PreUserTrackingAction(const G4Track* currTrack)
+void
+artg4tk::ArtG4TrackingAction::PreUserTrackingAction(const G4Track* currTrack)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> actionHolder;
-  
+
   // Run preUserTrackingAction
-  actionHolder -> preUserTrackingAction(currTrack);
+  actionHolder->preUserTrackingAction(currTrack);
 }
 
 // Called once a track has been stopped
-void artg4tk::ArtG4TrackingAction::PostUserTrackingAction(const G4Track* currTrack)
+void
+artg4tk::ArtG4TrackingAction::PostUserTrackingAction(const G4Track* currTrack)
 {
   // Get the action holder service
   art::ServiceHandle<ActionHolderService> actionHolder;
-  
+
   // Run postUserTrackingAction
-  actionHolder -> postUserTrackingAction(currTrack);
+  actionHolder->postUserTrackingAction(currTrack);
 }
