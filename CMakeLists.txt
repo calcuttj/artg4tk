@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
 
 find_package(cetmodules REQUIRED)
-project(artg4tk VERSION 10.03.00 LANGUAGES CXX)
+project(artg4tk VERSION 10.04.00 LANGUAGES CXX)
 
 include(CetCMakeEnv)
 cet_cmake_env()
