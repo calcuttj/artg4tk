@@ -55,8 +55,14 @@ public:
   // SetCuts()
   virtual void SetCuts();
 
+  G4double xsecScale() { return this->INXS_SCALE; }
+
 private:
   enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
+
+  const char* NEUTRON_INXS_SCALE;
+
+  G4double INXS_SCALE;
 };
 
 #include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
