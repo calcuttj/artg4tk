@@ -7,6 +7,7 @@
 // Date: August 2012
 
 #include "artg4tk/pluginActions/general/ExampleGeneralAction_service.hh"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 
 #include "artg4tk/geantInit/ArtG4RunManager.hh"
 

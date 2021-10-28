@@ -7,7 +7,7 @@
 // Includes
 #include "artg4tk/services/ActionHolder_service.hh"
 
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 
 #include "messagefacility/MessageLogger/MessageLogger.h"
 

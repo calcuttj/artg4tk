@@ -24,14 +24,14 @@
 // Date: August 2012
 
 // Include guard
-#ifndef EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
-#define EXAMPLE_PRIMARYGENERATORACTION_SERVICE_HH
+#ifndef PRIMARYEVENTACTION_SERVICE_HH
+#define PRIMARYEVENTACTION_SERVICE_HH
 
 // Includes
 #include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 
 #include "Geant4/G4ThreeVector.hh"
 class G4Event;

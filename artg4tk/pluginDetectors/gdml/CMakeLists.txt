@@ -12,11 +12,11 @@ art_make(
     ${G4TRACK}
     ${XERCESC}
   SERVICE_LIBRARIES
-    ${ART_FRAMEWORK_CORE}
-    ${ART_FRAMEWORK_PRINCIPAL}
+    art::Framework_Core
+    art::Framework_Principal
     artg4tk_pluginDetectors_gdml
     artg4tk_services_DetectorHolder_service
-    ${ART_PERSISTENCY_PROVENANCE}
+    art::Persistency_Provenance
     ${G4MATERIALS}
 )
 

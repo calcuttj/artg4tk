@@ -81,8 +81,9 @@ void artg4tk::CheckGenParticle::beginJob() {
 void artg4tk::CheckGenParticle::analyze(const art::Event& event) {
     std::cout << "******************************event " << event.id().event() << ": looking at GenParticles" << std::endl;
     typedef std::vector< art::Handle<GenParticleCollection> > HandleVector;
-    HandleVector allGens;
-    event.getManyByType(allGens);
+    //HandleVector allGens;
+    //event.getManyByType(allGens);
+    auto allGens = event.getMany<GenParticleCollection>();
 
     cout << "GenParticles*********************Size: " << allGens.size() << endl;
     for (HandleVector::const_iterator i = allGens.begin(); i != allGens.end(); ++i) {

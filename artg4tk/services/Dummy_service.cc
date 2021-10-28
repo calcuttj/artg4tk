@@ -1,6 +1,7 @@
 // Common materials used throughout the simulation
 
 #include "artg4tk/services/Dummy_service.hh"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 #include "art/Framework/Core/ProducesCollector.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 

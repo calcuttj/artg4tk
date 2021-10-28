@@ -31,7 +31,7 @@
 
 // framework includes:
 #include "art/Framework/Core/ProducesCollector.h"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 
 // artg4tk includes:
 #include "artg4tk/pluginDetectors/gdml/GDMLDetector_service.hh"

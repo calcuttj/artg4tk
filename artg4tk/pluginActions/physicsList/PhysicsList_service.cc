@@ -1,7 +1,7 @@
 // PhysicsListService
 
 #include "artg4tk/pluginActions/physicsList/PhysicsList_service.hh"
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 #include "fhiclcpp/ParameterSet.h"
 
 #include "Geant4/G4PhysListFactoryAlt.hh"  

@@ -1,9 +1,8 @@
 
 cmake_minimum_required (VERSION 3.12...3.18 FATAL_ERROR)
 
-project(artg4tk)
-
 find_package(cetbuildtools REQUIRED)
+project(artg4tk)
 
 list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules)
 
@@ -25,8 +24,10 @@ find_ups_product(art_root_io)
 find_ups_boost()
 find_ups_product(canvas)
 find_ups_product(canvas_root_io)
+find_ups_product(cetlib)
 find_ups_product(cetlib_except)
 find_ups_product(clhep)
+find_ups_product(hep_concurrency)
 find_ups_product(fhiclcpp)
 find_ups_geant4()
 find_ups_product(messagefacility)

@@ -1,10 +1,10 @@
 art_make(
   SERVICE_LIBRARIES
-    ${ART_FRAMEWORK_PRINCIPAL}
+    art::Framework_Principal
     artg4tk_actionBase
     artg4tk_services_ActionHolder_service
     ${CLHEP}
     ${G4GLOBAL}
     ${G4PARTICLES}
-    ${MF_MESSAGELOGGER}
+    messagefacility::MF_MessageLogger
 )

@@ -202,8 +202,9 @@ void artg4tk::CheckProtonProduction::beginJob() {
 
 void artg4tk::CheckProtonProduction::analyze(const art::Event& event) {
     typedef std::vector< art::Handle<myInteractionArtHitDataCollection> > HandleVector;
-    HandleVector allSims;
-    event.getManyByType(allSims);
+    //HandleVector allSims;
+    //event.getManyByType(allSims);
+    auto allSims = event.getMany<myInteractionArtHitDataCollection>();
 
     //cout << "CheckProtonProduction Event:  " << event.event() << "  Nr of Interaction collections: " << allSims.size() << endl;
 

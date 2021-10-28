@@ -23,7 +23,7 @@
 #define DETECTOR_HOLDER_SERVICE_HH
 
 // Includes
-#include "art/Framework/Services/Registry/ServiceMacros.h"
+#include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
 #include "fhiclcpp/ParameterSet.h"
 namespace art {
   class ProducesCollector;
