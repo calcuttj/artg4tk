@@ -23,24 +23,18 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-#ifndef FTFPWrapper_HH
-#define FTFPWrapper_HH 1
+#ifndef artg4tk_G4PhysModelParamStudy_G4Components_FTFPWrapper_hh
+#define artg4tk_G4PhysModelParamStudy_G4Components_FTFPWrapper_hh
 
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ProcessWrapper.hh"
 
-class FTFPWrapper : public ProcessWrapper
-{
+class FTFPWrapper : public ProcessWrapper {
 
-   public:
-      
-      FTFPWrapper(const G4String& name="FTFProcessWrapper",
-                        G4ProcessType processType = fHadronic );
-      virtual ~FTFPWrapper() {}
-      
-      virtual void Compose();
+public:
+  FTFPWrapper(const G4String& name = "FTFProcessWrapper", G4ProcessType processType = fHadronic);
+  virtual ~FTFPWrapper() {}
 
+  virtual void Compose();
 };
 
-
-
-#endif
+#endif /* artg4tk_G4PhysModelParamStudy_G4Components_FTFPWrapper_hh */

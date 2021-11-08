@@ -1,4 +1,8 @@
 #include "artg4tk/actionBase/EventActionBase.hh"
 
-    // Destructor
-    artg4tk::EventActionBase::~EventActionBase(){}
+artg4tk::EventActionBase::EventActionBase(std::string name) : ActionBase{move(name)}
+{
+  art::ServiceHandle<artg4tk::ActionHolderService>()->registerAction(this);
+}
+
+artg4tk::EventActionBase::~EventActionBase() = default;

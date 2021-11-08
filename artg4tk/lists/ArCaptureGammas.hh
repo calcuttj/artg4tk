@@ -6,38 +6,32 @@
 
 //                Author : karim.zbiri@subatech.in2p3.fr
 
-//This file contains the gammas spectrum produced in radiative capture of
-//neutrons by gadolinium.
-//This work is adapted from earlier work in geant3 for chooz 1.
+// This file contains the gammas spectrum produced in radiative capture of
+// neutrons by gadolinium.
+// This work is adapted from earlier work in geant3 for chooz 1.
 
-//First version by Karim Zbiri, April, 2005
+// First version by Karim Zbiri, April, 2005
 ///////////////////////////////////////////////////////////////////////////////
 
-
-
-#ifndef ArCaptureGammas_hh
-#define ArCaptureGammas_hh
+#ifndef artg4tk_lists_ArCaptureGammas_hh
+#define artg4tk_lists_ArCaptureGammas_hh
 
 #include "Geant4/G4ReactionProductVector.hh"
 #include <vector>
 
 using namespace std;
 
-class ArCaptureGammas
-{
- public:
-
+class ArCaptureGammas {
+public:
   ArCaptureGammas();
   ~ArCaptureGammas();
-  G4ReactionProductVector * GetGammas ();
-  vector<double>  Initialize ();
+  G4ReactionProductVector* GetGammas();
+  vector<double> Initialize();
   vector<double> CapAr40();
   vector<double> continuum();
 
-
- public:
+public:
   double Elevel;
-  double  xint[4][750];
-
+  double xint[4][750];
 };
-#endif
+#endif /* artg4tk_lists_ArCaptureGammas_hh */

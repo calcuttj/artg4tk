@@ -2,7 +2,7 @@ file(GLOB fcl_files *.fcl *.gdml *.xml *.xsd *.C *.mac)
 
 install(
   FILES ${fcl_files}
-  DESTINATION ${product}/${version}/${PROJECT_NAME}/examples
+  DESTINATION ${PROJECT_NAME}/examples
 )
 
 foreach(aFile ${fcl_files})

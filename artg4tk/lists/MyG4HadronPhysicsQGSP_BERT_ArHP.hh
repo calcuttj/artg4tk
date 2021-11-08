@@ -40,8 +40,8 @@
 //
 //----------------------------------------------------------------------------
 //
-#ifndef MyG4HadronPhysicsQGSP_BERT_ArHP_h
-#define MyG4HadronPhysicsQGSP_BERT_ArHP_h 1
+#ifndef artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_ArHP_hh
+#define artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_ArHP_hh
 
 #include "Geant4/G4HadronPhysicsQGSP_BERT.hh"
 
@@ -70,22 +70,20 @@
 //#include "G4AntiBarionBuilder.hh"
 //#include "G4FTFPAntiBarionBuilder.hh"
 //
-//class G4ComponentGGHadronNucleusXsc;
+// class G4ComponentGGHadronNucleusXsc;
 //
 
-class MyG4HadronPhysicsQGSP_BERT_ArHP : public G4HadronPhysicsQGSP_BERT
-{
-  public:
-    MyG4HadronPhysicsQGSP_BERT_ArHP(G4int verbose =1);
-    MyG4HadronPhysicsQGSP_BERT_ArHP(const G4String& name, G4bool quasiElastic=true);
-    virtual ~MyG4HadronPhysicsQGSP_BERT_ArHP() {}
+class MyG4HadronPhysicsQGSP_BERT_ArHP : public G4HadronPhysicsQGSP_BERT {
+public:
+  MyG4HadronPhysicsQGSP_BERT_ArHP(G4int verbose = 1);
+  MyG4HadronPhysicsQGSP_BERT_ArHP(const G4String& name, G4bool quasiElastic = true);
+  virtual ~MyG4HadronPhysicsQGSP_BERT_ArHP() {}
 
-  protected:
-    virtual void Neutron() override;
-    virtual void ExtraConfiguration() override;
+protected:
+  void Neutron() override;
+  void ExtraConfiguration() override;
 };
 
 // 2002 by J.P. Wellisch
 
-#endif
-
+#endif /* artg4tk_lists_MyG4HadronPhysicsQGSP_BERT_ArHP_hh */

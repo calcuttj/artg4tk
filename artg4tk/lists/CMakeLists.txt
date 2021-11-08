@@ -1,28 +1,7 @@
-include_directories($ENV{GEANT4_FQ_DIR}/include)
-
 art_make(
   LIB_LIBRARIES
     art::Utilities
-    cetlib_except
-    ${ROOT_CORE}
-    ${ROOT_HIST}
-    ${ROOT_PHYSICS}
-    ${ROOT_GEOM}
-    ${ROOT_MATHCORE}
-    ${CLHEP}
-    ${G4DIGITS_HITS}
-    ${G4EVENT}
-    ${G4GEOMETRY}
-    ${G4GLOBAL}
-    ${G4GRAPHICS_REPS}
-    ${G4MATERIALS}
-    ${G4INTERCOMS}
-    ${G4PARTICLES}
-    ${G4PHYSICSLISTS}
-    ${G4PROCESSES}
-    ${G4TRACK}
-    #${XERCESC}
-    ${G4RUN}
+    Geant4::G4physicslists
   SERVICE_LIBRARIES
     art::Framework_Core
 )

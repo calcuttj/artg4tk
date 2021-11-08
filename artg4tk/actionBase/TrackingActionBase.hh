@@ -9,24 +9,19 @@
 
 // @PreUserTrackingAction@ - This method, which takes a pointer to a constant
 // @G4Track@ object, is called once after a track has been created but before
-// it is simulated. Putting code in this method of an action object is 
-// equivalent to putting it in the @PreUserTrackingAction@ method of the 
+// it is simulated. Putting code in this method of an action object is
+// equivalent to putting it in the @PreUserTrackingAction@ method of the
 // simulation's tracking action class.
 
 // @PostUserTrackingAction@ - This method, which takes a pointer to a constant
-// @G4Track@ object, is called once after a track has been stopped. Putting 
-// code in this method of an action object is equivalent to putting it in the 
+// @G4Track@ object, is called once after a track has been stopped. Putting
+// code in this method of an action object is equivalent to putting it in the
 // @PostUserTrackingAction@ method of the simulation's tracking action class.
 
-
-// Include guard
-#ifndef TRACKING_ACTION_BASE_HH
-#define TRACKING_ACTION_BASE_HH
+#ifndef artg4tk_actionBase_TrackingActionBase_hh
+#define artg4tk_actionBase_TrackingActionBase_hh
 
 #include <string>
-
-#include "art/Framework/Services/Registry/ServiceHandle.h"
-#include "artg4tk/services/ActionHolder_service.hh"
 
 #include "artg4tk/actionBase/ActionBase.hh"
 
@@ -38,31 +33,27 @@ namespace artg4tk {
 
   class TrackingActionBase : public ActionBase {
   public:
-    // Constructor. The derived class must call this constructor. It takes a 
+    // Constructor. The derived class must call this constructor. It takes a
     // single string for the name of the action object.
-    TrackingActionBase(std::string myName)
-      : ActionBase(myName)
-    {
-      art::ServiceHandle<artg4tk::ActionHolderService> actionHolder;
-      actionHolder->registerAction(this);
-    }
-
+    explicit TrackingActionBase(std::string name);
 
     // Destructor
     virtual ~TrackingActionBase();
 
-    // h3. The interesting methods. 
-    // All of these are defined to do nothing by default. Users can override 
+    // h3. The interesting methods.
+    // All of these are defined to do nothing by default. Users can override
     // them if desired, and if they're not overloaded, they do nothing.
 
     // Called before a track is simulated
-    virtual void preUserTrackingAction(const G4Track *) {}
-    
-    // Called when a track is stopped
-    virtual void postUserTrackingAction(const G4Track *) {}
+    virtual void
+    preUserTrackingAction(const G4Track*)
+    {}
 
+    // Called when a track is stopped
+    virtual void
+    postUserTrackingAction(const G4Track*)
+    {}
   };
 }
 
-
-#endif // TRACKING_ACTION_BASE_HH
+#endif /* artg4tk_actionBase_TrackingActionBase_hh */

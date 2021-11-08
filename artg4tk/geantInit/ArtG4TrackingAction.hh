@@ -7,31 +7,30 @@
 // Authors: Tasha Arvanitis, Adam Lyon
 // Date: July 2012
 
-// Include guard
-#ifndef ARTG4_TRACKING_ACTION
-#define ARTG4_TRACKING_ACTION
+#ifndef artg4tk_geantInit_ArtG4TrackingAction_hh
+#define artg4tk_geantInit_ArtG4TrackingAction_hh
 
 // G4 includes
 #include "Geant4/G4UserTrackingAction.hh"
-class G4Track;
 
-// Everything goes in the Art G4 namespace
 namespace artg4tk {
+  class ActionHolderService;
 
   class ArtG4TrackingAction : public G4UserTrackingAction {
   public:
-    // Compiler-generated constructor, destructor, copy constructor, equality
-    // operator are all okay here - there's nothing to keep track of!
-    
+    explicit ArtG4TrackingAction(ActionHolderService* actionHolder);
+
+  private:
     // Called immediately after the creation of a track and before simulating
     // it.
-    void PreUserTrackingAction(const G4Track * currentTrack);
+    void PreUserTrackingAction(const G4Track* currentTrack) override;
 
     // Called after stopping a track
-    void PostUserTrackingAction(const G4Track * currentTrack);
+    void PostUserTrackingAction(const G4Track* currentTrack) override;
 
+    ActionHolderService* actionHolder_;
   };
 
 }
 
-#endif // ARTG4_TRACKING_ACTION
+#endif /* artg4tk_geantInit_ArtG4TrackingAction_hh */

@@ -35,28 +35,21 @@
 //
 //----------------------------------------------------------------------------
 //
-#ifndef TMyQGSP_BERT_HP_NeutronXSBias_h
-#define TMyQGSP_BERT_HP_NeutronXSBias_h 1
+#ifndef artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
+#define artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
 
 #include <CLHEP/Units/SystemOfUnits.h>
 
-#include "Geant4/globals.hh"
-#include "Geant4/G4VModularPhysicsList.hh"
 #include "Geant4/CompileTimeConstraints.hh"
+#include "Geant4/G4VModularPhysicsList.hh"
+#include "Geant4/globals.hh"
 
-template<class T>
-class TMyQGSP_BERT_HP_NeutronXSBias: public T
-{
+template <class T>
+class TMyQGSP_BERT_HP_NeutronXSBias : public T {
 public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver=1);
-  virtual ~TMyQGSP_BERT_HP_NeutronXSBias();
+  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver = 1);
 
-public:
-  // SetCuts()
-  virtual void SetCuts();
-
-private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
+  void SetCuts() override;
 };
 
 #include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
@@ -64,7 +57,4 @@ typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_Neut
 
 // 2019 by D. Rivera
 
-#endif
-
-
-
+#endif /* artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh */

@@ -1,32 +1,31 @@
 // ArtG4PrimaryGeneratorAction.hh provides declarations for the built-in
-// primary generator action for the Art G4 simulation. In its main method, 
+// primary generator action for the Art G4 simulation. In its main method,
 // GeneratePrimaries, it gets the collection of all action objects registered
 // for the run and calls their GeneratePrimaries method.
 
 // Authors: Tasha Arvanitis, Adam Lyon
 // Date: July 2012
 
-// Include guard
-#ifndef ARTG4_PGA_HH
-#define ARTG4_PGA_HH
+#ifndef artg4tk_geantInit_ArtG4PrimaryGeneratorAction_hh
+#define artg4tk_geantInit_ArtG4PrimaryGeneratorAction_hh
 
-// G4 includes
 #include "Geant4/G4VUserPrimaryGeneratorAction.hh"
-class G4Event;
 
-// Everything goes in the Art G4 namespace
 namespace artg4tk {
 
-  class ArtG4PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
-  public: 
-    // Compiler-generated c'tor, d'tor, copy c'tor and equality operator are
-    // fine - not much to this class!
+  class ActionHolderService;
 
+  class ArtG4PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
+  public:
+    explicit ArtG4PrimaryGeneratorAction(ActionHolderService* actionHolder);
+
+  private:
     // Create the primary particles for the event. Called after a G4Event has
     // been created but not fully initialized.
-    void GeneratePrimaries(G4Event *anEvent);
+    void GeneratePrimaries(G4Event* anEvent) override;
 
+    ActionHolderService* actionHolder_;
   };
 
 }
-#endif // ARTG4_PGA_HH
+#endif /* artg4tk_geantInit_ArtG4PrimaryGeneratorAction_hh */

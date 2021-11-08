@@ -27,58 +27,53 @@
 //
 // P. Arce, June-2014 Conversion neutron_hp to particle_hp
 //
-#ifndef ArParticleHPCaptureFS_h
-#define ArParticleHPCaptureFS_h 1
+#ifndef artg4tk_lists_ArParticleHPCaptureFS_hh
+#define artg4tk_lists_ArParticleHPCaptureFS_hh
 
 // -- artg4tk includes
 #include "artg4tk/lists/ArCaptureGammas.hh"
 
-#include "Geant4/globals.hh"
-#include "Geant4/G4HadProjectile.hh"
 #include "Geant4/G4HadFinalState.hh"
+#include "Geant4/G4HadProjectile.hh"
+#include "Geant4/G4ParticleHPEnAngCorrelation.hh"
 #include "Geant4/G4ParticleHPFinalState.hh"
-#include "Geant4/G4ReactionProductVector.hh"
 #include "Geant4/G4ParticleHPNames.hh"
 #include "Geant4/G4ParticleHPPhotonDist.hh"
-#include "Geant4/G4ParticleHPEnAngCorrelation.hh"
+#include "Geant4/G4ReactionProductVector.hh"
+#include "Geant4/globals.hh"
 
-class ArParticleHPCaptureFS : public G4ParticleHPFinalState
-{
-  public:
+class ArParticleHPCaptureFS : public G4ParticleHPFinalState {
+public:
   bool useArCapGamma = true;
 
   ArParticleHPCaptureFS()
   {
     hasXsec = false;
-    hasExactMF6 = false;
-    targetMass = 0;
   }
 
-  ~ArParticleHPCaptureFS()
+  void Init(G4double A,
+            G4double Z,
+            G4int M,
+            G4String& dirName,
+            G4String& aFSType,
+            G4ParticleDefinition*) override;
+  G4HadFinalState* ApplyYourself(const G4HadProjectile& theTrack) override;
+  G4ParticleHPFinalState*
+  New() override
   {
+    return new ArParticleHPCaptureFS;
   }
 
-  void Init (G4double A, G4double Z, G4int M, G4String & dirName, G4String & aFSType, G4ParticleDefinition* );
-  G4HadFinalState * ApplyYourself(const G4HadProjectile & theTrack);
-  G4ParticleHPFinalState * New()
-  {
-   ArParticleHPCaptureFS * theNew = new ArParticleHPCaptureFS;
-   return theNew;
-  }
-
-  private:
-
-  G4double targetMass;
+private:
+  G4double targetMass{0};
 
   G4ParticleHPPhotonDist theFinalStatePhotons;
-  ArCaptureGammas       theFinalgammas;
+  ArCaptureGammas theFinalgammas;
 
-   G4ParticleHPEnAngCorrelation theMF6FinalState;
-   G4bool hasExactMF6;
+  G4ParticleHPEnAngCorrelation theMF6FinalState;
+  G4bool hasExactMF6{false};
 
   G4ParticleHPNames theNames;
-
-//  G4double theCurrentA;
-//  G4double theCurrentZ;
 };
-#endif
+
+#endif /* artg4tk_lists_ArParticleHPCaptureFS_hh */

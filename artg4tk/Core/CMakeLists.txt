@@ -1,9 +1,9 @@
-art_make(
-  MODULE_LIBRARIES
-    artg4tk_geantInit
-    artg4tk_services_DetectorHolder_service
-    artg4tk_services_PhysicsListHolder_service
-    ${G4INTERFACES}
+cet_build_plugin(artg4Main art::module
+  LIBRARIES PRIVATE
+    artg4tk::geantInit
+    artg4tk::services_DetectorHolder_service
+    artg4tk::services_PhysicsListHolder_service
+    Geant4::G4interfaces
 )
 
 install_headers()
