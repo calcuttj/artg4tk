@@ -1,5 +1,4 @@
 include_directories($ENV{GEANT4_FQ_DIR}/include)
-include_directories($ENV{XERCES_C_INC})
 
 art_make(
   LIB_LIBRARIES
@@ -22,6 +21,7 @@ art_make(
     ${G4PHYSICSLISTS}
     ${G4PROCESSES}
     ${G4TRACK}
+    #${XERCESC}
     ${G4RUN}
   SERVICE_LIBRARIES
     art::Framework_Core

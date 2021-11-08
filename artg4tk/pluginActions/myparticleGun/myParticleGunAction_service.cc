@@ -35,6 +35,7 @@
 
 // artg4tk includes
 #include "artg4tk/pluginActions/myparticleGun/myParticleGunAction_service.hh"
+#include "art/Framework/Services/Registry/ServiceDefinitionMacros.h"
 
 // Geant4 includes
 #include "Geant4/G4ParticleGun.hh"
