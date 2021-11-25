@@ -1,5 +1,4 @@
-art_make(
-  MODULE_LIBRARIES
-  artg4tk_DataProducts_EventGenerators
-  ${CLHEP}
+cet_build_plugin(EventGenerator art::module
+  LIBRARIES PRIVATE
+  artg4tk::DataProducts_EventGenerators
 )

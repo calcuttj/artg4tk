@@ -5,54 +5,43 @@
 // Note that this is a little different than the other holder services.
 // Instead of "forwarding" member functons from the Geant class, we need
 // to initialize Geant with the *real* physics list class (because it will
-// change things internally). 
+// change things internally).
 
-// Include guard
-#ifndef PHYSICSLIST_HOLDER_SERVICE_HH
-#define PHYSICSLIST_HOLDER_SERVICE_HH
+#ifndef artg4tk_services_PhysicsListHolder_service_hh
+#define artg4tk_services_PhysicsListHolder_service_hh
 
 // Includes
-#include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
+#include "fhiclcpp/fwd.h"
 
 class G4VUserPhysicsList;
 
 // Everything for the Art G4 simulation goes in the @artg4tk@ namespace
 namespace artg4tk {
-  
+
   class PhysicsListServiceBase;
-  
+
   class PhysicsListHolderService {
   public:
-  
-    
     // Constructor for Physics List holder
-    PhysicsListHolderService(fhicl::ParameterSet const&) :
-      physicsListService_()
-    {}
-    
-    // Destructor - don't do anything
-    virtual ~PhysicsListHolderService() {}
-    
+    PhysicsListHolderService(fhicl::ParameterSet const&) {}
+
     // This registers the passed detector with the service.
-    void registerPhysicsListService( PhysicsListServiceBase* );
-    
+    void registerPhysicsListService(PhysicsListServiceBase*);
+
     // Get Physics list
     G4VUserPhysicsList* makePhysicsList() const;
-    
+
     // Initialize the physics list if necessary
     void initializePhysicsList() const;
 
   private:
-    
-    PhysicsListServiceBase* physicsListService_;
-    
-  }; // class PhysicsListHolderService
-  
-}// end namespace artg4tk
+    PhysicsListServiceBase* physicsListService_{nullptr};
 
-//using art::LEGACY;
-using artg4tk::PhysicsListHolderService;
-DECLARE_ART_SERVICE(PhysicsListHolderService, LEGACY)
-  
-#endif // PHYSICSLIST_HOLDER_SERVICE
+  }; // class PhysicsListHolderService
+
+} // end namespace artg4tk
+
+DECLARE_ART_SERVICE(artg4tk::PhysicsListHolderService, LEGACY)
+
+#endif /* artg4tk_services_PhysicsListHolder_service_hh */

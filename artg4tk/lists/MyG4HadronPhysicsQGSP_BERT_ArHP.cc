@@ -51,25 +51,25 @@
 
 //#include "Geant4/G4HadronPhysicsQGSP_BERT_HP.hh"
 
-#include "Geant4/globals.hh"
-#include "Geant4/G4ios.hh"
-#include "Geant4/G4SystemOfUnits.hh"
 #include "Geant4/G4ParticleDefinition.hh"
 #include "Geant4/G4ParticleTable.hh"
+#include "Geant4/G4SystemOfUnits.hh"
+#include "Geant4/G4ios.hh"
+#include "Geant4/globals.hh"
 
-#include "Geant4/G4NeutronBuilder.hh"
-#include "Geant4/G4FTFPNeutronBuilder.hh"
-#include "Geant4/G4QGSPNeutronBuilder.hh"
 #include "Geant4/G4BertiniNeutronBuilder.hh"
+#include "Geant4/G4FTFPNeutronBuilder.hh"
+#include "Geant4/G4NeutronBuilder.hh"
+#include "Geant4/G4QGSPNeutronBuilder.hh"
 //#include "Geant4/G4NeutronPHPBuilder.hh"
 
 #include "Geant4/G4HadronCaptureProcess.hh"
-#include "Geant4/G4NeutronRadCapture.hh"
-#include "Geant4/G4NeutronCaptureXS.hh"
-#include "Geant4/G4ParticleHPCaptureData.hh"
 #include "Geant4/G4LFission.hh"
-#include "Geant4/G4ProcessVector.hh"
+#include "Geant4/G4NeutronCaptureXS.hh"
+#include "Geant4/G4NeutronRadCapture.hh"
+#include "Geant4/G4ParticleHPCaptureData.hh"
 #include "Geant4/G4ProcessManager.hh"
+#include "Geant4/G4ProcessVector.hh"
 
 #include "Geant4/G4CrossSectionDataSetRegistry.hh"
 
@@ -83,18 +83,20 @@
 G4_DECLARE_PHYSCONSTR_FACTORY(MyG4HadronPhysicsQGSP_BERT_ArHP);
 
 MyG4HadronPhysicsQGSP_BERT_ArHP::MyG4HadronPhysicsQGSP_BERT_ArHP(G4int)
-    :  MyG4HadronPhysicsQGSP_BERT_ArHP("hInelastic MyQGSP_BERT_ArHP")
+  : MyG4HadronPhysicsQGSP_BERT_ArHP("hInelastic MyQGSP_BERT_ArHP")
 {}
 
-MyG4HadronPhysicsQGSP_BERT_ArHP::MyG4HadronPhysicsQGSP_BERT_ArHP(const G4String& name, G4bool /*quasiElastic */ )
-    :  G4HadronPhysicsQGSP_BERT(name)
+MyG4HadronPhysicsQGSP_BERT_ArHP::MyG4HadronPhysicsQGSP_BERT_ArHP(const G4String& name,
+                                                                 G4bool /*quasiElastic */)
+  : G4HadronPhysicsQGSP_BERT(name)
 {
-    minBERT_neutron = 19.9*MeV;
+  minBERT_neutron = 19.9 * MeV;
 }
 
-void MyG4HadronPhysicsQGSP_BERT_ArHP::Neutron()
+void
+MyG4HadronPhysicsQGSP_BERT_ArHP::Neutron()
 {
-  auto neu = new G4NeutronBuilder( true ); // Fission on
+  auto neu = new G4NeutronBuilder(true); // Fission on
   AddBuilder(neu);
   auto qgs = new G4QGSPNeutronBuilder(QuasiElasticQGS);
   AddBuilder(qgs);
@@ -116,21 +118,22 @@ void MyG4HadronPhysicsQGSP_BERT_ArHP::Neutron()
   neu->Build();
 }
 
-void MyG4HadronPhysicsQGSP_BERT_ArHP::ExtraConfiguration()
+void
+MyG4HadronPhysicsQGSP_BERT_ArHP::ExtraConfiguration()
 {
   // --- Neutrons ---
   const G4ParticleDefinition* neutron = G4Neutron::Neutron();
   G4HadronicProcess* capture = G4PhysListUtil::FindCaptureProcess(neutron);
   if (capture) {
     G4NeutronRadCapture* theNeutronRadCapture = new G4NeutronRadCapture();
-    theNeutronRadCapture->SetMinEnergy( minBERT_neutron );
-    capture->RegisterMe( theNeutronRadCapture );
+    theNeutronRadCapture->SetMinEnergy(minBERT_neutron);
+    capture->RegisterMe(theNeutronRadCapture);
   }
   G4HadronicProcess* fission = G4PhysListUtil::FindFissionProcess(neutron);
   if (fission) {
     G4LFission* theNeutronLEPFission = new G4LFission();
-    theNeutronLEPFission->SetMinEnergy( minBERT_neutron );
-    theNeutronLEPFission->SetMaxEnergy( G4HadronicParameters::Instance()->GetMaxEnergy() );
-    fission->RegisterMe( theNeutronLEPFission );
+    theNeutronLEPFission->SetMinEnergy(minBERT_neutron);
+    theNeutronLEPFission->SetMaxEnergy(G4HadronicParameters::Instance()->GetMaxEnergy());
+    fission->RegisterMe(theNeutronLEPFission);
   }
 }

@@ -1,3 +1,3 @@
-art_make(LIB_LIBRARIES cetlib_except fhiclcpp)
+art_make(LIB_LIBRARIES fhiclcpp::fhiclcpp)
 
 install_headers()

@@ -1,5 +1,10 @@
+include(ArtDictionary)
+include(ArtMake)
+include(BuildPlugins)
 
-include_directories( $ENV{GEANT4_FQ_DIR}/include )
+# Hack to ensure that we can type '#include "Geant4/G4XYZ.hh"' instead
+# of '#include "G4XYZ.hh"'.
+include_directories("${Geant4_INCLUDE_DIRS}/../")
 
 add_subdirectory(actionBase)
 add_subdirectory(Analysis)

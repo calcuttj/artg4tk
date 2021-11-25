@@ -1,23 +1,39 @@
-art_make(
-  LIB_LIBRARIES
-    artg4tk_DataProducts_G4DetectorHits
-    ${CLHEP}
-    ${G4DIGITS_HITS}
-    ${G4EVENT}
-    ${G4GEOMETRY}
-    ${G4GLOBAL}
-    ${G4GRAPHICS_REPS}
-    ${G4PARTICLES}
-    ${G4PERSISTENCY}
-    ${G4TRACK}
-    ${XERCESC}
-  SERVICE_LIBRARIES
+art_dictionary()
+
+cet_make_library(SOURCE
+    CalorimeterSD.cc
+    ColorReader.cc
+    DRCalorimeterSD.cc
+    HadIntAndEdepTrkSD.cc
+    HadInteractionSD.cc
+    PhotonSD.cc
+    TrackerSD.cc
+  LIBRARIES
+    Geant4::G4digits_hits
+    Geant4::G4event
+    Geant4::G4geometry
+    Geant4::G4global
+    Geant4::G4graphics_reps
+    Geant4::G4particles
+    Geant4::G4persistency
+    Geant4::G4tracking
+    artg4tk::DataProducts_G4DetectorHits
+    XercesC::XercesC
+  )
+
+
+cet_build_plugin(GDMLDetector art::service
+  LIBRARIES
+    Geant4::G4digits_hits
+    Geant4::G4persistency
+    XercesC::XercesC
     art::Framework_Core
     art::Framework_Principal
-    artg4tk_pluginDetectors_gdml
-    artg4tk_services_DetectorHolder_service
     art::Persistency_Provenance
-    ${G4MATERIALS}
+    artg4tk::DataProducts_G4DetectorHits
+    artg4tk::pluginDetectors_gdml
+    artg4tk::services_DetectorHolder_service
+    messagefacility::MF_MessageLogger
 )
 
 install_headers()

@@ -1,20 +1,20 @@
 //
-//               __        __ __  __  __  
+//               __        __ __  __  __
 //   ____ ______/ /_____ _/ // / / /_/ /__
 //  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
-// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
-// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
-//               /____/                  
+// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<
+// \__,_/_/   \__/\__, /  /_/  \__/_/|_|
+//               /____/
 //
 // artg4tk: art based Geant 4 Toolkit
-// 
+//
 //=============================================================================
-// KillerActionService.hh: example artg4tk stacking action that allows to 
+// KillerActionService.hh: example artg4tk stacking action that allows to
 // liik certain particles of interest ((p0, eta, gamma from nCapture)
 // To use this, all you need to do is put it in the services section
 // of the configuration file, like this:
-// 
-// services: { 
+//
+// services: {
 //   ...
 //   user: {
 //        KillerAction : {name: "KillerAction"
@@ -28,14 +28,12 @@
 // Author: Hans Wenzel (Fermilab)
 //=============================================================================
 
-// Include guard
-// Include guard
-#ifndef KILLERACTION_SERVICE_HH
-#define KILLERACTION_SERVICE_HH
+#ifndef artg4tk_pluginActions_myKiller_KillerAction_service_hh
+#define artg4tk_pluginActions_myKiller_KillerAction_service_hh
 
 // Includes for general action service
-#include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
+#include "fhiclcpp/fwd.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 // Get the base class
@@ -44,21 +42,21 @@
 
 namespace artg4tk {
 
-    class KillerActionService
-    : public artg4tk::StackingActionBase {
-    public:
-      KillerActionService(fhicl::ParameterSet const&);
-        virtual ~KillerActionService();
-        virtual bool killNewTrack(const G4Track* aTrack) override;
-    private:
-        // Member data!
-        bool killPi0;
-        bool killeta;
-        bool killGammafromnCapture;
-        // A message logger for this action
-        mf::LogInfo logInfo_;
-    };
-} //end namespace artg4tk
-using artg4tk::KillerActionService;
-DECLARE_ART_SERVICE(KillerActionService,LEGACY)
-#endif
+  class KillerActionService : public artg4tk::StackingActionBase {
+  public:
+    KillerActionService(fhicl::ParameterSet const&);
+    virtual ~KillerActionService();
+    bool killNewTrack(const G4Track* aTrack) override;
+
+  private:
+    // Member data!
+    bool killPi0;
+    bool killeta;
+    bool killGammafromnCapture;
+    // A message logger for this action
+    mf::LogInfo logInfo_;
+  };
+} // end namespace artg4tk
+
+DECLARE_ART_SERVICE(artg4tk::KillerActionService, LEGACY)
+#endif /* artg4tk_pluginActions_myKiller_KillerAction_service_hh */

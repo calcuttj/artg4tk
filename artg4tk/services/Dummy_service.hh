@@ -1,25 +1,23 @@
-#ifndef DUMMY_SERVICE_HH
-#define DUMMY_SERVICE_HH
+#ifndef artg4tk_services_Dummy_service_hh
+#define artg4tk_services_Dummy_service_hh
 
 // Art
-#include "fhiclcpp/fwd.h"
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
-namespace art { class ProducesCollector; }
+#include "art/Framework/Core/Frameworkfwd.h"
+#include "fhiclcpp/fwd.h"
 
 namespace artg4tk {
 
   class DummyService {
-  public: 
+  public:
     DummyService(fhicl::ParameterSet const&);
     ~DummyService();
 
-    void notifyArtOfProduction(art::ProducesCollector & prod);
-
-  private:
+    void notifyArtOfProduction(art::ProducesCollector& prod);
 
   };
 }
-using artg4tk::DummyService;
-DECLARE_ART_SERVICE(DummyService,LEGACY)
 
-#endif
+DECLARE_ART_SERVICE(artg4tk::DummyService, LEGACY)
+
+#endif /* artg4tk_services_Dummy_service_hh */

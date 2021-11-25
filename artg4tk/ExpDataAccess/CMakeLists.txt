@@ -8,7 +8,5 @@ endif()
 art_make(
   LIB_LIBRARIES
     ${CURL_LIBRARIES}
-    ${ROOT_CORE}
-    ${ROOT_HIST}
     MF_MessageLogger
 )

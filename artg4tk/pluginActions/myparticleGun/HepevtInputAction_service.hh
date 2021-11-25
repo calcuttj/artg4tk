@@ -1,13 +1,13 @@
 //
-//               __        __ __  __  __  
+//               __        __ __  __  __
 //   ____ ______/ /_____ _/ // / / /_/ /__
 //  / __ `/ ___/ __/ __ `/ // /_/ __/ //_/
-// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<   
-// \__,_/_/   \__/\__, /  /_/  \__/_/|_|  
-//               /____/                  
+// / /_/ / /  / /_/ /_/ /__  __/ /_/ ,<
+// \__,_/_/   \__/\__, /  /_/  \__/_/|_|
+//               /____/
 //
 // artg4tk: art based Geant 4 Toolkit
-// 
+//
 //=============================================================================
 // This file provides the implementation for an action object that produces
 // the primary particles using a pythia generated Hepevt event as input
@@ -15,11 +15,11 @@
 // To use this, all you need to do is put it in the services section
 // of the configuration file, like this:
 //
-// services: { 
+// services: {
 //   ...
 //   user: {
 //      HepevtInputAction: {
-//      name: "HepevtInput"	
+//      name: "HepevtInput"
 //      FileName: "pythia_event.data"
 //    }
 //     . ..
@@ -29,45 +29,37 @@
 // Date: August 2012
 //=============================================================================
 
-// Include guard
-#ifndef HEPEVT_INPUTACTIONSERVICE_HH
-#define HEPEVT_INPUTACTIONSERVICE_HH
+#ifndef artg4tk_pluginActions_myparticleGun_HepevtInputAction_service_hh
+#define artg4tk_pluginActions_myparticleGun_HepevtInputAction_service_hh
 
 // framework Includes:
-#include "fhiclcpp/fwd.h"
-#include "messagefacility/MessageLogger/MessageLogger.h"
 #include "art/Framework/Services/Registry/ServiceDeclarationMacros.h"
+#include "fhiclcpp/fwd.h"
 
 // Get the artg4tk base class
 #include "artg4tk/actionBase/PrimaryGeneratorActionBase.hh"
 
 // Geant 4 includes:
+#include "Geant4/G4VPrimaryGenerator.hh"
 class G4Event;
-class G4VPrimaryGenerator;
 
 namespace artg4tk {
 
-    class HepevtInputActionService
-    : public artg4tk::PrimaryGeneratorActionBase {
-    public:
-        HepevtInputActionService(fhicl::ParameterSet const&);
-        virtual ~HepevtInputActionService();
-        virtual void initialize() override;
-        // To generate primaries, we need to overload the GeneratePrimaries
-        // method. 
-        virtual void generatePrimaries(G4Event * anEvent) override;
+  class HepevtInputActionService : public artg4tk::PrimaryGeneratorActionBase {
+  public:
+    HepevtInputActionService(fhicl::ParameterSet const&);
+    void initialize() override;
 
-        // We don't add anything to the event, so we don't need callArtProduces
-        // or FillEventWithArtStuff.
+    // To generate primaries, we need to overload the GeneratePrimaries
+    // method.
+    void generatePrimaries(G4Event* anEvent) override;
 
-    private:
-        G4VPrimaryGenerator * HEPEvt_;
-        std::string fileName_; // name of hepevt input file
-        mf::LogInfo logInfo_;
-
-    };
+  private:
+    std::unique_ptr<G4VPrimaryGenerator> HEPEvt_{nullptr};
+    std::string fileName_; // name of hepevt input file
+  };
 } // namespace artg4tk
-using artg4tk::HepevtInputActionService;
-DECLARE_ART_SERVICE(HepevtInputActionService, LEGACY)
 
-#endif
+DECLARE_ART_SERVICE(artg4tk::HepevtInputActionService, LEGACY)
+
+#endif /* artg4tk_pluginActions_myparticleGun_HepevtInputAction_service_hh */

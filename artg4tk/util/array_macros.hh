@@ -1,5 +1,5 @@
-#ifndef ARRAY_MACROS_HH
-#define ARRAY_MACROS_HH
+#ifndef artg4tk_util_array_macros_hh
+#define artg4tk_util_array_macros_hh
 
 /** @file array_macros.hh
 
@@ -15,11 +15,11 @@
     Brendan Kiburg 2013
  */
 
-
 namespace {
   typedef unsigned char byte_t;
-  
-  template<int N> struct array_size_struct{
+
+  template <int N>
+  struct array_size_struct {
     byte_t c[N];
   };
 }
@@ -27,7 +27,7 @@ namespace {
 /** This function declaration has no associated implementation; it
     exists solely for compile time argument type deduction. Don't even
     think about using it. */
-template<typename T, int N>
+template <typename T, int N>
 array_size_struct<N> static_array_size_fn(T (&)[N]);
 
 /** This macro should only be applied when @a x is the name of an
@@ -36,11 +36,10 @@ array_size_struct<N> static_array_size_fn(T (&)[N]);
     compiler. */
 #define dimensionof(x) sizeof(static_array_size_fn(x).c)
 
-
 #if !defined(ARRAYEND)
 /** Returns the "end iterator" (pointer) given an in-scope array name
     @a x. */
-#define ARRAYEND(x) (x+dimensionof(x))
+#define ARRAYEND(x) (x + dimensionof(x))
 #else
 #error ARRAYEND defined already!
 #endif
@@ -53,4 +52,4 @@ array_size_struct<N> static_array_size_fn(T (&)[N]);
 #error ARRAYBEGIN defined already!
 #endif
 
-#endif // ARRAY_MACROS_HH
+#endif /* artg4tk_util_array_macros_hh */
