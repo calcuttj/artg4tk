@@ -56,6 +56,8 @@
 #include "Geant4/G4QGSPPiKBuilder.hh"
 
 #include "G4BertiniPiKBuilderBias.hh"
+#include "G4BertiniNeutronBuilderBias.hh"
+#include "G4BertiniProtonBuilderBias.hh"
 
 #include "Geant4/G4ProtonBuilder.hh"
 #include "Geant4/G4FTFPProtonBuilder.hh"
@@ -136,7 +138,8 @@ void G4HadronPhysicsQGSP_BERT_Bias::Neutron()
   ftf->SetMinEnergy(minFTFP_neutron);
   ftf->SetMaxEnergy(maxFTFP_neutron);
   neu->RegisterMe(ftf);
-  auto bert = new G4BertiniNeutronBuilder;
+  //auto bert = new G4BertiniNeutronBuilder;
+  auto bert = new G4BertiniNeutronBuilderBias(fNeutronBias);
   AddBuilder(bert);
   bert->SetMinEnergy(minBERT_neutron);
   bert->SetMaxEnergy(maxBERT_neutron);
@@ -157,7 +160,8 @@ void G4HadronPhysicsQGSP_BERT_Bias::Proton()
   ftf->SetMinEnergy(minFTFP_proton);
   ftf->SetMaxEnergy(maxFTFP_proton);
   pro->RegisterMe(ftf);
-  auto bert = new G4BertiniProtonBuilder;
+  //auto bert = new G4BertiniProtonBuilder;
+  auto bert = new G4BertiniProtonBuilderBias(fProtonBias);
   AddBuilder(bert);
   bert->SetMinEnergy(minBERT_proton);
   bert->SetMaxEnergy(maxBERT_proton);

@@ -50,6 +50,13 @@ namespace artg4tk {
     std::string WLSProfile_;          // Set the WLS time profile (delta or exponential)
 
     double PiPlusBias_;
+    double PiMinusBias_;
+    double ProtonBias_;
+    double NeutronBias_;
+    double PiPlusElasticBias_;
+    double PiMinusElasticBias_;
+    double ProtonElasticBias_;
+    double NeutronElasticBias_;
 
   };
   

@@ -21,6 +21,7 @@
 #include "Geant4/G4PionPlus.hh"
 
 #include "artg4tk/lists/G4HadronPhysicsQGSP_BERT_Bias.hh"
+#include "artg4tk/lists/G4HadronElasticPhysicsBias.hh"
 
 #include <fstream>
 #include <memory>
@@ -51,7 +52,14 @@ artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p) :
   BoundaryInvokeSD_( p.get<bool>("BoundaryInvokeSD",false)),
   verbositylevel_( p.get<int>("Verbosity",0)),
   WLSProfile_( p.get<std::string>("WLSProfile","delta")),
-  PiPlusBias_(p.get<double>("PiPlusBias", 1.))
+  PiPlusBias_(p.get<double>("PiPlusBias", 1.)),
+  PiMinusBias_(p.get<double>("PiMinusBias", 1.)),
+  ProtonBias_(p.get<double>("ProtonBias", 1.)),
+  NeutronBias_(p.get<double>("NeutronBias", 1.)),
+  PiPlusElasticBias_(p.get<double>("PiPlusElasticBias", 1.)),
+  PiMinusElasticBias_(p.get<double>("PiMinusElasticBias", 1.)),
+  ProtonElasticBias_(p.get<double>("ProtonElasticBias", 1.)),
+  NeutronElasticBias_(p.get<double>("NeutronElasticBias", 1.))
 {}
 
 G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
@@ -113,11 +121,25 @@ G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
       }
     if (physName.find("Bias") != std::string::npos) {
       std::cout << "Found Bias" << std::endl;
-      std::cout << phys->GetPhysics("hInelastic_pion_bias QGSP_BERT_Bias");
+      std::cout << phys->GetPhysics("hInelastic_pion_bias QGSP_BERT_Bias") <<
+                   std::endl;
       G4HadronPhysicsQGSP_BERT_Bias * bias
           = (G4HadronPhysicsQGSP_BERT_Bias *)phys->GetPhysics(
               "hInelastic_pion_bias QGSP_BERT_Bias");
       bias->SetPiPlusBias(PiPlusBias_);
+      bias->SetPiMinusBias(PiMinusBias_);
+      bias->SetProtonBias(ProtonBias_);
+      bias->SetNeutronBias(NeutronBias_);
+
+      G4HadronElasticPhysicsBias * elast_bias
+          = (G4HadronElasticPhysicsBias *)phys->GetPhysics(
+              "hElasticWEL_CHIPS_XS_bias");
+      std::cout << "Got elastic: " << elast_bias << std::endl;
+      elast_bias->SetPiPlusBias(PiPlusElasticBias_);
+      elast_bias->SetPiMinusBias(PiMinusElasticBias_);
+      elast_bias->SetProtonBias(ProtonElasticBias_);
+      elast_bias->SetNeutronBias(NeutronElasticBias_);
+
     }
 
     return phys;

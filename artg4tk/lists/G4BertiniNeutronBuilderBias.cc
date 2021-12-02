@@ -26,7 +26,7 @@
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   G4BertiniPiKBuilder
+// ClassName:   G4BertiniNeutronBuilder
 //
 // Author: 2002 H.P. Wellisch
 //
@@ -36,81 +36,29 @@
 //
 //----------------------------------------------------------------------------
 //
-#include "G4BertiniPiKBuilderBias.hh"
+#include "G4BertiniNeutronBuilderBias.hh"
 #include "Geant4/G4SystemOfUnits.hh"
 #include "Geant4/G4ParticleDefinition.hh"
 #include "Geant4/G4ParticleTable.hh"
 #include "Geant4/G4ProcessManager.hh"
-#include "Geant4/G4BGGPionInelasticXS.hh"
-#include "Geant4/G4ComponentGGHadronNucleusXsc.hh"
-#include "Geant4/G4CrossSectionInelastic.hh"
 #include "Geant4/G4HadronicParameters.hh"
 
 
-G4BertiniPiKBuilderBias::
-G4BertiniPiKBuilderBias(double pion_plus_bias)
-  : fPionPlusBias(pion_plus_bias) {
-   kaonxs = new G4CrossSectionInelastic( new G4ComponentGGHadronNucleusXsc );
-   theMin = 0.0;
-   theMax = G4HadronicParameters::Instance()->GetMaxEnergyTransitionFTF_Cascade();
-   theModel = new G4CascadeInterface;
-   theModel->SetMinEnergy(theMin);
-   theModel->SetMaxEnergy(theMax); 
- }
+G4BertiniNeutronBuilderBias::
+G4BertiniNeutronBuilderBias(double neutron_bias) : fNeutronBias(neutron_bias)
+{
+  theMin = 0.0;
+  theMax = G4HadronicParameters::Instance()->GetMaxEnergyTransitionFTF_Cascade();
+  theModel = new G4CascadeInterface;
+}
 
-void G4BertiniPiKBuilderBias::
-Build(G4PionPlusInelasticProcess * aP)
- {
-   theModel->SetMinEnergy(theMin);
-   theModel->SetMaxEnergy(theMax);
-   aP->AddDataSet( new G4BGGPionInelasticXS( G4PionPlus::Definition() ) );
-   std::cout << "Biasing PiPlus: " << fPionPlusBias << std::endl;
-   aP->MultiplyCrossSectionBy(fPionPlusBias);
-   aP->RegisterMe(theModel);
- }
-
-void G4BertiniPiKBuilderBias::
-Build(G4PionMinusInelasticProcess * aP)
- {
-   theModel->SetMinEnergy(theMin);
-   theModel->SetMaxEnergy(theMax);
-   aP->AddDataSet( new G4BGGPionInelasticXS( G4PionMinus::Definition() ) );
-   aP->RegisterMe(theModel);
- }
-
-void G4BertiniPiKBuilderBias::
-Build(G4KaonPlusInelasticProcess * aP)
- {
-   aP->RegisterMe(theModel);
-   theModel->SetMinEnergy(theMin);
-   theModel->SetMaxEnergy(theMax);
-   aP->AddDataSet(kaonxs);
- }
-
-void G4BertiniPiKBuilderBias::
-Build(G4KaonMinusInelasticProcess * aP)
- {
-   aP->RegisterMe(theModel);
-   theModel->SetMinEnergy(theMin);
-   theModel->SetMaxEnergy(theMax);
-   aP->AddDataSet(kaonxs);
- }
-
-void G4BertiniPiKBuilderBias::
-Build(G4KaonZeroLInelasticProcess * aP)
- {
-   aP->RegisterMe(theModel);
-   theModel->SetMinEnergy(theMin);
-   theModel->SetMaxEnergy(theMax);
-   aP->AddDataSet(kaonxs);
- }
-
-void G4BertiniPiKBuilderBias::
-Build(G4KaonZeroSInelasticProcess * aP)
- {
-   aP->RegisterMe(theModel);
-   theModel->SetMinEnergy(theMin);
-   theModel->SetMaxEnergy(theMax);
-   aP->AddDataSet(kaonxs);
- }
+void G4BertiniNeutronBuilderBias::
+Build(G4NeutronInelasticProcess * aP)
+{
+  theModel->SetMinEnergy(theMin);
+  theModel->SetMaxEnergy(theMax);
+  std::cout << "Biasing Neutron: " << fNeutronBias << std::endl;
+  aP->MultiplyCrossSectionBy(fNeutronBias);
+  aP->RegisterMe(theModel);
+}
 

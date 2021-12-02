@@ -64,7 +64,7 @@
 #include "Geant4/G4EmExtraPhysics.hh"
 #include "Geant4/G4IonPhysics.hh"
 #include "Geant4/G4StoppingPhysics.hh"
-#include "Geant4/G4HadronElasticPhysics.hh"
+#include "G4HadronElasticPhysicsBias.hh"
 #include "Geant4/G4NeutronTrackingCut.hh"
 
 #include "QGSP_BERT_Bias.hh"
@@ -92,7 +92,7 @@ QGSP_BERT_Bias::QGSP_BERT_Bias(G4int ver)
   RegisterPhysics( new G4DecayPhysics(ver) );
 
    // Hadron Elastic scattering
-  RegisterPhysics( new G4HadronElasticPhysics(ver) );
+  RegisterPhysics( new G4HadronElasticPhysicsBias(ver) );
 
   // Hadron Physics
   RegisterPhysics( new G4HadronPhysicsQGSP_BERT_Bias(ver));
