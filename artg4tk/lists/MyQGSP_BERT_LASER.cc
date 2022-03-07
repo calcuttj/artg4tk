@@ -67,7 +67,8 @@
 #include "Geant4/G4Material.hh"
 #include "Geant4/G4MaterialTable.hh"
 
-#include "Geant4/G4DecayPhysics.hh"
+//#include "Geant4/G4DecayPhysics.hh"
+#include "MyG4DecayPhysics.hh"
 #include "Geant4/G4EmExtraPhysics.hh"
 #include "Geant4/G4IonPhysics.hh"
 #include "Geant4/G4StoppingPhysics.hh"
@@ -121,10 +122,13 @@ MyQGSP_BERT_LASER::MyQGSP_BERT_LASER(G4int ver)
   RegisterPhysics( new G4EmStandardPhysics_muplusLaser(ver) ); // -- replace with laser version
 
   // Synchroton Radiation & GN Physics
-  RegisterPhysics( new G4EmExtraPhysics(ver) );
+  //<--RegisterPhysics( new G4EmExtraPhysics(ver) );
+  auto MyG4EmExtraPhysics = new G4EmExtraPhysics(ver);
+  MyG4EmExtraPhysics->MuonNuclear(false); // -- deactivate muonNuclear process
+  RegisterPhysics( MyG4EmExtraPhysics );
 
   // Decays
-  RegisterPhysics( new G4DecayPhysics(ver) );
+  RegisterPhysics( new MyG4DecayPhysics(ver) );
 
    // Hadron Elastic scattering
   RegisterPhysics( new G4HadronElasticPhysics(ver) );
