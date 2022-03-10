@@ -123,12 +123,12 @@ MyQGSP_BERT_LASER::MyQGSP_BERT_LASER(G4int ver)
 
   // Synchroton Radiation & GN Physics
   //<--RegisterPhysics( new G4EmExtraPhysics(ver) );
-  auto MyG4EmExtraPhysics = new G4EmExtraPhysics(ver);
-  MyG4EmExtraPhysics->MuonNuclear(false); // -- deactivate muonNuclear process
-  RegisterPhysics( MyG4EmExtraPhysics );
+  //auto MyG4EmExtraPhysics = new G4EmExtraPhysics(ver);
+  //MyG4EmExtraPhysics->MuonNuclear(false); // -- deactivate muonNuclear process
+  //RegisterPhysics( MyG4EmExtraPhysics );
 
   // Decays
-  RegisterPhysics( new MyG4DecayPhysics(ver) );
+  //RegisterPhysics( new MyG4DecayPhysics(ver) );
 
    // Hadron Elastic scattering
   RegisterPhysics( new G4HadronElasticPhysics(ver) );
