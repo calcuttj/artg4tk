@@ -1,3 +1,4 @@
+### MIGRATE-NO-ACTION
 find_program(ROOT_CONFIG_EXECUTABLE root-config PATHS ${ROOTSYS}/bin $ENV{ROOTSYS}/bin)
 
 execute_process(

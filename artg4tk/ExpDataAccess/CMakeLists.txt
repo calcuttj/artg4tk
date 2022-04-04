@@ -1,3 +1,4 @@
+### MIGRATE-NO-ACTION
 find_package(CURL)
 if(CURL_FOUND)
   include_directories(${CURL_INCLUDE_DIRS})

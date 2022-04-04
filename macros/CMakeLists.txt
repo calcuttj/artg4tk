@@ -2,8 +2,8 @@ file(GLOB mac_files *.mac)
 
 install(
   FILES ${mac_files}
-  DESTINATION ${product}/${version}/${PROJECT_NAME}/macros
-)
+  DESTINATION
+${PROJECT_NAME}/macros )
 
 foreach(aFile ${mac_files})
   get_filename_component(basename ${aFile} NAME)

@@ -4,7 +4,7 @@ include(BuildPlugins)
 
 # Hack to ensure that we can type '#include "Geant4/G4XYZ.hh"' instead
 # of '#include "G4XYZ.hh"'.
-include_directories("${Geant4_INCLUDE_DIRS}/../")
+include_directories("${Geant4_INCLUDE_DIRS}/../") ### MIGRATE-ACTION-RECOMMENDED (migrate-3.09.03) - avoid directory-scope functions: use target_link_libraries() with target semantics or target_include_directories() whenever possible
 
 add_subdirectory(actionBase)
 add_subdirectory(Analysis)

@@ -1,4 +1,5 @@
-cmake_minimum_required (VERSION 3.19 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
+# cmake_policy(VERSION 3.19) ### MIGRATE-ACTION-COMPATIBILITY (migrate-3.09.03) - Uncomment to preserve compatibility with older CMake versions
 
 find_package(cetmodules REQUIRED)
 project(artg4tk VERSION 10.04.00 LANGUAGES CXX)
@@ -8,7 +9,7 @@ cet_cmake_env()
 
 cet_set_compiler_flags(DIAGS CAUTIOUS WERROR NO_UNDEFINED EXTRA_FLAGS -pedantic)
 
-cet_report_compiler_flags()
+cet_report_compiler_flags() ### MIGRATE-ACTION-RECOMMENDED (migrate-3.09.03) - add args: REPORT_THRESHOLD VERBOSE
 
 find_package(art REQUIRED)
 find_package(art_root_io REQUIRED)
