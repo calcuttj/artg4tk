@@ -1,7 +1,26 @@
 ########################################################################
 # ArtG4tk
 #
-# Updated for cetmodules 3.10.00 by CG 2022-04-06.
+# NOTE: Build may be steered for internal development purposes by
+#       setting the following CMake variables in cache (e.g. with cmake
+#       -DXXXX:BOOL=ON):
+#
+#       * artg4tk_ExpDataAccess
+#
+#         Build the ExpDataAccess internal library.
+#
+#       * artg4tk_G4PhysModelParamStudy
+#
+#         Build the G4PhysModelParamStudy internal code set (implies
+#         artg4tk_ExpDataAccess).
+#
+#       * artg4tk_INTERNAL
+#
+#         Build all internal code (including RooMUTools if
+#         ENV{ROOMU_SYS} is defined and valid).
+#
+# Updated for cetmodules 3.10.00 and bitrot in internal code resolved -
+# as far as possible without tests - by CG 2022-04-06.
 ########################################################################
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 

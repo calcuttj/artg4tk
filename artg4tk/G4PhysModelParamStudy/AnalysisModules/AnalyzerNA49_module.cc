@@ -38,7 +38,7 @@ namespace artg4tk {
     void endJob() override;
 
   protected:
-    virtual TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&);
+    TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&) override;
 
   private:
     double calculateBinWeight(const CLHEP::HepLorentzVector& labp,
@@ -264,7 +264,7 @@ artg4tk::AnalyzerNA49::beginJob()
                        0.35,
                        0.45,
                        0.55};
-  int npbarbins = sizeof(pbarbins) / sizeof(double) - 1;
+  int npbarbins [[maybe_unused]] = sizeof(pbarbins) / sizeof(double) - 1;
 
   // ---> fHistoSecAntiProton.push_back( tfs->make<TH1D>( "antiproton_dNdxF",  "Integrated",
   // npbarbins, pbarbins ) );

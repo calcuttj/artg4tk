@@ -1,9 +1,5 @@
-### MIGRATE-NO-ACTION
-find_library(ROOMULIB NAMES plotutils PATHS $ENV{ROOMU_SYS}/lib NO_DEFAULT_PATH)
-
-include_directories($ENV{ROOMU_SYS})
-
-art_make(
-  LIB_LIBRARIES
-    ${ROOMULIB}
-)
+cet_make_library(NO_INSTALL
+  SOURCE Chi2Calc.cc
+  LIBRARIES
+  PUBLIC ROOT::Core
+  PRIVATE ROOT::Hist ROOT::MathCore)

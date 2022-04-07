@@ -1,5 +1,18 @@
-### MIGRATE-NO-ACTION
-art_make(
-  LIB_LIBRARIES
-    ${G4_LIB_LIST}
+cet_make_library(NO_INSTALL
+  SOURCE
+  FTFPWrapper.cc
+  ModelConfigMapper.cc
+  ModelParamStudyGeom.cc
+  ProcessWrapper.cc
+  LIBRARIES
+  PUBLIC
+  Geant4::G4global
+  Geant4::G4processes
+  Geant4::G4run
+  fhiclcpp::fhiclcpp
+  PRIVATE
+  artg4tk::pluginDetectors_gdml
+  Geant4::G4intercoms
+  Geant4::G4materials
+  Geant4::G4geometry
 )

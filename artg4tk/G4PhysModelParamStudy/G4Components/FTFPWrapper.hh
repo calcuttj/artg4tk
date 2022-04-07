@@ -28,6 +28,8 @@
 
 #include "artg4tk/G4PhysModelParamStudy/G4Components/ProcessWrapper.hh"
 
+#include "Geant4/G4String.hh"
+
 class FTFPWrapper : public ProcessWrapper {
 
 public:

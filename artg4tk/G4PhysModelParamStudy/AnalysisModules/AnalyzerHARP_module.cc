@@ -35,7 +35,7 @@ namespace artg4tk {
     void endJob() override;
 
   protected:
-    virtual TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&);
+    TH1* matchExpSpectrum2MC(const int&, const std::vector<std::string>&, const int&) override;
 
   private:
     // FIXME !!!

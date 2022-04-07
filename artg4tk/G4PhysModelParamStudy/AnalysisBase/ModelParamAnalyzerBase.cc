@@ -13,12 +13,14 @@
 
 #include "CLHEP/Units/SystemOfUnits.h"
 
+#include "art/Framework/Principal/Run.h"
 #include "art/Framework/Principal/Event.h"
 //
 #include "art_root_io/TFileService.h"
 //
-// Run/Eevent data products
+// Run/Event data products
 #include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh" // Event data product
+#include "artg4tk/DataProducts/G4ModelConfig/ArtG4tkModelConfig.hh" // Run data product
 // Incoming Event data products
 #include "artg4tk/DataProducts/EventGenerators/GenParticle.hh"
 #include "artg4tk/DataProducts/EventGenerators/GenParticleCollection.hh"

@@ -141,7 +141,7 @@ artg4tk::ModelParamStudyProducer::ModelParamStudyProducer(const fhicl::Parameter
   art::ServiceHandle<DetectorHolderService> detholder;
   detholder->initialize();
   detholder->constructAllLVs();
-  detholder->callArtProduces(this);
+  detholder->callArtProduces(producesCollector());
 
   fCurrentG4Event = 0;
 
@@ -215,7 +215,7 @@ artg4tk::ModelParamStudyProducer::beginRun(art::Run& run)
   // Declare the detector construction to Geant
   //
   fRM->SetUserInitialization(
-    new ArtG4DetectorConstruction()); // this GDML-related - will retrieve from detholder, etc.
+    new ArtG4DetectorConstruction(art::ServiceHandle<DetectorHolderService>()->worldPhysicalVolume())); // this GDML-related - will retrieve from detholder, etc.
 
   fRM->GeometryHasBeenModified();
 

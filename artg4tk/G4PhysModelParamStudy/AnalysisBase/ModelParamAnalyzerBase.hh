@@ -2,21 +2,16 @@
 #define artg4tk_G4PhysModelParamStudy_AnalysisBase_ModelParamAnalyzerBase_hh
 
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/AnalyzerWithExpDataBase.hh"
-
-// Run/Event data products
-//
-#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkParticle.hh"   // Event data product
-#include "artg4tk/DataProducts/G4ModelConfig/ArtG4tkModelConfig.hh" // Run data product
-
-// Root-specific headers
-//
-#include "TDirectory.h"
-#include "TFile.h"
-#include "TObjArray.h"
 #include "artg4tk/G4PhysModelParamStudy/AnalysisProducts/BeamThinTargetConfig.hh"
+
+#include <string>
+
+class TObjArray;
 
 namespace artg4tk {
 
+  class ArtG4tkParticle;
+  
   class ModelParamAnalyzerBase : public artg4tk::AnalyzerWithExpDataBase {
 
   public:

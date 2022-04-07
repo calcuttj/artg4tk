@@ -7,22 +7,10 @@
 #include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
-#include <iostream>
 #include <string>
 
-// Geant4
-#include "Geant4/G4ElementVector.hh"
-#include "Geant4/G4ForceCondition.hh"
-#include "Geant4/G4IsotopeVector.hh"
-#include "Geant4/G4Material.hh"
-#include "Geant4/G4NistManager.hh"
-//
-#include "Geant4/G4Box.hh"
-#include "Geant4/G4GRSVolume.hh"
-#include "Geant4/G4PVPlacement.hh"
-#include "Geant4/G4Region.hh"
-//
-#include "Geant4/G4StateManager.hh"
+class G4Material;
+class G4Region;
 
 namespace artg4tk {
 

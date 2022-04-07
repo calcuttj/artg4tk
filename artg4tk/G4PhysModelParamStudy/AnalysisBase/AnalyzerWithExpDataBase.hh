@@ -2,13 +2,21 @@
 #define artg4tk_G4PhysModelParamStudy_AnalysisBase_AnalyzerWithExpDataBase_hh
 
 #include "art/Framework/Core/EDAnalyzer.h"
-#include "art/Framework/Principal/Run.h"
 
-#include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
 #include "artg4tk/ExpDataAccess/JSON2Data.hh"
 #include "artg4tk/ExpDataAccess/VDBConnect.hh"
+
+#include <map>
+#include <string>
+#include <vector>
+
+namespace fhicl {
+  class ParameterSet;
+}
+
+class TH1;
 
 namespace artg4tk {
 

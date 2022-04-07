@@ -1,13 +1,13 @@
-### MIGRATE-NO-ACTION
-find_package(CURL)
-if(CURL_FOUND)
-  include_directories(${CURL_INCLUDE_DIRS})
-else()
-  message(FATAL_ERROR "Could not find curl")
-endif()
+find_package(CURL REQUIRED)
 
-art_make(
-  LIB_LIBRARIES
-    ${CURL_LIBRARIES}
-    MF_MessageLogger
+cet_make_library(NO_INSTALL
+  SOURCE
+  JSON2Data.cc
+  VDBConnect.cc
+  LIBRARIES
+  PUBLIC
+  ROOT::Hist
+  CURL::libcurl
+  PRIVATE
+  messagefacility::MF_MessageLogger
 )

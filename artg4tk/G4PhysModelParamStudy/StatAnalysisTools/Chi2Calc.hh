@@ -1,11 +1,10 @@
 #ifndef artg4tk_G4PhysModelParamStudy_StatAnalysisTools_Chi2Calc_hh
 #define artg4tk_G4PhysModelParamStudy_StatAnalysisTools_Chi2Calc_hh
 
-//#include <iostream>
-//#include <string>
+#include <utility>
+#include <vector>
 
-#include "TMatrixD.h"
-#include "TMatrixDBase.h"
+#include "TMatrixDfwd.h"
 
 class TH1;
 class TGraphErrors;

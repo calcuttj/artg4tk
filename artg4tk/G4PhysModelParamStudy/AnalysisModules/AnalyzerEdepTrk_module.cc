@@ -55,8 +55,8 @@ namespace artg4tk {
     TH1D* fEdepZ;
     TH1D* fHShowerEdepZ;
 
-    TH1D* fExpDataH;
-    TGraphErrors* fExpDataG;
+    TH1D* fExpDataH [[maybe_unused]];
+    TGraphErrors* fExpDataG [[maybe_unused]];
 
     // diagnostics output
     //

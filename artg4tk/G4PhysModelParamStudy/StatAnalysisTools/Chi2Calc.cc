@@ -5,6 +5,7 @@
 
 #include "TGraphErrors.h"
 #include "TH1D.h"
+#include "TMatrixD.h"
 
 double
 Chi2Calc::Chi2DataMC(const TH1* data, const TH1* mc, int& ndf, const double mcscale /* = 1. */)
