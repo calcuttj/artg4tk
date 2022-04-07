@@ -1,3 +1,7 @@
-art_make(LIB_LIBRARIES fhiclcpp::fhiclcpp) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.09.03) - deprecated: use art_make_library(), art_dictonary(), and cet_build_plugin() with explicit source lists and plugin base types
+art_dictionary()
+
+cet_make_library(SOURCE ArtG4tkModelConfig.cc
+  LIBRARIES PRIVATE fhiclcpp::fhiclcpp)
 
 install_headers()
+install_source()

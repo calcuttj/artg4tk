@@ -1,7 +1,11 @@
+########################################################################
+# ArtG4tk
+#
+# Updated for cetmodules 3.10.00 by CG 2022-04-06.
+########################################################################
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
-# cmake_policy(VERSION 3.19) ### MIGRATE-ACTION-COMPATIBILITY (migrate-3.09.03) - Uncomment to preserve compatibility with older CMake versions
 
-find_package(cetmodules REQUIRED)
+find_package(cetmodules 3.10.00 REQUIRED) # For FindGeant4.cmake
 project(artg4tk VERSION 10.04.00 LANGUAGES CXX)
 
 include(CetCMakeEnv)
@@ -9,19 +13,19 @@ cet_cmake_env()
 
 cet_set_compiler_flags(DIAGS CAUTIOUS WERROR NO_UNDEFINED EXTRA_FLAGS -pedantic)
 
-cet_report_compiler_flags() ### MIGRATE-ACTION-RECOMMENDED (migrate-3.09.03) - add args: REPORT_THRESHOLD VERBOSE
+cet_report_compiler_flags(REPORT_THRESHOLD VERBOSE)
 
-find_package(art REQUIRED)
-find_package(art_root_io REQUIRED)
-find_package(Boost REQUIRED)
-find_package(canvas REQUIRED)
-find_package(cetlib REQUIRED)
-find_package(cetlib_except REQUIRED)
-find_package(CLHEP REQUIRED)
-find_package(fhiclcpp REQUIRED)
-find_package(Geant4 REQUIRED COMPONENTS gdml)
-find_package(messagefacility REQUIRED)
-find_package(Range REQUIRED)
+find_package(CLHEP COMPONENTS Vector REQUIRED EXPORT)
+find_package(Geant4 REQUIRED COMPONENTS gdml EXPORT)
+find_package(art_root_io REQUIRED EXPORT)
+find_package(art REQUIRED EXPORT)
+find_package(canvas_root_io REQUIRED)
+find_package(canvas REQUIRED EXPORT)
+find_package(messagefacility REQUIRED EXPORT)
+find_package(fhiclcpp REQUIRED EXPORT)
+find_package(cetlib_except REQUIRED EXPORT)
+find_package(Range-v3 REQUIRED EXPORT)
+find_package(ROOT COMPONENTS Core Hist Tree REQUIRED EXPORT)
 
 add_subdirectory(artg4tk)
 add_subdirectory(examples)

@@ -1,7 +1,12 @@
 cet_build_plugin(KillerAction art::service
   LIBRARIES
-    artg4tk::actionBase
-    artg4tk::services_ActionHolder_service
-    CLHEP::CLHEP
-    messagefacility::MF_MessageLogger
+  PUBLIC
+  artg4tk::actionBase
+  messagefacility::MF_MessageLogger
+  PRIVATE
+  Geant4::G4processes
+  Geant4::G4track
 )
+
+install_headers()
+install_source()

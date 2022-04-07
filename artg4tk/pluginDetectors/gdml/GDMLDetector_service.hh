@@ -35,10 +35,15 @@
 #define artg4tk_pluginDetectors_gdml_GDMLDetector_service_hh
 
 // Includes
-#include "fhiclcpp/fwd.h"
-#include "messagefacility/MessageLogger/MessageLogger.h"
+
 namespace art {
   class ProducesCollector;
+}
+
+#include "messagefacility/MessageLogger/MessageLogger.h"
+
+namespace fhicl {
+  class ParameterSet;
 }
 
 #include <string>

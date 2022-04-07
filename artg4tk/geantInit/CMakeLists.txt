@@ -8,13 +8,14 @@ cet_make_library(
     ArtG4SteppingAction.cc
     ArtG4TrackingAction.cc
   LIBRARIES
+    PUBLIC
     artg4tk::services_ActionHolder_service
     artg4tk::services_DetectorHolder_service
     canvas::canvas
-    CLHEP::CLHEP
     Geant4::G4event
     Geant4::G4tracking
     Geant4::G4run
 )
 
 install_headers()
+install_source()

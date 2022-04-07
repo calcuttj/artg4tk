@@ -31,8 +31,11 @@
 
 // framework includes:
 #include "art/Framework/Core/ProducesCollector.h"
+#include "art/Framework/Principal/Event.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
 
 // artg4tk includes:
+#include "artg4tk/DataProducts/G4DetectorHits/ArtG4tkVtx.hh"
 #include "artg4tk/pluginDetectors/gdml/ByParticle.hh"
 #include "artg4tk/pluginDetectors/gdml/CalorimeterHit.hh"
 #include "artg4tk/pluginDetectors/gdml/CalorimeterSD.hh"
@@ -46,6 +49,8 @@
 #include "artg4tk/pluginDetectors/gdml/PhotonSD.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerHit.hh"
 #include "artg4tk/pluginDetectors/gdml/TrackerSD.hh"
+#include "artg4tk/services/DetectorHolder_service.hh"
+
 //
 // Geant 4 includes:
 #include "Geant4/G4GDMLParser.hh"
@@ -59,6 +64,7 @@
 #include "Geant4/G4VPhysicalVolume.hh"
 // C++ includes
 #include <map>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 

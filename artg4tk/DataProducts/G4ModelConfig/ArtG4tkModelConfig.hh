@@ -1,11 +1,13 @@
 #ifndef artg4tk_DataProducts_G4ModelConfig_ArtG4tkModelConfig_hh
 #define artg4tk_DataProducts_G4ModelConfig_ArtG4tkModelConfig_hh
 
-#include "fhiclcpp/fwd.h"
-
 #include <map>
 #include <string>
 #include <vector>
+
+namespace fhicl {
+  class ParameterSet;
+}
 
 namespace artg4tk {
 

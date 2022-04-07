@@ -14,9 +14,10 @@ foreach(MODULE_NAME IN LISTS FRAMEWORK_MODULES)
     art::Framework_Services_Registry
     art_root_io::TFileService_service
     artg4tk::DataProducts_EventGenerators
-    CLHEP::CLHEP
     ROOT::Hist
     ROOT::Core
     ROOT::Tree
     )
 endforeach()
+
+install_source()

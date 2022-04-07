@@ -12,3 +12,4 @@ cet_make_library(
     art::Framework_Services_Registry)
 
 install_headers()
+install_source()
