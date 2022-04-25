@@ -1,17 +1,15 @@
-cet_build_plugin(HepevtInputAction art::service
+cet_build_plugin(HepevtInputAction artg4tk::ActionService
   LIBRARIES
     PUBLIC
-      artg4tk::actionBase
       Geant4::G4event
     PRIVATE
       artg4tk::services_ActionHolder_service
       messagefacility::MF_MessageLogger
 )
 
-cet_build_plugin(myParticleGunAction art::service
+cet_build_plugin(myParticleGunAction artg4tk::ActionService
   LIBRARIES
     PUBLIC
-      artg4tk::actionBase
       Geant4::G4event
     PRIVATE
       artg4tk::services_ActionHolder_service

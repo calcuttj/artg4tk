@@ -1,7 +1,6 @@
-cet_build_plugin(KillerAction art::service
+cet_build_plugin(KillerAction artg4tk::ActionService
   LIBRARIES
   PUBLIC
-  artg4tk::actionBase
   messagefacility::MF_MessageLogger
   PRIVATE
   Geant4::G4processes

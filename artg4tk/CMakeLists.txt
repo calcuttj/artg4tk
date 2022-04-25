@@ -3,8 +3,12 @@ include(CetMake)
 include(BuildPlugins)
 
 add_subdirectory(actionBase)
-add_subdirectory(Analysis)
 add_subdirectory(Core)
+
+cet_collect_plugin_builders(Modules artg4tk::ServiceBuilders)
+include(artg4tk::ServiceBuilders)
+
+add_subdirectory(Analysis)
 add_subdirectory(DataProducts)
 add_subdirectory(EventGenerators)
 add_subdirectory(geantInit)

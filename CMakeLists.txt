@@ -46,6 +46,8 @@ find_package(cetlib_except REQUIRED EXPORT)
 find_package(Range-v3 REQUIRED EXPORT)
 find_package(ROOT COMPONENTS Core Hist Tree REQUIRED EXPORT)
 
+cet_cmake_module_directories(Modules BINARY)
+
 add_subdirectory(artg4tk)
 add_subdirectory(examples)
 add_subdirectory(fcl)

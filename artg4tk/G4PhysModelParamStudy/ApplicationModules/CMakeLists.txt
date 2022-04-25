@@ -14,7 +14,7 @@ cet_build_plugin(ModelParamStudyProducer art::EDProducer NO_INSTALL
   Geant4::G4geometry
   Geant4::G4global
 )
-  
+
 cet_build_plugin(ProcLevelMPVaryProducer art::EDProducer NO_INSTALL
   LIBRARIES PRIVATE
   artg4tk::G4PhysModelParamStudy_G4Services_PhysModelConfig_service

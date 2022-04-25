@@ -1,7 +1,6 @@
-cet_build_plugin(PrimaryEventAction art::service
+cet_build_plugin(PrimaryEventAction artg4tk::ActionService
   LIBRARIES
     PUBLIC
-      artg4tk::actionBase
       Geant4::G4global
     PRIVATE
       art::Framework_Principal

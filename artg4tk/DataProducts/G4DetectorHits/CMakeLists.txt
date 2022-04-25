@@ -1,4 +1,3 @@
-
 cet_make_library(SOURCE ArtG4tkParticle.cc
   LIBRARIES PUBLIC
   Geant4::G4particles CLHEP::Vector)

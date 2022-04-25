@@ -25,11 +25,10 @@ cet_make_library(SOURCE
     Geant4::G4tracking
   )
 
-cet_build_plugin(GDMLDetector art::service
+cet_build_plugin(GDMLDetector artg4tk::DetectorService
   LIBRARIES
   PUBLIC
   messagefacility::MF_MessageLogger
-  artg4tk::Core
   PRIVATE
   artg4tk::pluginDetectors_gdml
   artg4tk::services_DetectorHolder_service
