@@ -249,7 +249,7 @@ gdmldir	product_dir	gdml
 product		version		qual	flags		<table_format=2>
 art_root_io	v1_08_03	-
 geant4		v4_10_6_p01d	-
-cetmodules	v3_10_00	-	only_for_build
+cetmodules	v3_11_03	-	only_for_build
 end_product_list
 ####################################
 
