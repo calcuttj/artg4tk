@@ -23,47 +23,37 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: MyQGSP_BERT_HP.hh 66892 2019-10-10 10:57:59Z drivera $
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   MyQGSP_BERT_HP
+// ClassName:   MyQGSP_BERT_LASER
 //
 // Author: 2002 J.P. Wellisch
 //
-// Modified: 2019 D. Rivera
+// Modified:
+// 05.01.2022 D.Rivera: imported into artg4tk based on :
+//            geant4.10.06.p01d/source/physics_lists/lists/include/QGSP_BERT.hh
 //
 //----------------------------------------------------------------------------
 //
-#ifndef artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
-#define artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
+#ifndef MyQGSP_BERT_LASER_h
+#define MyQGSP_BERT_LASER_h 1
 
-#include <CLHEP/Units/SystemOfUnits.h>
-
-#include "Geant4/CompileTimeConstraints.hh"
-#include "Geant4/G4VModularPhysicsList.hh"
 #include "Geant4/globals.hh"
+#include "Geant4/G4VModularPhysicsList.hh"
 
-template <class T>
-class TMyQGSP_BERT_HP_NeutronXSBias : public T {
+class MyQGSP_BERT_LASER: public G4VModularPhysicsList
+{
 public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver = 1);
+  MyQGSP_BERT_LASER(G4int ver = 1);
+  virtual ~MyQGSP_BERT_LASER()=default;
 
-  G4double xsecScale() { return this->INXS_SCALE; }
-
-private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
-
-  const char* NEUTRON_INXS_SCALE;
-
-  G4double INXS_SCALE;
-  // -- added in v10_04...
-  void SetCuts() override;
+  MyQGSP_BERT_LASER(const MyQGSP_BERT_LASER &) = delete;
+  MyQGSP_BERT_LASER & operator=(const MyQGSP_BERT_LASER &)=delete;
+  
 };
 
-#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
-typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
+#endif
 
-// 2019 by D. Rivera
 
-#endif /* artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh */
+

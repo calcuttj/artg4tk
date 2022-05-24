@@ -200,8 +200,8 @@ MyG4HadronPhysicsQGSP_BERT_HP_NeutronXSBias::ConstructProcess()
 
   tpdata->theNeutrons->Build();
   // -- Retrieve and multiply the Bertini Neutron's Inelastic XS by the factor
-  G4PhysListUtil::FindInelasticProcess(G4Neutron::Neutron())
-    ->MultiplyCrossSectionBy(theBertiniNeutronXSMultiplier);
+  std::cout << "Multiplying Neutron Inelastic Cross Section by " << theBertiniNeutronXSMultiplier << std::endl;
+  G4PhysListUtil::FindInelasticProcess(G4Neutron::Neutron())->MultiplyCrossSectionBy(theBertiniNeutronXSMultiplier);
   tpdata->thePro->Build();
   tpdata->thePiK->Build();
 

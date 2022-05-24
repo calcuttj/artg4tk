@@ -23,47 +23,58 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: MyQGSP_BERT_HP.hh 66892 2019-10-10 10:57:59Z drivera $
+//
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   MyQGSP_BERT_HP
+// ClassName:   G4EmStandardPhysics_muplusLaser
 //
-// Author: 2002 J.P. Wellisch
+// Author:      V.Ivanchenko 09.11.2005
 //
-// Modified: 2019 D. Rivera
+// Modified:
+// 05.12.2005 V.Ivanchenko add controlled verbosity
+// 23.11.2006 V.Ivanchenko remove mscStepLimit option and improve cout
+// 05.01.2022 D.Rivera: imported into artg4tk based on :
+//            geant4.10.06.p01/source/physics_lists/constructors/electromagnetic/include/G4EmStandardPhysics.hh
+//            Rebranded as G4EmStandardPhysics_muplusLaser for use with larg4
+//            and to implement an "effective" laser simulation
 //
 //----------------------------------------------------------------------------
 //
-#ifndef artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
-#define artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
+// This class provides construction of default EM standard physics
+//
 
-#include <CLHEP/Units/SystemOfUnits.h>
+#ifndef G4EmStandardPhysics_muplusLaser_h
+#define G4EmStandardPhysics_muplusLaser_h 1
 
-#include "Geant4/CompileTimeConstraints.hh"
-#include "Geant4/G4VModularPhysicsList.hh"
+#include "Geant4/G4VPhysicsConstructor.hh"
+#include "Geant4/G4EmParticleList.hh"
 #include "Geant4/globals.hh"
 
-template <class T>
-class TMyQGSP_BERT_HP_NeutronXSBias : public T {
-public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver = 1);
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  G4double xsecScale() { return this->INXS_SCALE; }
+class G4EmStandardPhysics_muplusLaser : public G4VPhysicsConstructor
+{
+public:
+
+  explicit G4EmStandardPhysics_muplusLaser(G4int ver=1, const G4String& name="");
+
+  virtual ~G4EmStandardPhysics_muplusLaser();
+
+  virtual void ConstructParticle();
+  virtual void ConstructProcess();
 
 private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
-
-  const char* NEUTRON_INXS_SCALE;
-
-  G4double INXS_SCALE;
-  // -- added in v10_04...
-  void SetCuts() override;
+  G4int  verbose;
+  G4EmParticleList partList;
 };
 
-#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
-typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-// 2019 by D. Rivera
+#endif
 
-#endif /* artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh */
+
+
+
+
+

@@ -23,47 +23,61 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: MyQGSP_BERT_HP.hh 66892 2019-10-10 10:57:59Z drivera $
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   MyQGSP_BERT_HP
+// ClassName:   G4DecayPhysics
 //
 // Author: 2002 J.P. Wellisch
 //
-// Modified: 2019 D. Rivera
+// Modified:
+// 10.11.2005 V.Ivanchenko edit to provide a standard
+// 05.12.2005 V.Ivanchenko add controlled verbosity
+// 07.03.2022 D.Rivera: imported into artg4tk based on :
+//            geant4.10.06.p01/source/physics_lists/constructors/decay/include/G4DecayPhysics.cc
 //
 //----------------------------------------------------------------------------
 //
-#ifndef artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
-#define artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh
 
-#include <CLHEP/Units/SystemOfUnits.h>
+#ifndef MyG4DecayPhysics_h
+#define MyG4DecayPhysics_h 1
 
-#include "Geant4/CompileTimeConstraints.hh"
-#include "Geant4/G4VModularPhysicsList.hh"
 #include "Geant4/globals.hh"
+#include "Geant4/G4VPhysicsConstructor.hh"
 
-template <class T>
-class TMyQGSP_BERT_HP_NeutronXSBias : public T {
-public:
-  TMyQGSP_BERT_HP_NeutronXSBias(G4int ver = 1);
+#include "Geant4/G4Decay.hh"
 
-  G4double xsecScale() { return this->INXS_SCALE; }
+class MyG4DecayPhysics : public G4VPhysicsConstructor
+{
+  public: 
+    MyG4DecayPhysics(G4int ver = 1);
+    MyG4DecayPhysics(const G4String& name, G4int ver = 1);
+    virtual ~MyG4DecayPhysics();
+
+  public: 
+    // This method will be invoked in the Construct() method. 
+    // each particle type will be instantiated
+  virtual void ConstructParticle();
+ 
+    // This method will be invoked in the Construct() method.
+    // each physics process will be instantiated and
+    // registered to the process manager of each particle type 
+  virtual void ConstructProcess();
+
+  virtual G4Decay* GetDecayProcess() { return fDecayProcess; }
 
 private:
-  enum {ok = CompileTimeConstraints::IsA<T, G4VModularPhysicsList>::ok };
-
-  const char* NEUTRON_INXS_SCALE;
-
-  G4double INXS_SCALE;
-  // -- added in v10_04...
-  void SetCuts() override;
+  static G4ThreadLocal G4Decay* fDecayProcess;
+  G4int    verbose;
+  static G4ThreadLocal G4bool   wasActivated;
 };
 
-#include "artg4tk/lists/MyQGSP_BERT_HP_NeutronXSBias.icc"
-typedef TMyQGSP_BERT_HP_NeutronXSBias<G4VModularPhysicsList> MyQGSP_BERT_HP_NeutronXSBias;
+#endif
 
-// 2019 by D. Rivera
 
-#endif /* artg4tk_lists_MyQGSP_BERT_HP_NeutronXSBias_hh */
+
+
+
+
+
+
