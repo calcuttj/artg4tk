@@ -53,6 +53,7 @@ namespace artg4tk {
     double PiMinusBias_;
     double ProtonBias_;
     double NeutronBias_;
+    double KPlusBias_;
     double PiPlusElasticBias_;
     double PiMinusElasticBias_;
     double ProtonElasticBias_;

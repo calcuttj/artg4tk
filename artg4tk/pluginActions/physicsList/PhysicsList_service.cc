@@ -56,6 +56,7 @@ artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p) :
   PiMinusBias_(p.get<double>("PiMinusBias", 1.)),
   ProtonBias_(p.get<double>("ProtonBias", 1.)),
   NeutronBias_(p.get<double>("NeutronBias", 1.)),
+  KPlusBias_(p.get<double>("KPlusBias", 1.)),
   PiPlusElasticBias_(p.get<double>("PiPlusElasticBias", 1.)),
   PiMinusElasticBias_(p.get<double>("PiMinusElasticBias", 1.)),
   ProtonElasticBias_(p.get<double>("ProtonElasticBias", 1.)),
@@ -127,6 +128,7 @@ G4VUserPhysicsList* artg4tk::PhysicsListService::makePhysicsList() {
           = (G4HadronPhysicsQGSP_BERT_Bias *)phys->GetPhysics(
               "hInelastic_pion_bias QGSP_BERT_Bias");
       bias->SetPiPlusBias(PiPlusBias_);
+      bias->SetKPlusBias(KPlusBias_);
       bias->SetPiMinusBias(PiMinusBias_);
       bias->SetProtonBias(ProtonBias_);
       bias->SetNeutronBias(NeutronBias_);

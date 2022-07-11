@@ -182,7 +182,7 @@ void G4HadronPhysicsQGSP_BERT_Bias::Pion()
   ftf->SetMinEnergy(minFTFP_pik);
   ftf->SetMaxEnergy(maxFTFP_pik);
   pik->RegisterMe(ftf);
-  auto bert = new G4BertiniPiKBuilderBias(fPiPlusBias);
+  auto bert = new G4BertiniPiKBuilderBias(fPiPlusBias, fKPlusBias);
   AddBuilder(bert);
   bert->SetMinEnergy(minBERT_pik);
   bert->SetMaxEnergy(maxBERT_pik);

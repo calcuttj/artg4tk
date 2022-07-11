@@ -67,6 +67,7 @@ class G4HadronPhysicsQGSP_BERT_Bias : public G4VPhysicsConstructor
     void SetPiMinusBias(double val = 1.) {fPiMinusBias = val;}
     void SetProtonBias(double val = 1.) {fProtonBias = val;}
     void SetNeutronBias(double val = 1.) {fNeutronBias = val;}
+    void SetKPlusBias(double val = 1.) {fKPlusBias = val;}
 
   protected:
     G4bool QuasiElasticFTF;
@@ -98,6 +99,7 @@ class G4HadronPhysicsQGSP_BERT_Bias : public G4VPhysicsConstructor
     G4double maxBERT_pik;
 
     double fPiPlusBias;
+    double fKPlusBias;
     double fPiMinusBias;
     double fProtonBias;
     double fNeutronBias;

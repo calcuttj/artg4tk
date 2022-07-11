@@ -52,7 +52,8 @@
 class G4BertiniPiKBuilderBias : public G4VPiKBuilder
 {
   public: 
-    G4BertiniPiKBuilderBias(double pion_plus_bias = 1.);
+    G4BertiniPiKBuilderBias(double pion_plus_bias = 1.,
+                            double kaon_plus_bias = 1.);
     virtual ~G4BertiniPiKBuilderBias() {}
 
     virtual void Build(G4HadronElasticProcess *) final override {}
@@ -74,6 +75,7 @@ class G4BertiniPiKBuilderBias : public G4VPiKBuilder
     G4double theMin;
     G4double theMax;
     double fPionPlusBias;
+    double fKaonPlusBias;
 };
 
 #endif

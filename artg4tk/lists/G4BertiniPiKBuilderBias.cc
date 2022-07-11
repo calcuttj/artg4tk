@@ -48,8 +48,8 @@
 
 
 G4BertiniPiKBuilderBias::
-G4BertiniPiKBuilderBias(double pion_plus_bias)
-  : fPionPlusBias(pion_plus_bias) {
+G4BertiniPiKBuilderBias(double pion_plus_bias, double kaon_plus_bias)
+  : fPionPlusBias(pion_plus_bias), fKaonPlusBias(kaon_plus_bias) {
    kaonxs = new G4CrossSectionInelastic( new G4ComponentGGHadronNucleusXsc );
    theMin = 0.0;
    theMax = G4HadronicParameters::Instance()->GetMaxEnergyTransitionFTF_Cascade();
@@ -85,6 +85,8 @@ Build(G4KaonPlusInelasticProcess * aP)
    theModel->SetMinEnergy(theMin);
    theModel->SetMaxEnergy(theMax);
    aP->AddDataSet(kaonxs);
+   std::cout << "Multiplying kaon by " << fKaonPlusBias << std::endl;
+   aP->MultiplyCrossSectionBy(fKaonPlusBias);
  }
 
 void G4BertiniPiKBuilderBias::
