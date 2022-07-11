@@ -14,6 +14,7 @@ cet_make_library(SOURCE
   MyQGSP_BERT_LASER.cc
   LIBRARIES PUBLIC
   Geant4::G4physicslists
+  artg4tk_particles
 )
 
 install_headers()

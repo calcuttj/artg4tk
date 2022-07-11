@@ -90,6 +90,7 @@
 #include "Geant4/G4Positron.hh"
 #include "Geant4/G4MuonPlus.hh"
 #include "Geant4/G4MuonMinus.hh"
+#include "artg4tk/particles/G4MuonLaser.hh"
 #include "Geant4/G4PionPlus.hh"
 #include "Geant4/G4PionMinus.hh"
 #include "Geant4/G4KaonPlus.hh"
@@ -141,6 +142,7 @@ void G4EmStandardPhysics_muplusLaser::ConstructParticle()
   G4Positron::Positron();
   G4MuonPlus::MuonPlus();
   G4MuonMinus::MuonMinus();
+  G4MuonLaser::MuonLaser();
 
   // mesons
   G4PionPlus::PionPlusDefinition();
@@ -282,13 +284,13 @@ void G4EmStandardPhysics_muplusLaser::ConstructProcess()
 
       // -- mu+ will ionize ONLY
       G4cout << "##### Turning off Multiple scattering, Coulomb Scattering, Pair Prodution, and Bremstrahlung for mu+!!!\n";
-      //<--ph->RegisterProcess(new G4MuIonisation(), particle); // -- ionization
-      ph->RegisterProcess(new MyG4MuIonisationNoDelta(), particle); // -- ionization
+      ph->RegisterProcess(new G4MuIonisation(), particle); // -- ionization
+      //ph->RegisterProcess(new MyG4MuIonisationNoDelta(), particle); // -- ionization
       // -- turn off Multiple scattering, bremstrahlung, pair production, and Coulomb scattering
-      //<--ph->RegisterProcess(mumsc, particle); // -- multiple scattering
-      //<--ph->RegisterProcess(mub, particle); // -- bremmstrahlung
-      //<--ph->RegisterProcess(mup, particle); // -- pair production
-      //<--ph->RegisterProcess(muss, particle); // -- Coulomb scattering
+      ph->RegisterProcess(mumsc, particle); // -- multiple scattering
+      ph->RegisterProcess(mub, particle); // -- bremmstrahlung
+      ph->RegisterProcess(mup, particle); // -- pair production
+      ph->RegisterProcess(muss, particle); // -- Coulomb scattering
 
     } else if (particleName == "alpha" ||
                particleName == "He3") {
@@ -366,6 +368,10 @@ void G4EmStandardPhysics_muplusLaser::ConstructProcess()
       ph->RegisterProcess(new G4hIonisation(), particle);
     }
   }
+
+  //Find the mulaser particle by hand
+  G4ParticleDefinition* particle = table->FindParticle("mulaser");
+  ph->RegisterProcess(new MyG4MuIonisationNoDelta(), particle); // -- ionization
 
   // Deexcitation
   //
